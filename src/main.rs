@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use rand::prelude::random;
 use bevy::time::FixedTimestep;
 mod startup;
 use startup::startup;
@@ -14,6 +13,10 @@ use moverandom_system::*;
 mod input;
 use input::*;
 mod prelude;
+mod monstergenerator_system;
+use monstergenerator_system::*;
+mod movetoward_system;
+use movetoward_system::*;
 
 fn main() {
     //println!("Hello, world!");
@@ -33,6 +36,12 @@ fn main() {
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(0.1))
                 .with_system(movement_random),
+        )
+        .add_system_set_to_stage(
+            CoreStage::PostUpdate,
+            SystemSet::new()
+                .with_run_criteria(FixedTimestep::step(1.0))
+                .with_system(monster_generator),
         )
         .add_system(keyboard_input)
         .add_system(scrollwheel_input)

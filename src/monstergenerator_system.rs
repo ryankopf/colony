@@ -1,15 +1,13 @@
-use bevy::prelude::*;
-use rand::prelude::random;
-use super::prelude::*;
+use crate::prelude::*;
 
-pub fn movement_random(
+pub fn monster_generator(
+    mut commands: Commands,
     //segments: ResMut<SnakeSegments>,
-    mut entities: Query<(Entity, &mut Position, With <MoveRandom>, Without<TileType>)>,
+    entities: Query<(Entity, &Position, With<MonsterGenerator>)>,
     //mut positions: Query<&mut Position>,
     mut tile_types: Query<(&Position, &mut TileType)>,
 ) {
-    //let mut head_position = Position { x: 0, y: 0, z: 0 };
-    for (entity, mut position, _, _) in entities.iter_mut() {
+    for (_, position, _) in entities.iter() {
         let mut new_position = *position;
         let dir = random::<i32>() % 4;
         match dir {
@@ -19,15 +17,31 @@ pub fn movement_random(
             3 => new_position.x += 1,
             _ => {}
         }
+        let mut can_generate = false;
         for (tile_position, mut tile_type) in tile_types.iter_mut() {
             let mut p2 = new_position;
             p2.z = 0;
             if *tile_position == p2 {
                 if *tile_type != TileType::Wall {
-                    *position = new_position;
+                    can_generate = true;
                 }
             }
         }
+        if (!can_generate) {
+            return;
+        }
+        commands
+            .spawn(SpriteBundle {
+                sprite: Sprite {
+                    color: COLOR_RED,
+                    ..default()
+                },
+                ..default()
+            })
+            .insert(new_position)
+            .insert(SizeXYZ::cube(1.1))
+            .insert(super::components::MoveRandom);
         //*position = new_position;
     }
+
 }

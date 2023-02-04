@@ -8,6 +8,11 @@ pub struct Position {
     pub z: i32,
 }
 
+#[derive(Component, PartialEq)]
+pub enum TileType {
+    Wall, Floor
+}
+
 #[derive(Component)]
 pub struct Renderable {
     //pub glyph: rltk::FontCharType,
@@ -30,6 +35,15 @@ pub struct MapTile;
 
 #[derive(Component)]
 pub struct MoveRandom;
+
+#[derive(Component)]
+pub struct MonsterGenerator;
+
+#[derive(Component)]
+pub struct MoveTowardsNearestAttackable;
+
+#[derive(Component)]
+pub struct Attackable;
 
 #[derive(Component)]
 pub struct Mobile;

@@ -3,12 +3,6 @@ use super::{Position, MapTile, SizeXYZ};
 use super::constants::{COLOR_BLUE, COLOR_GRAY, COLOR_GREEN};
 use super::prelude::*;
 
-//#[derive(PartialEq, Copy, Clone)]
-#[derive(Component, PartialEq)]
-pub enum TileType {
-    Wall, Floor
-}
-
 #[derive(Default)]
 pub struct Map {
     pub tiles : Vec<TileType>,
