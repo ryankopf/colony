@@ -10,14 +10,13 @@ pub fn keyboard_input(
         let move_speed = 16.0;
         //transform.translation.x += 5.0;
         let mut next_position = transform.translation;
-        if input.pressed(KeyCode::Up) {
-            println!("Up");
+        if input.pressed(KeyCode::Up) || input.pressed(KeyCode::W) {
             next_position.y += move_speed;
-        } else if input.pressed(KeyCode::Down) {
+        } else if input.pressed(KeyCode::Down) || input.pressed(KeyCode::S) {
             next_position.y -= move_speed;
-        } else if input.pressed(KeyCode::Left) {
+        } else if input.pressed(KeyCode::Left) || input.pressed(KeyCode::A) {
             next_position.x -= move_speed;
-        } else if input.pressed(KeyCode::Right) {
+        } else if input.pressed(KeyCode::Right) || input.pressed(KeyCode::D) {
             next_position.x += move_speed;
         }
         transform.translation = next_position;

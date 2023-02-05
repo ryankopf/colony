@@ -1,6 +1,4 @@
 use bevy::prelude::*;
-use super::{Position, MapTile, SizeXYZ};
-use super::constants::{COLOR_BLUE, COLOR_GRAY, COLOR_GREEN};
 use super::prelude::*;
 
 #[derive(Default)]
@@ -26,14 +24,12 @@ pub fn generate_map(mut commands: Commands) {
     }
 }
 
-
-pub struct MapTiles(Vec<Entity>);
-
 fn spawn_tile(commands: &mut Commands, position: Position, tile_type: TileType) {
     commands
         .spawn(SpriteBundle {
             sprite: Sprite {
-                color: match tile_type { TileType::Wall => COLOR_GRAY, _ => COLOR_GREEN },
+                color: match tile_type { TileType::Wall => Color::GRAY, _ => Color::GREEN },
+                custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                 ..default()
             },
             ..default()
@@ -41,5 +37,7 @@ fn spawn_tile(commands: &mut Commands, position: Position, tile_type: TileType) 
         .insert(MapTile)
         .insert(position)
         .insert(tile_type)
-        .insert(SizeXYZ::cube(1.0));
+        .insert(SizeXYZ::flat(TILE_SIZE))
+        .insert(position.to_transform())
+        ;
 }

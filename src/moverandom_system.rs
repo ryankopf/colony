@@ -3,13 +3,11 @@ use rand::prelude::random;
 use super::prelude::*;
 
 pub fn movement_random(
-    //segments: ResMut<SnakeSegments>,
-    mut entities: Query<(Entity, &mut Position, With <MoveRandom>, Without<TileType>)>,
-    //mut positions: Query<&mut Position>,
-    mut tile_types: Query<(&Position, &mut TileType)>,
+    mut entities: Query<(Entity, &mut Position, &mut Transform), (With <MoveRandom>, Without<TileType>)>,
+    mut tile_types: Query<(&Position, &TileType)>,
 ) {
     //let mut head_position = Position { x: 0, y: 0, z: 0 };
-    for (entity, mut position, _, _) in entities.iter_mut() {
+    for (entity, mut position, mut transform) in entities.iter_mut() {
         let mut new_position = *position;
         let dir = random::<i32>() % 4;
         match dir {
@@ -19,12 +17,14 @@ pub fn movement_random(
             3 => new_position.x += 1,
             _ => {}
         }
-        for (tile_position, mut tile_type) in tile_types.iter_mut() {
+        for (tile_position, tile_type) in tile_types.iter() {
             let mut p2 = new_position;
             p2.z = 0;
             if *tile_position == p2 {
                 if *tile_type != TileType::Wall {
                     *position = new_position;
+                    transform.translation.x = new_position.x as f32 * TILE_SIZE;
+                    transform.translation.y = new_position.y as f32 * TILE_SIZE;
                 }
             }
         }

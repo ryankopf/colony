@@ -2,12 +2,11 @@ use crate::prelude::*;
 
 pub fn monster_generator(
     mut commands: Commands,
-    //segments: ResMut<SnakeSegments>,
-    entities: Query<(Entity, &Position, With<MonsterGenerator>)>,
-    //mut positions: Query<&mut Position>,
-    mut tile_types: Query<(&Position, &mut TileType)>,
+    entities: Query<(Entity, &Position), With<MonsterGenerator>>,
+    tile_types: Query<(&Position, &TileType)>,
+    generated_monsters: Query<(Entity, &GeneratedBy)>,
 ) {
-    for (_, position, _) in entities.iter() {
+    for (entity, position) in entities.iter() {
         let mut new_position = *position;
         let dir = random::<i32>() % 4;
         match dir {
@@ -18,7 +17,7 @@ pub fn monster_generator(
             _ => {}
         }
         let mut can_generate = false;
-        for (tile_position, mut tile_type) in tile_types.iter_mut() {
+        for (tile_position, tile_type) in tile_types.iter() {
             let mut p2 = new_position;
             p2.z = 0;
             if *tile_position == p2 {
@@ -27,20 +26,30 @@ pub fn monster_generator(
                 }
             }
         }
+        for (ent, parent) in generated_monsters.iter() {
+            if parent.entity == entity {
+                can_generate = false;
+            }
+        }
+
         if (!can_generate) {
             return;
         }
         commands
             .spawn(SpriteBundle {
                 sprite: Sprite {
-                    color: COLOR_RED,
+                    color: Color::RED,
+                    custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                     ..default()
                 },
                 ..default()
             })
             .insert(new_position)
             .insert(SizeXYZ::cube(1.1))
-            .insert(super::components::MoveRandom);
+            .insert(new_position.to_transform_layer(1.0))
+            .insert(GeneratedBy { entity: entity })
+            .insert(MoveTowardsNearestAttackable)
+            ;
         //*position = new_position;
     }
 
