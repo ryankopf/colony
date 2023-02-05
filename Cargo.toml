@@ -11,3 +11,5 @@ opt-level = 3
 [dependencies]
 bevy = "*"
 rand = "*"
+winit = "*"
+image = "*"

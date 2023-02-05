@@ -25,7 +25,7 @@ pub fn movement_toward_attackable(
     }
 
 }
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 struct Node {
     position: Position,
     g: i32,
@@ -36,14 +36,13 @@ struct Node {
 pub fn movement_path_generating(
     mut commands: Commands,
     mut entities: Query<(&Position, &mut Pathing)>,
-    tiles: Query<(Entity, &Position, &TileType), With<MapTile>>,
+    tiles: Query<(&Position, &TileType), With<MapTile>>,
 ) {
     for (start_position, mut pathing) in entities.iter_mut() {
         let destination = pathing.destination;
         if pathing.path.len() != 0 { continue; }
-        println!("Pathing: {:?} -> {:?}", start_position, pathing.destination);
         let mut tiletypes: std::collections::HashMap<Position, TileType> = std::collections::HashMap::new();
-        for (tile_entity, tile_position, tile_type) in tiles.iter() {
+        for (tile_position, tile_type) in tiles.iter() {
             tiletypes.insert(tile_position.clone(), tile_type.clone());
         }
         // F = G + H
@@ -52,12 +51,13 @@ pub fn movement_path_generating(
         let mut openlist: std::collections::HashMap<Position, Node> = std::collections::HashMap::new();
         let mut closedlist: std::collections::HashMap<Position, Node> = std::collections::HashMap::new();
         openlist.insert(start_position.clone(), Node { position: start_position.clone(), g: 0, h: 0, f: 0, parent: None });
-        while (!openlist.is_empty()) {
+        while !openlist.is_empty() {
             let mut current_node = None;
-            let lowest_f = -1;
+            let mut lowest_f = -1;
             for (position, node) in openlist.iter() {
                 if lowest_f == -1 || node.f < lowest_f {
                     current_node = Some(node);
+                    lowest_f = node.f;
                 }
             }
             if let None = current_node {
@@ -67,20 +67,22 @@ pub fn movement_path_generating(
             let mut current_position = current_node.position.clone();
             openlist.remove(&current_position);
             // Add n to the CLOSED list
-            closedlist.insert(current_position.clone(), Node { position: current_position.clone(), g: 0, h: 0, f: 0, parent: current_node.parent });
+            let g = current_node.g + 1;
+            let h = current_position.distance(&destination);
+            let f = g + h;
+            closedlist.insert(current_position.clone(), Node { position: current_position.clone(), g: g, h: h, f: f, parent: current_node.parent });
             // IF n is the same as the goal, we have a solution. Backtrack to find the path.
             if current_position == destination {
                 let mut nodelist: Vec<Position> = vec![];
-                let p = Some(current_position);
                 loop {
                     nodelist.push(current_position.clone());
+                    if let None = closedlist.get(&current_position) { break; }
                     match closedlist.get(&current_position).unwrap().parent {
                         None => break,
                         _ => current_position = closedlist.get(&current_position).unwrap().parent.clone().unwrap(),
                     }
                 }
                 pathing.path = nodelist;
-                //pathing.path.reverse();
                 break;
             }
             let mut neighbors: Vec<Position> = vec![];
@@ -112,8 +114,6 @@ pub fn movement_path_generating(
 
             }
         }
-        
-        println!("path: {:?}", pathing.path);
     }
 }
 // pub fn movement_path_generating_old(

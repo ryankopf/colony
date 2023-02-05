@@ -1,5 +1,3 @@
-use bevy::prelude::*;
-use rand::prelude::random;
 use super::prelude::*;
 
 pub fn movement_random(
@@ -9,7 +7,9 @@ pub fn movement_random(
     //let mut head_position = Position { x: 0, y: 0, z: 0 };
     for (entity, mut position, mut transform) in entities.iter_mut() {
         let mut new_position = *position;
-        let dir = random::<i32>() % 4;
+        // let dir = random::<i32>() % 4;
+        let mut rng = rand::thread_rng();
+        let dir = rng.gen_range(0..4);
         match dir {
             0 => new_position.y += 1,
             1 => new_position.y -= 1,

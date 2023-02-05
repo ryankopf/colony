@@ -21,6 +21,8 @@ pub fn startup(mut commands: Commands) {
             .insert(MoveRandom)
             .insert(position.to_transform_layer(1.0))
             .insert(Attackable)
+            .insert(NeedsFood { current: 100.0, max: 100.0, rate: 0.1 })
+            .insert( HasName { name: "Orc".to_string() } )
             ;
     }
 
@@ -76,36 +78,31 @@ pub fn startup(mut commands: Commands) {
 
 }
 
-pub fn setup_text(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
-    commands.spawn((
-        // Create a TextBundle that has a Text with a single section.
-        TextBundle::from_section(
-            // Accepts a `String` or any type that converts into a `String`, such as `&str`
-            "You have just arrived on an uncharted island.",
-            TextStyle {
-                font: asset_server.load("Helvetica.ttf"),
-                font_size: 14.0,
-                color: Color::WHITE,
-            },
-        ) // Set the alignment of the Text
-        .with_text_alignment(TextAlignment::TOP_CENTER)
-        // Set the style of the TextBundle itself.
-        .with_style(Style {
-            position_type: PositionType::Absolute,
-            position: UiRect {
-                bottom: Val::Px(15.0),
-                left: Val::Px(15.0),
-                ..default()
-            },
-            ..default()
-        }),
-        ColorText,
-    ));
-}
 
-#[derive(Component)]
-struct ColorText;
+
+use bevy::window::WindowId;
+use bevy::winit::WinitWindows;
+use winit::window::Icon;
+
+pub fn set_window_icon(
+    // we have to use `NonSend` here
+    windows: NonSend<WinitWindows>,
+) {
+    let primary = windows.get_window(WindowId::primary()).unwrap();
+
+    // here we use the `image` crate to load our icon data from a png file
+    // this is not a very bevy-native solution, but it will do
+    let (icon_rgba, icon_width, icon_height) = {
+        let image = image::open("assets/fort2.png")
+            .expect("Failed to open icon path")
+            .into_rgba8();
+        let (width, height) = image.dimensions();
+        let rgba = image.into_raw();
+        (rgba, width, height)
+    };
+
+    let icon = Icon::from_rgba(icon_rgba, icon_width, icon_height).unwrap();
+    
+    primary.set_title("Orc Fortress");
+    primary.set_window_icon(Some(icon));
+}

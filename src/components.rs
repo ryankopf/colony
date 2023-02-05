@@ -33,6 +33,14 @@ pub enum TileType {
 }
 
 #[derive(Component)]
+pub struct HasName {
+    pub name: String,
+}
+
+#[derive(Component)]
+pub struct IsName;
+
+#[derive(Component)]
 pub struct Plant {
     pub growth: f32,
     pub plant_type: PlantType,
@@ -124,4 +132,25 @@ impl SizeXYZ {
             depth: 1.0,
         }
     }
+}
+
+// NEEDS
+
+#[derive(Component)]
+pub struct NeedsFood {
+    pub current: f32,
+    pub max: f32,
+    pub rate: f32,
+}
+#[derive(Component)]
+pub struct NeedsEntertainment {
+    pub current: f32,
+    pub max: f32,
+    pub rate: f32,
+}
+#[derive(Component)]
+pub struct NeedsSleep {
+    pub current: f32,
+    pub max: f32,
+    pub rate: f32,
 }

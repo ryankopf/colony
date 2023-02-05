@@ -1,4 +1,3 @@
-use bevy::prelude::*;
 
 // MAP CONSTANTS
 pub const MAP_WIDTH: i32 = 60;

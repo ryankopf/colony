@@ -7,18 +7,24 @@ use map::*;
 mod components;
 use components::*;
 mod constants;
-use constants::*;
 mod moverandom_system;
 use moverandom_system::*;
 mod input;
 use input::*;
 mod prelude;
+use prelude::*;
 mod monstergenerator_system;
 use monstergenerator_system::*;
 mod movetoward_system;
 use movetoward_system::*;
 mod seasons;
 use seasons::*;
+mod needs;
+use needs::*;
+mod text_system;
+use text_system::*;
+mod names_system;
+use names_system::*;
 
 fn main() {
     //println!("Hello, world!");
@@ -28,6 +34,8 @@ fn main() {
         .add_startup_system(startup)
         .add_startup_system(setup_camera)
         .add_startup_system(setup_text)
+        .add_startup_system(set_window_icon)
+        .add_startup_system(text_test)
         .add_system_set_to_stage(
             CoreStage::PostUpdate,
             SystemSet::new()
@@ -58,8 +66,16 @@ fn main() {
                 .with_run_criteria(FixedTimestep::step(2.0))
                 .with_system(seasons),
         )
+        .add_system_set_to_stage(
+            CoreStage::First,
+            SystemSet::new()
+                .with_run_criteria(FixedTimestep::step(2.0))
+                .with_system(needs_food_system),
+        )
+        .add_system(names_system)
+        .add_system(text_update_system)
         .add_system(movement_toward_attackable)
-        // .add_system(movement_path_generating)
+        .add_event::<FoodNotifEvent>()
         .add_system(keyboard_input)
         .add_system(scrollwheel_input)
         .add_system(bevy::window::close_on_esc)
