@@ -5,6 +5,9 @@ pub use rand::prelude::random;
 pub use rand::Rng;
 pub use super::components::{Position,
     MapTile, SizeXYZ, MoveRandom, MonsterGenerator, TileType, MoveTowardsNearestAttackable, GeneratedBy, Targeting, MoveTowardsTarget, Attackable, Pathing, Plant, PlantType,
-    NeedsFood, NeedsEntertainment, NeedsSleep,
-    HasName
+    Status, NeedsFood, NeedsEntertainment, NeedsSleep,
+    HasName, IsName, HasNameShown, TextName, GiveMeAName,
+    Brain,
+    Task,
+    Food, Bed
 };

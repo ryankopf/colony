@@ -33,6 +33,9 @@ pub enum TileType {
 }
 
 #[derive(Component)]
+pub struct Food;
+
+#[derive(Component)]
 pub struct HasName {
     pub name: String,
 }
@@ -41,9 +44,49 @@ pub struct HasName {
 pub struct IsName;
 
 #[derive(Component)]
+pub struct HasNameShown;
+
+#[derive(Component)]
+pub struct TextName;
+
+#[derive(Component)]
+pub struct Status {
+    pub needs_food: Option<NeedsFood>,
+    pub needs_entertainment: Option<NeedsEntertainment>,
+    pub needs_sleep: Option<NeedsSleep>,
+    pub index: usize,
+    pub crisis: Option<String>,
+    pub danger: Option<String>,
+    pub injured: bool
+}
+#[derive(Component)]
+pub struct Brain {
+    pub motivation: Option<String>,
+    pub task: Option<Task>,
+    pub order: Option<String>,
+}
+impl Default for Brain {
+    fn default() -> Self {
+        Brain {
+            motivation: None,
+            task: None,
+            order: None,
+        }
+    }
+}
+
+#[derive(Component)]
+pub struct GiveMeAName;
+
+#[derive(Component)]
 pub struct Plant {
     pub growth: f32,
     pub plant_type: PlantType,
+}
+
+#[derive(Component, PartialEq, Copy, Clone, Debug)]
+pub enum Task {
+    Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Meander, Idle
 }
 
 #[derive(Component, PartialEq)]
@@ -57,6 +100,9 @@ pub struct Renderable {
     pub fg: Color,
     pub bg: Color,
 }
+
+#[derive(Component)]
+pub struct Bed;
 
 #[derive(Component, Debug)]
 pub struct Player {}
@@ -100,9 +146,6 @@ pub struct MoveTowardsNearestAttackable;
 
 #[derive(Component)]
 pub struct Attackable;
-
-#[derive(Component)]
-pub struct Mobile;
 
 #[derive(Component)]
 pub struct SizeXYZ {

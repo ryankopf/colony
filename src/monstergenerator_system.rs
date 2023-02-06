@@ -49,6 +49,7 @@ pub fn monster_generator(
             .insert(new_position.to_transform_layer(1.0))
             .insert(GeneratedBy { entity: entity })
             .insert(MoveTowardsNearestAttackable)
+            //.insert( HasName { name: "Wolf".to_string() } )
             ;
         //*position = new_position;
     }

@@ -1,13 +1,12 @@
 use super::prelude::*;
 
 pub fn movement_random(
-    mut entities: Query<(Entity, &mut Position, &mut Transform), (With <MoveRandom>, Without<TileType>)>,
-    mut tile_types: Query<(&Position, &TileType)>,
+    mut entities: Query<(&mut Position, &mut Transform), (With <MoveRandom>, Without<TileType>)>,
+    tile_types: Query<(&Position, &TileType)>,
 ) {
     //let mut head_position = Position { x: 0, y: 0, z: 0 };
-    for (entity, mut position, mut transform) in entities.iter_mut() {
+    for (mut position, mut transform) in entities.iter_mut() {
         let mut new_position = *position;
-        // let dir = random::<i32>() % 4;
         let mut rng = rand::thread_rng();
         let dir = rng.gen_range(0..4);
         match dir {

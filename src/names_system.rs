@@ -2,7 +2,7 @@ use super::prelude::*;
 
 pub fn names_system(
     mut commands: Commands,
-    query: Query<(Entity, &HasName)>,
+    query: Query<(Entity, &HasName), (Without<HasNameShown>)>,
     asset_server: Res<AssetServer>
 ) {
     for (entity, has_name) in query.iter() {
@@ -18,17 +18,20 @@ pub fn names_system(
             vertical: VerticalAlign::Center,
             horizontal: HorizontalAlign::Center,
         };
-        let child = commands.spawn(
+        let child = commands.spawn((
             Text2dBundle {
                 text: Text::from_section(has_name.name.clone(), text_style.clone())
                     .with_alignment(text_alignment_center),
                 ..default()
-            }
-        )
+            },
+            TextName
+        ))
         .insert(Transform::from_xyz(0.0, 0.0, 100.0))
+        .insert(IsName)
         .id()
         ;
         commands.entity(entity).push_children(&[child]);
-        commands.entity(entity).remove::<HasName>();
+        //commands.entity(entity).remove::<HasName>();
+        commands.entity(entity).insert(HasNameShown);
     }
 }

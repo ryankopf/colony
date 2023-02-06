@@ -5,7 +5,7 @@ use super::prelude::*;
 pub fn startup(mut commands: Commands) {
     // GENERATE UNITS
     println!("Startup");
-    for i in 0..2 {
+    for i in 1..3 {
         let position = Position { x: 3, y: 3*i, z: 0 };
         commands
             .spawn(SpriteBundle {
@@ -18,11 +18,21 @@ pub fn startup(mut commands: Commands) {
             })
             .insert(position)
             .insert(SizeXYZ::flat_2(TILE_SIZE+1.0))
-            .insert(MoveRandom)
+            //.insert(MoveRandom)
             .insert(position.to_transform_layer(1.0))
             .insert(Attackable)
             .insert(NeedsFood { current: 100.0, max: 100.0, rate: 0.1 })
-            .insert( HasName { name: "Orc".to_string() } )
+            .insert( GiveMeAName )
+            .insert( Status {
+                needs_food: Some(NeedsFood { current: 100.0, max: 100.0, rate: 0.1 }),
+                needs_entertainment: Some(NeedsEntertainment { current: 100.0, max: 100.0, rate: 0.1 }),
+                needs_sleep: Some(NeedsSleep { current: 5.2, max: 100.0, rate: 0.1 }),
+                index: 0,
+                crisis: None,
+                danger: None,
+                injured: false
+            } )
+            .insert( Brain { ..Default::default() } )
             ;
     }
 
