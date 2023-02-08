@@ -29,13 +29,13 @@ pub fn thinking_system(
         if let None = brain.motivation {
             // SET MOTIVATION
             if let Some(crisis) = &status.crisis {
-                brain.motivation = Some("Crisis".to_string());
+                brain.motivation = Some(Motivation::Crisis);
             // Process dangers.
             } else if let Some(danger) = &status.danger {
                 if let Some(order) = &brain.order {
-                    brain.motivation = Some("Order".to_string());
+                    brain.motivation = Some(Motivation::Order);
                 } else {
-                    brain.motivation = Some("Danger".to_string());
+                    brain.motivation = Some(Motivation::Danger);
                 }
             // Process needs.
             }
@@ -45,12 +45,12 @@ pub fn thinking_system(
                     if n.current < 5.0 {
                         if let Some(order) = &brain.order {
                             if order == "Eat" {
-                                brain.motivation = Some("Order".to_string());
+                                brain.motivation = Some(Motivation::Order);
                             } else {
-                                brain.motivation = Some("Eat".to_string());
+                                brain.motivation = Some(Motivation::Hunger);
                             }
                         } else {
-                            brain.motivation = Some("Eat".to_string());
+                            brain.motivation = Some(Motivation::Hunger);
                         }
                     }
                 }
@@ -60,12 +60,12 @@ pub fn thinking_system(
                 if status.injured {
                     if let Some(order) = &brain.order {
                         if order == "Hospital" {
-                            brain.motivation = Some("Order".to_string());
+                            brain.motivation = Some(Motivation::Order);
                         } else {
-                            brain.motivation = Some("Hospital".to_string());
+                            brain.motivation = Some(Motivation::Injured);
                         }
                     } else {
-                        brain.motivation = Some("Hospital".to_string());
+                        brain.motivation = Some(Motivation::Injured);
                     }
                 }
             }
@@ -75,12 +75,12 @@ pub fn thinking_system(
                     if n.current < 5.0 {
                         if let Some(order) = &brain.order {
                             if order == "Sleep" {
-                                brain.motivation = Some("Order".to_string());
+                                brain.motivation = Some(Motivation::Order);
                             } else {
-                                brain.motivation = Some("Sleep".to_string());
+                                brain.motivation = Some(Motivation::Tired);
                             }
                         } else {
-                            brain.motivation = Some("Sleep".to_string());
+                            brain.motivation = Some(Motivation::Tired);
                         }
                     }
                 }
@@ -91,12 +91,12 @@ pub fn thinking_system(
                     if n.current < 5.0 {
                         if let Some(order) = &brain.order {
                             if order == "Entertainment" {
-                                brain.motivation = Some("Order".to_string());
+                                brain.motivation = Some(Motivation::Order);
                             } else {
-                                brain.motivation = Some("Entertainment".to_string());
+                                brain.motivation = Some(Motivation::Bored);
                             }
                         } else {
-                            brain.motivation = Some("Entertainment".to_string());
+                            brain.motivation = Some(Motivation::Bored);
                         }
                     }
                 }
@@ -104,48 +104,46 @@ pub fn thinking_system(
             // ORDERS
             if let None = brain.motivation {
                 if let Some(order) = &brain.order {
-                    brain.motivation = Some("Order".to_string());
+                    brain.motivation = Some(Motivation::Order);
                 }
             }
             // MEANINGFUL WORK
             if let None = brain.motivation {
-                brain.motivation = Some("Work".to_string());
+                brain.motivation = Some(Motivation::Work);
             }
         }
         if let None = brain.motivation {
-            brain.motivation = Some("Meander".to_string());
+            brain.motivation = Some(Motivation::Meander);
         }
         // SET TASK
-        if let Some(m) = &brain.motivation {
-            if m == "Crisis" {
+        if let Some(m) = brain.motivation {
+            if m == Motivation::Crisis {
                 if let Some(crisis) = &status.crisis {
                     // TO DO: Assign task based on crisis.
                     // if let Some(task) = &crisis.task {
                     //     brain.task = Some(task.to_string());
                     // }
                 }
-            } else if m == "Order" {
+            } else if m == Motivation::Order {
                 if let Some(order) = &brain.order {
                     brain.task = Some(Task::Order);
                 }
-            } else if m == "Danger" {
+            } else if m == Motivation::Danger {
                 if let Some(danger) = &status.danger {
                     brain.task = Some(Task::Flee);
                     // TO DO: Assign FLEE or FIGHT task.
                 }
-            } else if m == "Eat" {
+            } else if m == Motivation::Hunger {
                 brain.task = Some(Task::Eat);
-                // Set task target.
-                // commands.entity(entity).insert(TaskTarget::Food);
-            } else if m == "Hospital" {
+            } else if m == Motivation::Injured {
                 brain.task = Some(Task::Hospital);
-            } else if m == "Sleep" {
+            } else if m == Motivation::Tired {
                 brain.task = Some(Task::Sleep);
-            } else if m == "Entertainment" {
+            } else if m == Motivation::Bored {
                 brain.task = Some(Task::Play);
-            } else if m == "Work" {
+            } else if m == Motivation::Work {
                 brain.task = Some(Task::Work);
-            } else if m == "Meander" {
+            } else if m == Motivation::Meander {
                 brain.task = Some(Task::Meander);
             }
         }

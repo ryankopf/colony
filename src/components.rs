@@ -27,13 +27,33 @@ impl Position {
     }
 }
 
+#[derive(Clone, Copy, Eq, PartialEq, Debug, Hash)]
+pub enum GameState {
+    MainMenu,
+    InGame,
+    Paused,
+}
+
 #[derive(Component, PartialEq, Clone, Debug)]
 pub enum TileType {
     Wall, Floor
 }
 
 #[derive(Component)]
-pub struct Food;
+pub struct Food {
+    pub nutrition: f32,
+    pub spoilage: f32,
+    pub spoilage_rate: f32,
+}
+impl Default for Food {
+    fn default() -> Self {
+        Food {
+            nutrition: 10.0,
+            spoilage: 1.0,
+            spoilage_rate: 0.1,
+        }
+    }
+}
 
 #[derive(Component)]
 pub struct HasName {
@@ -61,9 +81,16 @@ pub struct Status {
 }
 #[derive(Component)]
 pub struct Brain {
-    pub motivation: Option<String>,
+    pub motivation: Option<Motivation>,
     pub task: Option<Task>,
     pub order: Option<String>,
+}
+impl Brain {
+    pub fn remotivate(&mut self) {
+        self.motivation = None;
+        self.task = None;
+        self.order = None;
+    }
 }
 impl Default for Brain {
     fn default() -> Self {
@@ -76,6 +103,9 @@ impl Default for Brain {
 }
 
 #[derive(Component)]
+pub struct Foragable;
+
+#[derive(Component)]
 pub struct GiveMeAName;
 
 #[derive(Component)]
@@ -86,12 +116,21 @@ pub struct Plant {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Task {
-    Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Meander, Idle
+    Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Meander, Idle,
+    Doctor, Forage, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Haul // Works
+}
+#[derive(Component, PartialEq, Copy, Clone, Debug)]
+pub enum Motivation {
+    Crisis, Order, Danger, Hunger, Thirst, Tired, Bored, Injured, Sick, Happy, Sad, Angry, Lonely, Love, Fear, Hate, Work, Meander, Idle
 }
 
-#[derive(Component, PartialEq)]
+#[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum PlantType {
-    BabyPineTree, PineTree, BabyOakTree, OakTree, BabyCedarTree, CedarTree, BabyBush, Bush, BabyBerryBush, BerryBush
+    PineTree, OakTree, CedarTree, Bush, BerryBush
+}
+
+pub enum EdiblePlantTypes {
+    BerryBush
 }
 
 #[derive(Component)]

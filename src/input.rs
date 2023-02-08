@@ -4,19 +4,32 @@ use crate::prelude::*;
 pub fn keyboard_input(
     mut commands: Commands,
     input: Res<Input<KeyCode>>,
-    mut camera: Query<&mut Transform, With<Camera>>
+    mut camera: Query<&mut Transform, With<Camera>>,
+    mut gamestate: ResMut<State<GameState>>,
 ) {
+    if input.just_pressed(KeyCode::Space) {
+        // Pause or Unpause.
+        match gamestate.current() {
+            GameState::InGame => {
+                gamestate.set(GameState::Paused).ok();
+            }
+            GameState::Paused => {
+                gamestate.set(GameState::InGame).ok();
+            }
+            _ => {}
+        }
+    }
     for mut transform in camera.iter_mut() {
         let move_speed = 16.0;
         //transform.translation.x += 5.0;
         let mut next_position = transform.translation;
-        if input.pressed(KeyCode::Up) || input.pressed(KeyCode::W) {
+        if input.any_pressed([KeyCode::Up, KeyCode::W]) {//pressed(KeyCode::Up) || input.pressed(KeyCode::W) {
             next_position.y += move_speed;
-        } else if input.pressed(KeyCode::Down) || input.pressed(KeyCode::S) {
+        } else if input.any_pressed([KeyCode::Down, KeyCode::S]) {
             next_position.y -= move_speed;
-        } else if input.pressed(KeyCode::Left) || input.pressed(KeyCode::A) {
+        } else if input.any_pressed([KeyCode::Left, KeyCode::A]) {
             next_position.x -= move_speed;
-        } else if input.pressed(KeyCode::Right) || input.pressed(KeyCode::D) {
+        } else if input.any_pressed([KeyCode::Right, KeyCode::D]) {
             next_position.x += move_speed;
         }
         transform.translation = next_position;

@@ -2,11 +2,11 @@ use crate::prelude::*;
 
 pub fn status_display_system (
     mut commands: Commands,
-    mut query: Query<(Entity, &HasName, &mut Status, &Children)>,
+    mut query: Query<(Entity, &HasName, &mut Status, &Brain, &Children)>,
     mut q_children: Query<&Parent>,
     asset_server: Res<AssetServer>
 ) {
-    for (entity, has_name, mut status, children) in query.iter_mut() {
+    for (entity, has_name, mut status, brain, children) in query.iter_mut() {
         // Pick the text value to show.
         //let y = commands.entity(entity).log_components();//::<HasName>();
         //let mut text_value = "FIRE".to_string();
@@ -26,6 +26,9 @@ pub fn status_display_system (
             if (n.current < 5.0) {
                 vec_statuses.push("TIRED".to_string());
             }
+        }
+        if let Some(Task::Sleeping) = brain.task {
+            vec_statuses.push("ZZZ...".to_string());
         }
         for child in children {
             commands.entity(entity).remove_children(&[*child]);
@@ -68,24 +71,6 @@ pub fn status_display_system (
         // println!("{:?}", text.sections);
         // text.sections[0].value = "FIRE".to_string();
         // text.set_changed();
-        //println!("{}", text.sections[0].value);
-    }
-}
-
-
-// Despawn the text unless that is already the value.
-// Make a new text.
-
-pub fn status_display_systemx (
-    mut commands: Commands,
-    mut query: Query<(Entity, &Parent, &IsName, &mut Text)>,
-) {
-    for (nametext, parent, is_name, mut text) in query.iter_mut() {
-        // let e = parent.get();
-        commands.entity(nametext).insert(Transform::from_xyz(300.0, 0.0, 100.0));
-        println!("{:?}", text.sections);
-        text.sections[0].value = "FIRE".to_string();
-        text.set_changed();
         //println!("{}", text.sections[0].value);
     }
 }

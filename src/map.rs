@@ -12,6 +12,7 @@ pub struct Map {
 }
 
 pub fn generate_map(mut commands: Commands) {
+    let mut tiletypes: std::collections::HashMap<Position, TileType> = std::collections::HashMap::new();
     for x in 0..MAP_WIDTH {
         for y in 0..MAP_LENGTH {
             let tyle_type = if x == 0 || x == MAP_WIDTH - 1 || y == 0 || y == MAP_LENGTH - 1 {
@@ -19,9 +20,22 @@ pub fn generate_map(mut commands: Commands) {
             } else {
                 TileType::Floor
             };
-            spawn_tile(&mut commands, Position { x, y, z: 0 }, tyle_type);
+            spawn_tile(&mut commands, Position { x, y, z: 0 }, tyle_type.clone());
+            tiletypes.insert( Position { x, y, z: 0 }, tyle_type);
         }
     }
+    commands.insert_resource(TileHash { hash: tiletypes });
+}
+pub fn _update_map_tiles(
+    mut commands: Commands,
+    tiles: Query<(&Position, &TileType), With<MapTile>>,
+) {
+    let mut tiletypes: std::collections::HashMap<Position, TileType> = std::collections::HashMap::new();
+    for (tile_position, tile_type) in tiles.iter() {
+        tiletypes.insert(tile_position.clone(), tile_type.clone());
+    }
+    println!("tiletypes: {:?}", tiletypes);
+    commands.insert_resource(TileHash { hash: tiletypes });
 }
 
 fn spawn_tile(commands: &mut Commands, position: Position, tile_type: TileType) {

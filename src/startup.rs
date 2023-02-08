@@ -24,9 +24,9 @@ pub fn startup(mut commands: Commands) {
             .insert(NeedsFood { current: 100.0, max: 100.0, rate: 0.1 })
             .insert( GiveMeAName )
             .insert( Status {
-                needs_food: Some(NeedsFood { current: 100.0, max: 100.0, rate: 0.1 }),
+                needs_food: Some(NeedsFood { current: 5.1, max: 100.0, rate: 0.1 }),
                 needs_entertainment: Some(NeedsEntertainment { current: 100.0, max: 100.0, rate: 0.1 }),
-                needs_sleep: Some(NeedsSleep { current: 5.2, max: 100.0, rate: 0.1 }),
+                needs_sleep: Some(NeedsSleep { current: 15.2, max: 100.0, rate: 0.1 }),
                 index: 0,
                 crisis: None,
                 danger: None,
@@ -70,7 +70,7 @@ pub fn startup(mut commands: Commands) {
             PlantType::PineTree => Color::rgb(0.4, 0.4, 0.1),
             _ => Color::DARK_GREEN,
         };
-        commands
+        let plant = commands
             .spawn(SpriteBundle {
                 sprite: Sprite {
                     color: plant_color,
@@ -83,36 +83,12 @@ pub fn startup(mut commands: Commands) {
             .insert(SizeXYZ::flat_2(TILE_SIZE+1.0))
             .insert(position.to_transform_layer(0.5))
             .insert(Plant { growth: growth, plant_type: plant_type })
+            .id()
             ;
+        if plant_type == PlantType::BerryBush && growth > 0.5 {
+            commands.entity(plant).insert(Foragable);
+        }
     }
 
 }
 
-
-
-use bevy::window::WindowId;
-use bevy::winit::WinitWindows;
-use winit::window::Icon;
-
-pub fn set_window_icon(
-    // we have to use `NonSend` here
-    windows: NonSend<WinitWindows>,
-) {
-    let primary = windows.get_window(WindowId::primary()).unwrap();
-
-    // here we use the `image` crate to load our icon data from a png file
-    // this is not a very bevy-native solution, but it will do
-    let (icon_rgba, icon_width, icon_height) = {
-        let image = image::open("assets/fort2.png")
-            .expect("Failed to open icon path")
-            .into_rgba8();
-        let (width, height) = image.dimensions();
-        let rgba = image.into_raw();
-        (rgba, width, height)
-    };
-
-    let icon = Icon::from_rgba(icon_rgba, icon_width, icon_height).unwrap();
-    
-    primary.set_title("Orc Fortress");
-    primary.set_window_icon(Some(icon));
-}

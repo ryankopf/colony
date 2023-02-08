@@ -74,7 +74,7 @@ pub fn text_test(
     let font = asset_server.load("fonts/FiraSans-Medium.ttf");
     let text_style = TextStyle {
         font: font.clone(),
-        font_size: 60.0,
+        font_size: 30.0,
         color: Color::WHITE,
     };
     let text_alignment_center = TextAlignment {

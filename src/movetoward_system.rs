@@ -1,6 +1,26 @@
 use std::thread::current;
+use bevy::prelude::*;
 
 use crate::prelude::*;
+
+pub struct MovementPlugin;
+
+impl Plugin for MovementPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_system_set_to_stage(
+            CoreStage::First,
+            SystemSet::new()
+                .with_run_criteria(FixedTimestep::step(0.1))
+                .with_system(movement_along_path),
+        )
+        .add_system_set_to_stage(
+            CoreStage::First,
+            SystemSet::new()
+                .with_run_criteria(FixedTimestep::step(0.5))
+                .with_system(movement_path_generating),
+        );
+    }
+}
 
 pub fn movement_toward_attackable(
     mut commands: Commands,
@@ -34,17 +54,15 @@ struct Node {
     parent: Option<Position>,
 }
 pub fn movement_path_generating(
-    mut commands: Commands,
     mut entities: Query<(&Position, &mut Pathing)>,
-    tiles: Query<(&Position, &TileType), With<MapTile>>,
+    //tiles: Query<(&Position, &TileType), With<MapTile>>,
+    tilehash: Res<TileHash>,
 ) {
+    let tiletypes: &std::collections::HashMap<Position, TileType> = &tilehash.hash;
     for (start_position, mut pathing) in entities.iter_mut() {
         let destination = pathing.destination;
         if pathing.path.len() != 0 { continue; }
-        let mut tiletypes: std::collections::HashMap<Position, TileType> = std::collections::HashMap::new();
-        for (tile_position, tile_type) in tiles.iter() {
-            tiletypes.insert(tile_position.clone(), tile_type.clone());
-        }
+        
         // F = G + H
         // G = distance from start
         // H = distance from end
@@ -92,6 +110,7 @@ pub fn movement_path_generating(
             neighbors.push(Position { x: current_position.x, y: current_position.y - 1, z: 0 });
 
             for neighbor in neighbors {
+                if tiletypes.get(&neighbor).is_none() { continue; }
                 if tiletypes.get(&neighbor).unwrap().clone() == TileType::Wall {
                     continue;
                 }
@@ -194,7 +213,7 @@ pub fn movement_along_path(
         transform.translation.x = next_transform.translation.x as f32;
         transform.translation.y = next_transform.translation.y as f32;
         if pathing.path.len() == 0 {
-            commands.entity(entity).despawn();
+            commands.entity(entity).remove::<Pathing>();
         }
     }
 }
