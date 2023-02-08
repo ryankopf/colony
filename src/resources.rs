@@ -8,3 +8,9 @@ pub struct TileHash {
 
 #[derive(Resource)]
 pub struct SpriteSheet(pub Handle<TextureAtlas>);
+
+#[derive(Resource)]
+pub struct Dragging {
+    pub dragging: bool,
+    pub start_position: Option<Position>,
+}

@@ -47,7 +47,7 @@ fn spawn_tile(
     tile_type: TileType,
     sprite_sheet: &SpriteSheet,
 ) {
-    let mut sprite =  TextureAtlasSprite::new(match tile_type { TileType::Wall => 41, _ => 0 });
+    let sprite =  TextureAtlasSprite::new(match tile_type { TileType::Wall => 41, _ => 0 });
     // sprite.color = Color::rgb(0.5, 0.5, 0.5);
     // sprite.custom_size = Some(Vec2::new(TILE_SIZE, TILE_SIZE));//Some(Vec2::splat(1.0));
         // commands.spawn(SpriteBundle {

@@ -26,6 +26,7 @@ mod task_system;
 mod window_system;
 mod click;
 mod spoilage_system;
+mod game_ui;
 mod mods;
 use mods::*;
 
@@ -60,6 +61,7 @@ fn main() {
                 .with_run_criteria(FixedTimestep::step(0.5))
                 .with_system(status_display_system),
         )
+        .add_plugin(GameUiPlugin)
         .add_plugin(ThinkingPlugin)
         .add_plugin(TaskPlugin)
         .add_system_set(
@@ -73,11 +75,9 @@ fn main() {
         .add_system(text_update_system)
         .add_system(movement_toward_attackable)
         .add_event::<FoodNotifEvent>()
-        .add_event::<ObjectFinderEvent>()
-        .add_system(object_finder_system)
         .add_system(keyboard_input)
         .add_system(scrollwheel_input)
-        .add_system(mouse_click_input)
+        .add_plugin(ClickPlugin)
         .add_system(bevy::window::close_on_esc)
         .run();
 }

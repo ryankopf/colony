@@ -4,10 +4,9 @@ use super::prelude::*;
 
 pub fn startup(mut commands: Commands, sprite_sheet: Res<SpriteSheet>) {
     // GENERATE UNITS
-    println!("Startup");
-    for i in 1..3 {
+    for i in 1..6 {
         let position = Position { x: 3, y: 3*i, z: 0 };
-        let mut sprite =  TextureAtlasSprite::new(9);
+        let mut sprite =  TextureAtlasSprite::new(9 + (i*10) as usize);
                     
         commands.spawn(SpriteSheetBundle {
             sprite: sprite,

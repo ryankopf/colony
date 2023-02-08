@@ -13,3 +13,4 @@ pub use crate::resources::*;
 pub use crate::moverandom_system::*;
 pub use crate::input::*;
 pub use crate::prelude::*;
+pub use crate::game_ui::*;

@@ -1,7 +1,7 @@
 
 // MAP CONSTANTS
-pub const MAP_WIDTH: i32 = 60;
-pub const MAP_LENGTH: i32 = 60;
+pub const MAP_WIDTH: i32 = 58;
+pub const MAP_LENGTH: i32 = 30;
 
 // VIEW CONSTANTS
 pub const VIEWAREA_WIDTH: u32 = 76;
