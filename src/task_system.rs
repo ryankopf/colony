@@ -1,5 +1,48 @@
 use super::prelude::*;
 
+// Make Plugin
+pub struct TaskPlugin;
+
+impl Plugin for TaskPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_system_set(
+            SystemSet::on_update(GameState::InGame)
+                .with_run_criteria(FixedTimestep::step(0.5))
+                .with_system(task_system_eat),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+                .with_run_criteria(FixedTimestep::step(0.5))
+                .with_system(task_system_sleep),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+                .with_run_criteria(FixedTimestep::step(0.5))
+                .with_system(task_system_sleeping),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+                .with_run_criteria(FixedTimestep::step(0.5))
+                .with_system(task_system_playing),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+                .with_run_criteria(FixedTimestep::step(0.5))
+                .with_system(task_system_meander),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+                .with_run_criteria(FixedTimestep::step(0.5))
+                .with_system(task_system_work),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+                .with_run_criteria(FixedTimestep::step(0.5))
+                .with_system(task_system_forage),
+        );
+    }
+}
+
 pub fn task_system_eat(
     mut commands: Commands,
     mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>, Option<&mut Status>), Without<Pathing>>,
@@ -98,6 +141,33 @@ pub fn task_system_sleep(
     }
 }
 
+// pub fn task_system_play(
+//     mut commands: Commands,
+//     mut query: Query<(Entity, &mut Brain, &Position), Without<Targeting>>,
+//     mut query_bed: Query<(Entity, &Position, &Bed)>,
+// ) {
+//     for (entity, mut brain, position) in query.iter_mut() {
+//         if brain.task != Some(Task::Play) { continue; }
+
+//     }
+// }
+
+pub fn task_system_playing(
+    mut commands: Commands,
+    mut query: Query<(&mut Brain, &mut Status)>
+) {
+    for (mut brain, mut status) in query.iter_mut() {
+        if (brain.task != Some(Task::Play)) { continue; }
+        if let Some(n) = &mut status.needs_entertainment {
+            n.current += 10.0;
+            if n.current >= n.max {
+                brain.motivation = None;
+                brain.task = None;
+            }
+        }
+    }
+}
+
 pub fn task_system_work(
     mut commands: Commands,
     mut query: Query<(Entity, &mut Brain, &Position), Without<Targeting>>
@@ -176,6 +246,7 @@ pub fn task_system_forage(
     mut commands: Commands,
     mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>), Without<Pathing>>,
     mut foragables: Query<(Entity, &Position, &Foragable, &mut Plant)>,
+    sprite_sheet: Res<SpriteSheet>,
 ) {
     let mut already_targeted = query.iter().filter(|(_, _, _, targeting)| targeting.is_some()).map(|(_, _, _, targeting)| targeting.unwrap().target).collect::<Vec<Entity>>();
     for (entity, mut brain, position, targeting) in query.iter_mut() {
@@ -197,13 +268,16 @@ pub fn task_system_forage(
                     let mut p = foragable_position.clone();
                     p.x += if (i%2) == 0 { (i/2) } else { -(i/2) };
                     p.y += if (i%2) == 0 { (i/2) } else { -(i/2) };
-                    commands.spawn(SpriteBundle {
-                        sprite: Sprite {
-                            color: Color::ANTIQUE_WHITE,
-                            custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                            ..default()
-                        },
-                        ..default()
+                    let mut sprite =  TextureAtlasSprite::new(88);
+                    commands.spawn(SpriteSheetBundle {
+                        sprite: sprite,
+                        texture_atlas: sprite_sheet.0.clone(),
+                        transform: Transform::from_xyz(
+                            position.x as f32 * TILE_SIZE,
+                            position.y as f32 * TILE_SIZE,
+                            position.z as f32 * TILE_SIZE,
+                        ),
+                        ..Default::default()
                     })
                     .insert(Food { ..default() } )
                     .insert(p)

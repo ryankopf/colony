@@ -33,6 +33,7 @@ fn main() {
     //println!("Hello, world!");
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_startup_system_to_stage(StartupStage::PreStartup, load_sprites)
         .add_startup_system(generate_map)
         .add_startup_system(startup)
         .add_startup_system(setup_camera)
@@ -40,7 +41,7 @@ fn main() {
         .add_startup_system(set_window_icon)
         .add_startup_system(set_window_maximized)
         .add_startup_system(text_test)
-        .add_state(GameState::InGame)
+        .add_state(GameState::Paused)
         .add_system_set(
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(0.1))
@@ -53,61 +54,14 @@ fn main() {
         )
         .add_plugin(MovementPlugin)
         .add_plugin(SeasonsPlugin)
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(2.0))
-                .with_system(needs_food_system),
-        )
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(2.0))
-                .with_system(needs_status_system),
-        )
+        .add_plugin(NeedsPlugin)
         .add_system_set(
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(0.5))
                 .with_system(status_display_system),
         )
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(thinking_system),
-        )
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(5.0))
-                .with_system(remotivate_system),
-        )
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_eat),
-        )
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_sleep),
-        )
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_meander),
-        )
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_work),
-        )
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_sleeping),
-        )
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_forage),
-        )
+        .add_plugin(ThinkingPlugin)
+        .add_plugin(TaskPlugin)
         .add_system_set(
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(0.5))

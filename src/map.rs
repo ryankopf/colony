@@ -11,7 +11,10 @@ pub struct Map {
     pub visible_tiles : Vec<bool>
 }
 
-pub fn generate_map(mut commands: Commands) {
+pub fn generate_map(
+    mut commands: Commands,
+    sprite_sheet: Res<SpriteSheet>,
+) {
     let mut tiletypes: std::collections::HashMap<Position, TileType> = std::collections::HashMap::new();
     for x in 0..MAP_WIDTH {
         for y in 0..MAP_LENGTH {
@@ -20,7 +23,7 @@ pub fn generate_map(mut commands: Commands) {
             } else {
                 TileType::Floor
             };
-            spawn_tile(&mut commands, Position { x, y, z: 0 }, tyle_type.clone());
+            spawn_tile(&mut commands, Position { x, y, z: 0 }, tyle_type.clone(), &sprite_sheet);
             tiletypes.insert( Position { x, y, z: 0 }, tyle_type);
         }
     }
@@ -38,15 +41,32 @@ pub fn _update_map_tiles(
     commands.insert_resource(TileHash { hash: tiletypes });
 }
 
-fn spawn_tile(commands: &mut Commands, position: Position, tile_type: TileType) {
-    commands
-        .spawn(SpriteBundle {
-            sprite: Sprite {
-                color: match tile_type { TileType::Wall => Color::GRAY, _ => Color::GREEN },
-                custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                ..default()
-            },
-            ..default()
+fn spawn_tile(
+    commands: &mut Commands,
+    position: Position,
+    tile_type: TileType,
+    sprite_sheet: &SpriteSheet,
+) {
+    let mut sprite =  TextureAtlasSprite::new(match tile_type { TileType::Wall => 41, _ => 0 });
+    // sprite.color = Color::rgb(0.5, 0.5, 0.5);
+    // sprite.custom_size = Some(Vec2::new(TILE_SIZE, TILE_SIZE));//Some(Vec2::splat(1.0));
+        // commands.spawn(SpriteBundle {
+        //     sprite: Sprite {
+        //         color: match tile_type { TileType::Wall => Color::GRAY, _ => Color::GREEN },
+        //         custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+        //         ..default()
+        //     },
+        //     ..default()
+        // })
+    commands.spawn(SpriteSheetBundle {
+            sprite: sprite,
+            texture_atlas: sprite_sheet.0.clone(),
+            transform: Transform::from_xyz(
+                position.x as f32 * TILE_SIZE,
+                position.y as f32 * TILE_SIZE,
+                position.z as f32 * TILE_SIZE,
+            ),
+            ..Default::default()
         })
         .insert(MapTile)
         .insert(position)

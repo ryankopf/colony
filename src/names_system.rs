@@ -11,7 +11,7 @@ pub fn names_system(
         let font = asset_server.load("fonts/FiraSans-Medium.ttf");
         let text_style = TextStyle {
             font: font.clone(),
-            font_size: 30.0,
+            font_size: 18.0,
             color: Color::WHITE,
         };
         let text_alignment_center = TextAlignment {
@@ -26,7 +26,7 @@ pub fn names_system(
             },
             TextName
         ))
-        .insert(Transform::from_xyz(0.0, 0.0, 100.0))
+        .insert(Transform::from_xyz(0.0, 30.0, 100.0))
         .insert(IsName)
         .id()
         ;

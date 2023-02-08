@@ -1,7 +1,6 @@
 use super::prelude::*;
 use bevy::window::WindowId;
 use bevy::winit::WinitWindows;
-use winit::window::Icon;
 
 pub fn set_window_icon(
     // we have to use `NonSend` here
@@ -20,7 +19,7 @@ pub fn set_window_icon(
         (rgba, width, height)
     };
 
-    let icon = Icon::from_rgba(icon_rgba, icon_width, icon_height).unwrap();
+    let icon = winit::window::Icon::from_rgba(icon_rgba, icon_width, icon_height).unwrap();
     
     primary.set_title("Orc Fortress");
     primary.set_window_icon(Some(icon));

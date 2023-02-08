@@ -1,5 +1,24 @@
 use super::prelude::*;
 
+// Make plugin.
+pub struct ThinkingPlugin;
+
+impl Plugin for ThinkingPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_system_set(
+            SystemSet::new()
+                .with_run_criteria(FixedTimestep::step(0.5))
+                .with_system(thinking_system),
+        )
+        .add_system_set(
+            SystemSet::new()
+                .with_run_criteria(FixedTimestep::step(5.0))
+                .with_system(remotivate_system),
+        )
+        ;
+    }
+}
+
 pub fn thinking_system(
     mut commands: Commands,
     mut query: Query<(Entity, &mut Brain, &mut Status)>,

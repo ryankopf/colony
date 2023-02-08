@@ -15,3 +15,4 @@ pub use super::components::{Position,
     GameState
 };
 pub use crate::resources::*;
+pub use std::collections::HashMap;

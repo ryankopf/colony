@@ -9,6 +9,7 @@ pub fn keyboard_input(
 ) {
     if input.just_pressed(KeyCode::Space) {
         // Pause or Unpause.
+        println!("GameState: {:?}", gamestate.current());
         match gamestate.current() {
             GameState::InGame => {
                 gamestate.set(GameState::Paused).ok();
