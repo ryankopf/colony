@@ -1056,6 +1056,7 @@ dependencies = [
  "bevy",
  "image",
  "rand",
+ "retrieve",
  "winit",
 ]
 
@@ -2854,6 +2855,16 @@ name = "renderdoc-sys"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f1382d1f0a252c4bf97dc20d979a2fdd05b024acd7c2ed0f7595d7817666a157"
+
+[[package]]
+name = "retrieve"
+version = "1.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4670e37249fe59a5fd670a4068b3091f9a069b4bddae7279cc3588c3b63ea7b1"
+dependencies = [
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "rodio"

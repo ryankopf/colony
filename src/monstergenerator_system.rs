@@ -1,5 +1,18 @@
 use crate::prelude::*;
 
+// Make plugin
+pub struct MonsterGeneratorPlugin;
+
+impl Plugin for MonsterGeneratorPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_system_set(
+            SystemSet::new()
+                .with_run_criteria(FixedTimestep::step(1.0))
+                .with_system(monster_generator),
+        );
+    }
+}
+
 pub fn monster_generator(
     mut commands: Commands,
     entities: Query<(Entity, &Position), With<MonsterGenerator>>,

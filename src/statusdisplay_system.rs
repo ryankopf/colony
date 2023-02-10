@@ -3,9 +3,12 @@ use crate::prelude::*;
 pub fn status_display_system (
     mut commands: Commands,
     mut query: Query<(Entity, &HasName, &mut Status, &Brain, &Children)>,
-    mut q_children: Query<&Parent>,
+    mut q_children: Query<(Entity, &Parent), With<TextName>>,
     asset_server: Res<AssetServer>
 ) {
+    for (child, _) in q_children.iter_mut() {
+        commands.entity(child).despawn();
+    }
     for (entity, has_name, mut status, brain, children) in query.iter_mut() {
         // Pick the text value to show.
         //let y = commands.entity(entity).log_components();//::<HasName>();
@@ -30,10 +33,10 @@ pub fn status_display_system (
         if let Some(Task::Sleeping) = brain.task {
             vec_statuses.push("ZZZ...".to_string());
         }
-        for child in children {
-            commands.entity(entity).remove_children(&[*child]);
-            commands.entity(*child).despawn();
-        }
+        // for child in children {
+        //     commands.entity(entity).remove_children(&[*child]);
+        //     commands.entity(*child).despawn();
+        // }
         if status.index >= vec_statuses.len() {
             status.index = 0;
         }

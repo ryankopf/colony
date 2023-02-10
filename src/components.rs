@@ -70,6 +70,18 @@ pub struct HasNameShown;
 pub struct TextName;
 
 #[derive(Component)]
+pub struct HighlightBox;
+
+#[derive(Component)]
+pub struct Highlighted;
+
+impl Default for Highlighted {
+    fn default() -> Self {
+        Highlighted {}
+    }
+}
+
+#[derive(Component)]
 pub struct Status {
     pub needs_food: Option<NeedsFood>,
     pub needs_entertainment: Option<NeedsEntertainment>,
