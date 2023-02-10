@@ -4,7 +4,8 @@ pub use crate::prelude::*;
 
 use retrieve::mod_use;
 #[mod_use(click, components, constants, game_ui, input, map, monstergenerator_system, moverandom_system, movetoward_system,
-    namegiving_system, names_system, needs, resources, seasons, spoilage_system, startup, statusdisplay_system, task_system, text_system, thinking_system, window_system)]
+    namegiving_system, names_system, needs, resources, seasons, selection_systems, spoilage_system, startup, statusdisplay_system,
+    task_system, text_system, thinking_system, window_system)]
 
 fn main() {
     //println!("Hello, world!");
@@ -24,6 +25,7 @@ fn main() {
                 .with_run_criteria(FixedTimestep::step(0.1))
                 .with_system(movement_random),
         )
+        .add_plugin(SelectionPlugin)
         .add_plugin(MonsterGeneratorPlugin)
         .add_plugin(MovementPlugin)
         .add_plugin(SeasonsPlugin)

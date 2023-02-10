@@ -103,6 +103,9 @@ pub fn startup(mut commands: Commands, sprite_sheet: Res<SpriteSheet>) {
         if plant_type == PlantType::BerryBush && growth > 0.5 {
             commands.entity(plant).insert(Foragable);
         }
+        if [PlantType::OakTree,PlantType::PineTree].contains(&plant_type) && growth > 0.5 {
+            commands.entity(plant).insert(Choppable);
+        }
     }
 
 }

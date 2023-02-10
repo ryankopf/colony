@@ -21,7 +21,7 @@ pub fn setup_text(
         .with_style(Style {
             position_type: PositionType::Absolute,
             position: UiRect {
-                bottom: Val::Px(15.0),
+                bottom: Val::Px(45.0),
                 left: Val::Px(15.0),
                 ..default()
             },

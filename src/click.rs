@@ -1,4 +1,5 @@
 use super::prelude::*;
+use super::selection_systems::SelectionEvent;
 
 // Make plugin.
 pub struct ClickPlugin;
@@ -9,7 +10,7 @@ impl Plugin for ClickPlugin {
             .add_system(mouse_click_input)
             .add_system(mouse_drag_system)
             .add_system(object_finder_system)
-            .insert_resource(Dragging { dragging: false, start_position: None })
+            .insert_resource(Dragging { ..default() })
         ;
     }
 }
@@ -20,11 +21,26 @@ pub fn mouse_click_input(
     q_camera: Query<(&Camera, &GlobalTransform)>,
     mut event: EventWriter<ObjectFinderEvent>,
     mut dragging: ResMut<Dragging>,
+    mut selection_event: EventWriter<SelectionEvent>,
 ) {
     if mouse_button_input.just_pressed(MouseButton::Left) {
         let (camera, camera_transform) = q_camera.single();
         let window = windows.get_primary().unwrap();
         let mut position = None;
+        let wc = window.cursor_position();
+        if let Some(wc) = wc {
+            println!("Mouse click at {}/{}", wc.x, wc.y);
+            // ?, Chop, Wand, Arrow, Leaf, Legs
+            if wc.y < 32.0 {
+                if (0..32).contains(&(wc.x as i32)) {
+                    dragging.looking_for = SelectableType::Foragable;
+                }
+                if (32..64).contains(&(wc.x as i32)) {
+                    dragging.looking_for = SelectableType::Choppable;
+                }
+                return;
+            }
+        }
         if let Some(screen_pos) = window.cursor_position() {
             position = Some(mouse_to_position(camera, camera_transform, window, screen_pos));
         }
@@ -37,6 +53,7 @@ pub fn mouse_click_input(
     if mouse_button_input.just_released(MouseButton::Left) {
         // Maybe we send an event here? Or we iterate here through all "Highlighted" and mark them "Selected"?
         dragging.dragging = false;
+        selection_event.send(SelectionEvent);
     }
 }
 
@@ -62,13 +79,11 @@ pub fn mouse_drag_system(
     }
     if end_position == None { return; }
     let end_position = end_position.unwrap();
-    println!("Dragging from {}/{} to {}/{}", start_position.x, start_position.y, end_position.x, end_position.y);
     // Now just take all objects with a position that matches and mark them as "Highlighted".
     // Somehow only allow the types I want to be highlighted. Foragable. Unit. Choppable. Food. Storable.
     for (entity, pos, highlighted) in positions.iter() {
         if (start_position.x.min(end_position.x) <= pos.x) && (pos.x <= start_position.x.max(end_position.x) && (start_position.y.min(end_position.y) <= pos.y) && (pos.y <= start_position.y.max(end_position.y))) {
             if (highlighted.is_some()) { continue; }
-            // println!("Entity {} is highlighted", entity);
             let highlight_box = commands.spawn(SpriteBundle {
                 sprite: Sprite {
                     color: Color::rgba(1.0, 1.0, 1.0, 0.2),
@@ -82,7 +97,6 @@ pub fn mouse_drag_system(
             commands.entity(entity).add_child(highlight_box);
         } else {
             if (highlighted.is_none()) { continue; }
-            // println!("Entity {} is not highlighted", entity);
             commands.entity(entity).remove::<Highlighted>();
             for (highlight_box, parent) in highlightboxes.iter() {
                 if (parent.get() == entity) {

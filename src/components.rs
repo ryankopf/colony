@@ -118,6 +118,9 @@ impl Default for Brain {
 pub struct Foragable;
 
 #[derive(Component)]
+pub struct Choppable;
+
+#[derive(Component)]
 pub struct GiveMeAName;
 
 #[derive(Component)]
@@ -129,7 +132,7 @@ pub struct Plant {
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Task {
     Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Meander, Idle,
-    Doctor, Forage, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Haul // Works
+    Doctor, Forage, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Haul // Forms of work
 }
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Motivation {
@@ -140,6 +143,14 @@ pub enum Motivation {
 pub enum PlantType {
     PineTree, OakTree, CedarTree, Bush, BerryBush
 }
+
+#[derive(Component, PartialEq, Copy, Clone, Debug)]
+pub enum SelectableType {
+    Foragable, Choppable, Mineable, Constructable, Harvestable
+}
+
+#[derive(Component)]
+pub struct WorkTarget;
 
 pub enum EdiblePlantTypes {
     BerryBush

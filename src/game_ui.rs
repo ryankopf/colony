@@ -19,7 +19,7 @@ pub fn initialize_game_ui(
             position_type: PositionType::Absolute,
             position: UiRect {
                 left: Val::Px(0.0),
-                top: Val::Px(0.0),
+                bottom: Val::Px(0.0),
                 ..Default::default()
             },
             justify_content: JustifyContent::Center,
