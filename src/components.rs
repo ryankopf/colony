@@ -40,6 +40,9 @@ pub enum TileType {
 }
 
 #[derive(Component)]
+pub struct PauseOverlay;
+
+#[derive(Component)]
 pub struct Food {
     pub nutrition: f32,
     pub spoilage: f32,
@@ -129,6 +132,9 @@ pub struct Plant {
     pub plant_type: PlantType,
 }
 
+#[derive(Component)]
+pub struct WorkMarker;
+
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Task {
     Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Meander, Idle,
@@ -146,7 +152,7 @@ pub enum PlantType {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum SelectableType {
-    Foragable, Choppable, Mineable, Constructable, Harvestable
+    Foragable, Choppable, Mineable, Constructable, Harvestable, Unselecting
 }
 
 #[derive(Component)]
@@ -258,4 +264,18 @@ pub struct NeedsSleep {
     pub current: f32,
     pub max: f32,
     pub rate: f32,
+}
+
+pub enum SPRITES {
+    LOGS = 151,
+}
+
+#[derive(Component)]
+pub struct Logs;
+
+impl Default for Logs {
+    fn default() -> Self {
+        Logs {
+        }
+    }
 }

@@ -12,7 +12,8 @@ pub use super::components::{Position,
     HasName, IsName, HasNameShown, TextName, GiveMeAName,
     Brain,
     Task, Motivation,
-    Food, Bed,
-    GameState, Highlighted, HighlightBox, SelectableType, WorkTarget
+    Food, Bed, Logs,
+    GameState, Highlighted, HighlightBox, SelectableType, WorkTarget, WorkMarker, SPRITES, PauseOverlay
 };
 pub use std::collections::HashMap;
+pub use iyes_loopless::prelude::*;

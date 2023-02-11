@@ -25,3 +25,7 @@ impl Default for Dragging {
         }
     }
 }
+
+// Make Resource to hold font.
+#[derive(Resource)]
+pub struct MyFont(pub Handle<Font>);

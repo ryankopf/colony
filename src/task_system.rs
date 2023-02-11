@@ -1,45 +1,46 @@
 use super::prelude::*;
+mod chop;//::chop;
+// use super::tasks::chop;
 
 // Make Plugin
 pub struct TaskPlugin;
 
 impl Plugin for TaskPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_eat),
+        app
+        .add_fixed_timestep_system(
+            "half_second", 0,
+            task_system_eat.run_in_bevy_state(GameState::InGame),
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_sleep),
+        .add_fixed_timestep_system(
+            "half_second", 0,
+            task_system_sleep.run_in_bevy_state(GameState::InGame),
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_sleeping),
+        .add_fixed_timestep_system(
+            "half_second", 0,
+            task_system_sleeping.run_in_bevy_state(GameState::InGame),
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_playing),
+        .add_fixed_timestep_system(
+            "half_second", 0,
+            task_system_playing.run_in_bevy_state(GameState::InGame),
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_meander),
+        .add_fixed_timestep_system(
+            "half_second", 0,
+            task_system_meander.run_in_bevy_state(GameState::InGame),
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_work),
+        .add_fixed_timestep_system(
+            "half_second", 0,
+            task_system_work.run_in_bevy_state(GameState::InGame),
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(task_system_forage),
-        );
+        .add_fixed_timestep_system(
+            "half_second", 0,
+            task_system_forage.run_in_bevy_state(GameState::InGame),
+        )
+        .add_fixed_timestep_system(
+            "half_second", 0,
+            chop::task_system_chop.run_in_bevy_state(GameState::InGame),
+        )
+        ;
     }
 }
 
@@ -90,6 +91,8 @@ pub fn task_system_eat(
             commands.entity(entity).insert(Pathing { path: vec![], destination: closest_position.unwrap().clone() });
             already_targeted.push(closest_entity);
             found_food = true;
+        } else {
+            commands.entity(entity).remove::<Targeting>();
         }
         if !found_food {
             if let Some(Motivation::Hunger) = brain.motivation {
@@ -177,10 +180,10 @@ pub fn task_system_work(
         if brain.task != Some(Task::Work) { continue; }
         let mut rng = rand::thread_rng();
         // Generate number between 0 and 10
-        let number: u8 = rng.gen_range(0..10);
+        let number: u8 = rng.gen_range(0..4);
         match number {
             0 => brain.task = Some(Task::Forage),
-            // 1 => brain.task = Some(Task::Eat),
+            1 => brain.task = Some(Task::Chop),
             // 2 => brain.task = Some(Task::Work),
             // 3 => brain.task = Some(Task::Forage),
             // 4 => brain.task = Some(Task::Hunt),
@@ -299,6 +302,7 @@ pub fn task_system_forage(
             commands.entity(entity).insert(Pathing { path: vec![], destination: closest_position.unwrap().clone() });
             already_targeted.push(closest_entity);
         } else { // Just foraged, or there was no foragable.
+            commands.entity(entity).remove::<Targeting>();
             if did_foraging {
                 if brain.motivation == Some(Motivation::Hunger) {
                     brain.task = Some(Task::Eat);
@@ -312,6 +316,7 @@ pub fn task_system_forage(
         }
     }
 }
+
 
 // if task == "Eat" {
 //     commands.entity(entity).insert(TaskEat {});

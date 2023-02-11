@@ -5,10 +5,9 @@ pub struct NeedsPlugin;
 
 impl Plugin for NeedsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_run_criteria(FixedTimestep::step(2.0))
-                .with_system(needs_status_system),
+        app.add_fixed_timestep_system(
+            "two_second", 0,
+            needs_status_system.run_in_bevy_state(GameState::InGame),
         )
         ;
     }

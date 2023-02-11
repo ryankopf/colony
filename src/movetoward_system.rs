@@ -6,18 +6,13 @@ pub struct MovementPlugin;
 
 impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set_to_stage(
-            CoreStage::First,
-            SystemSet::on_update(GameState::InGame)
-                .with_run_criteria(FixedTimestep::step(0.1))
-                .with_system(movement_along_path),
+        app
+        .add_system(movement_path_generating)
+        .add_fixed_timestep_system(
+            "half_second", 0,
+            movement_along_path.run_in_bevy_state(GameState::InGame),
         )
-        .add_system_set_to_stage(
-            CoreStage::First,
-            SystemSet::on_update(GameState::InGame)
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(movement_path_generating),
-        );
+        ;
     }
 }
 
@@ -53,7 +48,6 @@ struct Node {
 }
 pub fn movement_path_generating(
     mut entities: Query<(&Position, &mut Pathing)>,
-    //tiles: Query<(&Position, &TileType), With<MapTile>>,
     tilehash: Res<TileHash>,
 ) {
     let tiletypes: &std::collections::HashMap<Position, TileType> = &tilehash.hash;

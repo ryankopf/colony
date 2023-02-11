@@ -167,7 +167,7 @@ pub fn thinking_system(
             }
         }
         if let Some(task) = &brain.task {
-            println!("{:?} has a task: {:?}", entity, brain.task)
+            //println!("{:?} has a task: {:?}", entity, brain.task)
         }
         
     }

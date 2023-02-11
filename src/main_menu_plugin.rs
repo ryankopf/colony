@@ -5,20 +5,21 @@ struct MainMenuPlugin;
 impl Plugin for MainMenuPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.add_state(GameState::MainMenu)
-            .add_system_set_to_stage(
-                CoreStage::PreUpdate,
-                SystemSet::new()
-                    .with_run_criteria(state(GameState::MainMenu))
-                    .with_system(main_menu_input.system()),
-            )
-            .add_system_set_to_stage(
-                CoreStage::PostUpdate,
-                SystemSet::new()
-                    .with_run_criteria(state(GameState::MainMenu))
-                    .with_system(main_menu_button_start_game.system())
-                    .with_system(main_menu_button_load_game.system()),
-            )
-            .add_startup_system(initialize_main_menu.system());
+        .add_system_set_to_stage(
+            CoreStage::PreUpdate,
+            SystemSet::new()
+                .with_run_criteria(state(GameState::MainMenu))
+                .with_system(main_menu_input.system()),
+        )
+        .add_system_set_to_stage(
+            CoreStage::PostUpdate,
+            SystemSet::new()
+                .with_run_criteria(state(GameState::MainMenu))
+                .with_system(main_menu_button_start_game.system())
+                .with_system(main_menu_button_load_game.system()),
+        )
+        .add_startup_system(initialize_main_menu.system())
+        ;
     }
 }
 

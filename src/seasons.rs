@@ -5,11 +5,12 @@ pub struct SeasonsPlugin;
 
 impl Plugin for SeasonsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(2.0))
-                .with_system(seasons),
-        );
+        app
+        .add_fixed_timestep_system(
+            "two_second", 0,
+            seasons.run_in_bevy_state(GameState::InGame),
+        )
+        ;
     }
 }
 

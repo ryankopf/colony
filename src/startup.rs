@@ -2,12 +2,30 @@ use bevy::prelude::*;
 use super::components::{Position, SizeXYZ};
 use super::prelude::*;
 
-pub fn startup(mut commands: Commands, sprite_sheet: Res<SpriteSheet>) {
+// Make Startup Plugin
+pub struct StartupPlugin;
+
+impl Plugin for StartupPlugin {
+    fn build(&self, app: &mut App) {
+        app
+        .add_startup_system(startup)
+        .insert_resource(MyFont(Handle::<Font>::default()))
+        ;
+    }
+}
+
+pub fn startup(
+    mut commands: Commands,
+    sprite_sheet: Res<SpriteSheet>,
+    asset_server: Res<AssetServer>,
+    mut font_handle: ResMut<MyFont>,
+) {
+    *font_handle = MyFont(asset_server.load("fonts/Helvetica.ttf"));
     // GENERATE UNITS
     for i in 1..6 {
         let position = Position { x: 3, y: 3*i, z: 0 };
         let mut sprite =  TextureAtlasSprite::new(9 + (i*10) as usize);
-                    
+        
         commands.spawn(SpriteSheetBundle {
             sprite: sprite,
             texture_atlas: sprite_sheet.0.clone(),

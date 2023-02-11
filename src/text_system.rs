@@ -4,6 +4,7 @@ pub fn setup_text(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut materials: ResMut<Assets<ColorMaterial>>,
+    font: Res<MyFont>
 ) {
     commands.spawn((
         // Create a TextBundle that has a Text with a single section.
@@ -11,7 +12,7 @@ pub fn setup_text(
             // Accepts a `String` or any type that converts into a `String`, such as `&str`
             "You have just arrived on an uncharted island.",
             TextStyle {
-                font: asset_server.load("fonts/Helvetica.ttf"),
+                font: font.0.clone(),
                 font_size: 14.0,
                 color: Color::WHITE,
             },

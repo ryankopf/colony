@@ -38,6 +38,9 @@ pub fn mouse_click_input(
                 if (32..64).contains(&(wc.x as i32)) {
                     dragging.looking_for = SelectableType::Choppable;
                 }
+                if (64..96).contains(&(wc.x as i32)) {
+                    dragging.looking_for = SelectableType::Unselecting;
+                }
                 return;
             }
         }
