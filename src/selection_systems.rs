@@ -7,9 +7,18 @@ impl Plugin for SelectionPlugin {
     fn build(&self, app: &mut App) {
         app
         .add_event::<SelectionEvent>()
-        .add_system(select_unselecting)
-        .add_system(select_foragables)
-        .add_system(select_choppables)
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+            .with_system(select_unselecting),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+            .with_system(select_foragables),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+            .with_system(select_choppables),
+        )
         ;
     }
 }
@@ -19,7 +28,8 @@ pub struct SelectionEvent;
 pub fn select_foragables(
     mut commands: Commands,
     mut query: Query<(Entity, Option<&Foragable>), With<Highlighted>>,
-    highlightboxes: Query<(Entity, &Parent), With<HighlightBox>>,
+    highlighteds: Query<Entity, With<Highlighted>>,
+    highlightboxes: Query<Entity, With<HighlightBox>>,
     event: EventReader<SelectionEvent>,
     dragging: Res<Dragging>,
 ) {
@@ -28,19 +38,16 @@ pub fn select_foragables(
     for (entity, foragable) in query.iter_mut() {
         if foragable.is_some() {
             commands.entity(entity).insert(WorkTarget);
-        } else {
-            for (highlightbox, parent) in highlightboxes.iter() {
-                if parent.get() != entity { continue; }
-                commands.entity(highlightbox).despawn();
-            }
         }
     }
+    unhighlight(commands, highlighteds, highlightboxes);
 }
 
 pub fn select_choppables(
     mut commands: Commands,
     mut query: Query<(Entity, Option<&Choppable>), With<Highlighted>>,
-    highlightboxes: Query<(Entity, &Parent), With<HighlightBox>>,
+    highlighteds: Query<Entity, With<Highlighted>>,
+    highlightboxes: Query<Entity, With<HighlightBox>>,
     event: EventReader<SelectionEvent>,
     dragging: Res<Dragging>,
     font: Res<MyFont>,
@@ -52,15 +59,8 @@ pub fn select_choppables(
             commands.entity(entity).insert(WorkTarget);
             let child = commands.spawn((
                 Text2dBundle {
-                    text: Text::from_section("X", TextStyle {
-                        font: font.0.clone(),
-                        font_size: 12.0,
-                        color: Color::WHITE,
-                    })
-                        .with_alignment(TextAlignment {
-                            vertical: VerticalAlign::Center,
-                            horizontal: HorizontalAlign::Center,
-                        }),
+                    text: Text::from_section("X", TextStyle { font: font.0.clone(), ..default() })
+                        .with_alignment(TextAlignment::CENTER),
                     ..default()
                 },
                 WorkMarker
@@ -68,19 +68,28 @@ pub fn select_choppables(
             .insert(Transform::from_xyz(10.0, 20.0, 100.0)).id();
             commands.entity(entity).push_children(&[child]);
         }
-        for (highlightbox, parent) in highlightboxes.iter() {
-            if parent.get() != entity { continue; }
-            commands.entity(highlightbox).despawn();
-        }
+    }
+    unhighlight(commands, highlighteds, highlightboxes);
+}
+
+fn unhighlight(
+    mut commands: Commands,
+    mut highlighteds: Query<Entity, With<Highlighted>>,
+    mut highlightboxes: Query<Entity, With<HighlightBox>>,
+) {
+    for entity in highlighteds.iter_mut() {
         commands.entity(entity).remove::<Highlighted>();
     }
-    
+    for (highlightbox) in highlightboxes.iter() {
+        commands.entity(highlightbox).despawn();
+    }
 }
 
 fn select_unselecting(
     mut commands: Commands,
     mut query: Query<Entity, (With<Highlighted>, With<WorkTarget>)>,
     workmarkers: Query<(Entity, &Parent), With<WorkMarker>>,
+    highlightboxes: Query<(Entity, &Parent), With<HighlightBox>>,
     event: EventReader<SelectionEvent>,
     dragging: Res<Dragging>,
 ) {
@@ -94,5 +103,7 @@ fn select_unselecting(
         }
         commands.entity(entity).remove::<Highlighted>();
     }
-    
+    for (highlightbox, parent) in highlightboxes.iter() {
+        commands.entity(highlightbox).despawn();
+    }
 }

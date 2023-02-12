@@ -6,11 +6,22 @@ pub struct ClickPlugin;
 
 impl Plugin for ClickPlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<ObjectFinderEvent>()
-            .add_system(mouse_click_input)
-            .add_system(mouse_drag_system)
-            .add_system(object_finder_system)
-            .insert_resource(Dragging { ..default() })
+        app
+        .add_event::<ObjectFinderEvent>()
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+                .with_system(mouse_click_input),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+                .with_system(mouse_drag_system),
+        )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+                .with_system(object_finder_system),
+        )
+        .add_system(mouse_move_system)
+        .insert_resource(Dragging { ..default() })
         ;
     }
 }
@@ -29,7 +40,6 @@ pub fn mouse_click_input(
         let mut position = None;
         let wc = window.cursor_position();
         if let Some(wc) = wc {
-            println!("Mouse click at {}/{}", wc.x, wc.y);
             // ?, Chop, Wand, Arrow, Leaf, Legs
             if wc.y < 32.0 {
                 if (0..32).contains(&(wc.x as i32)) {
@@ -110,6 +120,34 @@ pub fn mouse_drag_system(
     }
 }
 
+pub fn mouse_move_system(
+    windows: Res<Windows>,
+    q_camera: Query<(&Camera, &GlobalTransform)>,
+    // dragging: Res<Dragging>, Use to only highlight a specific type in the future??
+    positions: Query<(Entity, &Position, Option<&Brain>)>,
+    mut object_info: ResMut<SelectedObjectInformation>,
+) {
+    let (camera, camera_transform) = q_camera.single();
+    let window = windows.get_primary().unwrap();
+    let mut pos = None;
+    if let Some(screen_pos) = window.cursor_position() {
+        pos = Some(mouse_to_position(camera, camera_transform, window, screen_pos));
+    }
+    if pos == None { return; }
+    let pos = pos.unwrap();
+    // Append info for each object to the SelectedObjectInfo.
+    object_info.info = vec![];
+    for (e, p, b) in positions.iter() {
+        if (p.x == pos.x) && (p.y == pos.y) {
+            object_info.info.push("Object ".to_string());
+            if let Some(brain) = b {
+                object_info.info.push(format!("Task: {:?}", brain.task));
+                object_info.info.push(format!("Motivation: {:?}", brain.motivation));
+            }
+        }
+    }
+}
+
 pub fn object_finder_system(
     mut commands: Commands,
     mut event: EventReader<ObjectFinderEvent>,
@@ -148,9 +186,12 @@ fn mouse_to_position(
     let world_pos = ndc_to_world.project_point3(ndc.extend(-1.0));
 
     // reduce it to a 2D value
-    let world_pos: Vec2 = world_pos.truncate();
+    let mut world_pos: Vec2 = world_pos.truncate();
 
     // get a Position
+    //println!("World coords: {}/{}", world_pos.x, world_pos.y);
+    world_pos.x = world_pos.x + (TILE_SIZE / 2.0) as f32;
+    world_pos.y = world_pos.y + (TILE_SIZE / 2.0) as f32;
     let position = Position { x: (world_pos.x / TILE_SIZE) as i32, y: (world_pos.y / TILE_SIZE) as i32, z: 0 };
 
     // eprintln!("World coords: {}/{}", world_pos.x, world_pos.y);

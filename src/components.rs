@@ -43,6 +43,9 @@ pub enum TileType {
 pub struct PauseOverlay;
 
 #[derive(Component)]
+pub struct MainMenuOverlay;
+
+#[derive(Component)]
 pub struct Food {
     pub nutrition: f32,
     pub spoilage: f32,

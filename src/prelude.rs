@@ -13,7 +13,8 @@ pub use super::components::{Position,
     Brain,
     Task, Motivation,
     Food, Bed, Logs,
-    GameState, Highlighted, HighlightBox, SelectableType, WorkTarget, WorkMarker, SPRITES, PauseOverlay
+    GameState, Highlighted, HighlightBox, SelectableType, WorkTarget, WorkMarker, SPRITES,
+    PauseOverlay, MainMenuOverlay
 };
 pub use std::collections::HashMap;
 pub use iyes_loopless::prelude::*;

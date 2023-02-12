@@ -1,6 +1,6 @@
 use super::prelude::*;
-mod chop;//::chop;
-// use super::tasks::chop;
+mod chop;
+mod forage;
 
 // Make Plugin
 pub struct TaskPlugin;
@@ -34,7 +34,7 @@ impl Plugin for TaskPlugin {
         )
         .add_fixed_timestep_system(
             "half_second", 0,
-            task_system_forage.run_in_bevy_state(GameState::InGame),
+            forage::task_system_forage.run_in_bevy_state(GameState::InGame),
         )
         .add_fixed_timestep_system(
             "half_second", 0,
@@ -75,7 +75,7 @@ pub fn task_system_eat(
                 commands.entity(food_entity).despawn();
                 // Remove the targeting.
                 commands.entity(entity).remove::<Targeting>();
-                if brain.motivation == Some(Motivation::Hunger) { brain.motivation = None; brain.task = None; } // You're done!!
+                if brain.motivation == Some(Motivation::Hunger) { brain.remotivate(); } // You're done!!
                 closest_entity = None; closest_position = None;
                 found_food = true;
                 break;
@@ -245,78 +245,23 @@ pub fn task_system_sleeping(
     }
 }
 
-pub fn task_system_forage(
-    mut commands: Commands,
-    mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>), Without<Pathing>>,
-    mut foragables: Query<(Entity, &Position, &Foragable, &mut Plant)>,
-    sprite_sheet: Res<SpriteSheet>,
+pub fn set_already_targetted(
+    query: &Query<(Entity, &mut Brain, &Position, Option<&Targeting>), Without<Pathing>>
+) -> Vec<Entity> {
+    query.iter().filter(|(_, _, _, targeting)| targeting.is_some()).map(|(_, _, _, targeting)| targeting.unwrap().target).collect::<Vec<Entity>>()
+}
+
+pub fn remove_x_markers(
+    commands: &mut Commands,
+    workmarkers: &Query<(Entity, &Parent), With<WorkMarker>>,
+    targetable_entity: Entity
 ) {
-    let mut already_targeted = query.iter().filter(|(_, _, _, targeting)| targeting.is_some()).map(|(_, _, _, targeting)| targeting.unwrap().target).collect::<Vec<Entity>>();
-    for (entity, mut brain, position, targeting) in query.iter_mut() {
-        if brain.task != Some(Task::Forage) { continue; }
-        let mut did_foraging = false;
-        let mut shortest_distance = -1;
-        let mut closest_entity = None;
-        let mut closest_position = None;
-        for (foragable_entity, foragable_position, _, mut plant) in foragables.iter_mut() {
-            // Unless it is already targetted by someone other than you.
-            if already_targeted.contains(&foragable_entity) && (targeting.is_none() || (targeting.is_some() && targeting.unwrap().target != foragable_entity)) { continue; }
-            let distance = position.distance(foragable_position);
-            if distance <= 1 && targeting.is_some() && targeting.unwrap().target == foragable_entity {
-                plant.growth = 0.1;
-                commands.entity(foragable_entity).remove::<Foragable>();
-                commands.entity(entity).remove::<Targeting>();
-                // SPAWN TWO FOOD.
-                for i in 2..4 {
-                    let mut p = foragable_position.clone();
-                    p.x += if (i%2) == 0 { (i/2) } else { -(i/2) };
-                    p.y += if (i%2) == 0 { (i/2) } else { -(i/2) };
-                    let mut sprite =  TextureAtlasSprite::new(88);
-                    commands.spawn(SpriteSheetBundle {
-                        sprite: sprite,
-                        texture_atlas: sprite_sheet.0.clone(),
-                        transform: Transform::from_xyz(
-                            position.x as f32 * TILE_SIZE,
-                            position.y as f32 * TILE_SIZE,
-                            position.z as f32 * TILE_SIZE,
-                        ),
-                        ..Default::default()
-                    })
-                    .insert(Food { ..default() } )
-                    .insert(p)
-                    .insert(p.to_transform_layer(2.0))
-                    ;
-                }
-                did_foraging = true;
-                closest_entity = None; closest_position = None;
-                break;
-            }
-            if shortest_distance == -1 || distance < shortest_distance {
-                shortest_distance = distance;
-                closest_entity = Some(foragable_entity);
-                closest_position = Some(foragable_position);
-            }
-        }
-        if let Some(closest_entity) = closest_entity {
-            commands.entity(entity).insert(Targeting { target: closest_entity });
-            commands.entity(entity).insert(Pathing { path: vec![], destination: closest_position.unwrap().clone() });
-            already_targeted.push(closest_entity);
-        } else { // Just foraged, or there was no foragable.
-            commands.entity(entity).remove::<Targeting>();
-            if did_foraging {
-                if brain.motivation == Some(Motivation::Hunger) {
-                    brain.task = Some(Task::Eat);
-                } else {
-                    brain.remotivate();
-                }
-            } else { // Did not forage and could not find anything to forage.
-                //brain.task = Some(Task::Meander);
-                brain.remotivate();
-            }
+    for (child, parent) in workmarkers.iter() {
+        if parent.get() == targetable_entity {
+            commands.entity(child).despawn();
         }
     }
 }
-
 
 // if task == "Eat" {
 //     commands.entity(entity).insert(TaskEat {});

@@ -4,7 +4,7 @@ pub use crate::prelude::*;
 
 use std::time::Duration;
 use retrieve::mod_use;
-#[mod_use(click, components, constants, game_ui, input, map, monstergenerator_system, moverandom_system, movetoward_system,
+#[mod_use(button_system, click, components, constants, game_ui, input, main_menu, map, monstergenerator_system, moverandom_system, movetoward_system,
     namegiving_system, names_system, needs, pause, resources, seasons, selection_systems, spoilage_system, startup, statusdisplay_system,
     task_system, text_system, thinking_system, window_system)]
 
@@ -21,15 +21,18 @@ fn main() {
             Duration::from_millis(2000),
             "two_second",
         )
+        .insert_resource(SelectedObjectInformation::default())
         .add_startup_system(generate_map)
         .add_plugin(StartupPlugin)
         .add_startup_system(setup_camera)
-        .add_startup_system(setup_text)
+        .add_system(text_system)
+        .add_startup_system(text_test)
         .add_startup_system(set_window_icon)
         .add_startup_system(set_window_maximized)
-        .add_startup_system(text_test)
-        .add_state(GameState::Paused)
-        .add_loopless_state(GameState::Paused)
+        .add_plugin(MainMenusPlugin)
+        .add_state(GameState::MainMenu)
+        .add_loopless_state(GameState::MainMenu)
+        .add_plugin(ButtonPlugin)
         .add_system_set(
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(0.1))

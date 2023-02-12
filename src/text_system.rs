@@ -1,35 +1,37 @@
 use super::prelude::*;
 
-pub fn setup_text(
+pub fn text_system(
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-    font: Res<MyFont>
+    font: Res<MyFont>,
+    object_info: Res<SelectedObjectInformation>,
+    texts: Query<Entity, With<ObjectText>>,
 ) {
-    commands.spawn((
-        // Create a TextBundle that has a Text with a single section.
-        TextBundle::from_section(
-            // Accepts a `String` or any type that converts into a `String`, such as `&str`
-            "You have just arrived on an uncharted island.",
-            TextStyle {
-                font: font.0.clone(),
-                font_size: 14.0,
-                color: Color::WHITE,
-            },
-        ) // Set the alignment of the Text
-        .with_text_alignment(TextAlignment::TOP_LEFT)
-        // Set the style of the TextBundle itself.
-        .with_style(Style {
-            position_type: PositionType::Absolute,
-            position: UiRect {
-                bottom: Val::Px(45.0),
-                left: Val::Px(15.0),
+    for text in texts.iter() {
+        commands.entity(text).despawn();
+    }
+    for (i, info) in object_info.info.iter().enumerate() {
+        //println!("POS: {}", (i as f32 * 20.0) );
+        commands.spawn((
+            // Create a TextBundle that has a Text with a single section.
+            TextBundle::from_section(
+                // Accepts a `String` or any type that converts into a `String`, such as `&str`
+                info,
+                TextStyle { font: font.0.clone(), ..default() },
+            ) // Set the alignment of the Text
+            .with_text_alignment(TextAlignment::TOP_LEFT)
+            // Set the style of the TextBundle itself.
+            .with_style(Style {
+                position_type: PositionType::Absolute,
+                position: UiRect {
+                    bottom: Val::Px(45.0 + (i as f32 * 20.0)),
+                    left: Val::Px(15.0),
+                    ..default()
+                },
                 ..default()
-            },
-            ..default()
-        }),
-        ColorText,
-    ));
+            }),
+            ObjectText,
+        ));
+    }
 }
 
 
@@ -49,7 +51,7 @@ pub fn text_update_system(
 
 
 #[derive(Component)]
-pub struct ColorText;
+pub struct ObjectText;
 
 #[derive(Component)]
 pub struct FpsText;

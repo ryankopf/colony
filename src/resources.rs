@@ -29,3 +29,15 @@ impl Default for Dragging {
 // Make Resource to hold font.
 #[derive(Resource)]
 pub struct MyFont(pub Handle<Font>);
+
+#[derive(Resource)]
+pub struct SelectedObjectInformation {
+    // It's a vec of strings.
+    pub info: Vec<String>,
+}
+
+impl Default for SelectedObjectInformation {
+    fn default() -> Self {
+        Self { info: vec![] }
+    }
+}
