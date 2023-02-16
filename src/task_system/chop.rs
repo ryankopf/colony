@@ -33,7 +33,7 @@ pub fn task_system_chop(
         }
         if let Some(closest_entity) = closest_entity {
             commands.entity(entity).insert(Targeting { target: closest_entity });
-            commands.entity(entity).insert(Pathing { path: vec![], destination: closest_position.unwrap().clone() });
+            commands.entity(entity).insert(Pathing { path: vec![], destination: closest_position.unwrap().clone(), ..default() });
             already_targeted.push(closest_entity);
         } else {
             commands.entity(entity).remove::<Targeting>();
@@ -49,15 +49,16 @@ fn spawn_logs(
     targetable_entity: Entity,
     targetable_position: &Position,
     sprite_sheet: &Res<SpriteSheet>,
-    _plant: &mut Plant,
+    plant: &mut Plant,
 ) {
     //plant.growth = 0.1;
+    let pt = plant.plant_type.is_choppable().0.unwrap_or( ItemType::PineLog );
     for i in 2..4 {
         commands.entity(targetable_entity).despawn(); // OR commands.entity(doable_entity).remove::<Choppable>();
         let mut p = targetable_position.clone();
         p.x += if (i%2) == 0 { i/2 } else { -i/2 };
         p.y += if (i%2) == 0 { i/2 } else { -i/2 };
-        let sprite =  TextureAtlasSprite::new(SPRITES::LOGS as usize);
+        let sprite =  TextureAtlasSprite::new( pt.sprite_index() );
         commands.spawn(SpriteSheetBundle {
             sprite: sprite,
             texture_atlas: sprite_sheet.0.clone(),
@@ -66,6 +67,7 @@ fn spawn_logs(
         .insert(Logs { ..default() } )
         .insert(p)
         .insert(p.to_transform_layer(2.0))
+        .insert( pt.clone() )
         ;
     }
 }

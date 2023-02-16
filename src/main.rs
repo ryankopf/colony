@@ -4,7 +4,7 @@ pub use crate::prelude::*;
 
 use std::time::Duration;
 use retrieve::mod_use;
-#[mod_use(button_system, click, components, constants, game_ui, input, main_menu, map, monstergenerator_system, moverandom_system, movetoward_system,
+#[mod_use(biome, button_system, click, components, constants, game_ui, input, load, main_menu, map, monstergenerator_system, moverandom_system, movetoward_system,
     namegiving_system, names_system, needs, pause, resources, seasons, selection_systems, spoilage_system, startup, statusdisplay_system,
     task_system, text_system, thinking_system, window_system)]
 
@@ -12,7 +12,9 @@ fn main() {
     //println!("Hello, world!");
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugin(BiomePlugin)
         .add_startup_system_to_stage(StartupStage::PreStartup, load_sprites)
+        .add_startup_system_to_stage(StartupStage::PreStartup, load_font)
         .add_fixed_timestep(
             Duration::from_millis(500),
             "half_second",
@@ -22,6 +24,7 @@ fn main() {
             "two_second",
         )
         .insert_resource(SelectedObjectInformation::default())
+        .insert_resource(MenuState { state: MenuStates::Home } )
         .add_startup_system(generate_map)
         .add_plugin(StartupPlugin)
         .add_startup_system(setup_camera)
@@ -30,8 +33,8 @@ fn main() {
         .add_startup_system(set_window_icon)
         .add_startup_system(set_window_maximized)
         .add_plugin(MainMenusPlugin)
-        .add_state(GameState::MainMenu)
-        .add_loopless_state(GameState::MainMenu)
+        .add_state(GameState::InGame)
+        .add_loopless_state(GameState::InGame)
         .add_plugin(ButtonPlugin)
         .add_system_set(
             SystemSet::new()
@@ -94,7 +97,7 @@ fn remove_bad_positions(
 ) {
     for (entity, position) in query.iter() {
         if tiletypes.hash.contains_key(&position) {
-            if tiletypes.hash.get(&position).unwrap() == &TileType::Wall {
+            if tiletypes.hash.get(&position).unwrap().is_wall() {
                 commands.entity(entity).despawn();
             }
         } else {

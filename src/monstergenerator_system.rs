@@ -34,7 +34,7 @@ pub fn monster_generator(
             let mut p2 = new_position;
             p2.z = 0;
             if *tile_position == p2 {
-                if *tile_type != TileType::Wall {
+                if !tile_type.is_wall() {
                     can_generate = true;
                 }
             }

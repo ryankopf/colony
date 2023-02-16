@@ -10,9 +10,7 @@ pub fn task_system_forage(
     for (entity, mut brain, position, targeting) in query.iter_mut() {
         if brain.task != Some(Task::Forage) { continue; }
         let mut did_foraging = false;
-        let mut shortest_distance = -1;
-        let mut closest_entity = None;
-        let mut closest_position = None;
+        let mut nearest_entity: Option<NearestEntity> = None;
         for (foragable_entity, foragable_position, _, mut plant) in foragables.iter_mut() {
             // If you are already next to it, forage it, if you are targetting it.
             let distance = position.distance(foragable_position);
@@ -20,22 +18,20 @@ pub fn task_system_forage(
                 commands.entity(entity).remove::<Targeting>();
                 spawn_food(&mut commands, foragable_entity, foragable_position, &sprite_sheet, &mut plant);
                 did_foraging = true;
-                closest_entity = None; closest_position = None;
+                nearest_entity = None;
                 break;
             }
             // Unless it is already targetted by someone other than you.
             if already_targeted.contains(&foragable_entity) { continue; }
             
-            if shortest_distance == -1 || distance < shortest_distance {
-                shortest_distance = distance;
-                closest_entity = Some(foragable_entity);
-                closest_position = Some(foragable_position);
+            if nearest_entity.is_none() || distance < nearest_entity.as_ref().unwrap().distance {
+                nearest_entity = Some(NearestEntity { entity: foragable_entity, distance: distance, position: foragable_position.clone() })
             }
         }
-        if let Some(closest_entity) = closest_entity {
-            commands.entity(entity).insert(Targeting { target: closest_entity });
-            commands.entity(entity).insert(Pathing { path: vec![], destination: closest_position.unwrap().clone() });
-            already_targeted.push(closest_entity);
+        if let Some(nearest_entity) = nearest_entity {
+            commands.entity(entity).insert(Targeting { target: nearest_entity.entity });
+            commands.entity(entity).insert(Pathing { path: vec![], destination: nearest_entity.position.clone(), ..default() });
+            already_targeted.push(nearest_entity.entity);
         } else { // Just foraged, or there was no foragable.
             commands.entity(entity).remove::<Targeting>();
             if did_foraging {
@@ -59,13 +55,14 @@ fn spawn_food(
     plant: &mut Plant,
 ) {
     plant.growth = 0.1;
+    let pt = plant.plant_type.is_forageable().0.unwrap_or( ItemType::Cabbage );
     commands.entity(foragable_entity).remove::<Foragable>();
     // SPAWN TWO FOOD.
     for i in 2..4 {
         let mut p = foragable_position.clone();
         p.x += if (i%2) == 0 { i/2 } else { -i/2 };
         p.y += if (i%2) == 0 { i/2 } else { -i/2 };
-        let sprite =  TextureAtlasSprite::new(88);
+        let sprite =  TextureAtlasSprite::new(pt.sprite_index());
         commands.spawn(SpriteSheetBundle {
             sprite: sprite,
             texture_atlas: sprite_sheet.0.clone(),
@@ -74,6 +71,7 @@ fn spawn_food(
         .insert(Food { ..default() } )
         .insert(p)
         .insert(p.to_transform_layer(2.0))
+        .insert( pt )
         ;
     }
 }

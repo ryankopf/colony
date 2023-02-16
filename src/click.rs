@@ -51,8 +51,21 @@ pub fn mouse_click_input(
                 if (64..96).contains(&(wc.x as i32)) {
                     dragging.looking_for = SelectableType::Unselecting;
                 }
+                if (96..128).contains(&(wc.x as i32)) {
+                    dragging.looking_for = SelectableType::Zoning;
+                }
+                if (128..160).contains(&(wc.x as i32)) {
+                    dragging.looking_for = SelectableType::Unzoning;
+                }
+                if (160..192).contains(&(wc.x as i32)) {
+                    dragging.looking_for = SelectableType::Unselecting;
+                }
+                if (192..224).contains(&(wc.x as i32)) {
+                    dragging.looking_for = SelectableType::Unselecting;
+                }
                 return;
             }
+            if wc.y < 164.0 { return; }
         }
         if let Some(screen_pos) = window.cursor_position() {
             position = Some(mouse_to_position(camera, camera_transform, window, screen_pos));

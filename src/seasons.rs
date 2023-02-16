@@ -16,18 +16,23 @@ impl Plugin for SeasonsPlugin {
 
 pub fn seasons(
     mut commands: Commands,
-    mut plants: Query<(Entity, &mut Plant, &mut Transform, Option<&Foragable>)>,
+    mut plants: Query<(Entity, &mut Plant, &mut Transform, Option<&Foragable>, Option<&Choppable>)>,
 ) {
-    for (entity, mut plant, mut transform, foragable) in plants.iter_mut() {
+    for (entity, mut plant, mut transform, foragable, choppable) in plants.iter_mut() {
         if plant.growth < 1.0 {
             let rand = rand::thread_rng().gen_range(0..2);
             plant.growth += match rand { 0 => 0.03, 1 => 0.01, _ => 0.0 };
             transform.scale = Vec3::new(plant.growth, plant.growth, 1.0);
             if plant.growth >= 0.5 {
                 // Is plant one that is typically edible?
-                if plant.plant_type == PlantType::BerryBush {
+                if plant.plant_type.is_forageable().0.is_some() {
                     if foragable.is_none() {
                         commands.entity(entity).insert(Foragable);
+                    }
+                }
+                if plant.plant_type.is_choppable().0.is_some() {
+                    if choppable.is_none() {
+                        commands.entity(entity).insert(Choppable);
                     }
                 }
             }

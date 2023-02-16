@@ -34,9 +34,54 @@ pub enum GameState {
     Paused,
 }
 
+#[derive(PartialEq)]
+pub enum MenuStates {
+    Home, Tasks, Farm, Zone, Build, Craft
+}
+
+impl MenuStates {
+    pub fn to_index(&self) -> usize {
+        match self {
+            MenuStates::Home => 0,
+            MenuStates::Tasks => 1,
+            MenuStates::Farm => 2,
+            MenuStates::Zone => 3,
+            MenuStates::Build => 4,
+            MenuStates::Craft => 5,
+        }
+    }
+}
+
 #[derive(Component, PartialEq, Clone, Debug)]
 pub enum TileType {
-    Wall, Floor
+    Grass, Dirt, Gravel, Sand, Stone, Water,
+    WallGame, WallStone, WallWood, WallBrick, WallMetal,
+}
+
+impl TileType {
+    pub fn to_index(&self) -> usize {
+        match self {
+            TileType::Grass => 9*64+11,
+            TileType::Dirt => 4*64+1,
+            TileType::Gravel => 7*64+42,
+            TileType::Sand => 7*64+42,
+            TileType::Stone => 3*64+61,
+            TileType::Water => 5*64+12,
+            TileType::WallGame => 7*64+20,
+            TileType::WallStone => 7*64+21,
+            TileType::WallWood => 7*64+22,
+            TileType::WallBrick => 4*64+10,
+            TileType::WallMetal => 7*64+24,
+        }
+    }
+    pub fn is_wall(&self) -> bool {
+        match self {
+            TileType::WallGame | TileType::WallStone => true,
+            TileType::WallWood | TileType::WallBrick => true,
+            TileType::WallMetal => true,
+            _ => false,
+        }
+    }
 }
 
 #[derive(Component)]
@@ -88,6 +133,9 @@ impl Default for Highlighted {
 }
 
 #[derive(Component)]
+pub struct InGameButton;
+
+#[derive(Component)]
 pub struct Status {
     pub needs_food: Option<NeedsFood>,
     pub needs_entertainment: Option<NeedsEntertainment>,
@@ -97,7 +145,7 @@ pub struct Status {
     pub danger: Option<String>,
     pub injured: bool
 }
-#[derive(Component)]
+#[derive(Component, PartialEq)]
 pub struct Brain {
     pub motivation: Option<Motivation>,
     pub task: Option<Task>,
@@ -138,10 +186,43 @@ pub struct Plant {
 #[derive(Component)]
 pub struct WorkMarker;
 
+#[derive(Component)]
+pub struct ZoneMarker;
+
+
+#[derive(Component)]
+pub struct Zone {
+    pub zone_type: ZoneType,
+    pub plant_type: PlantType,
+    pub material_delivered: bool,
+}
+
+impl Default for Zone {
+    fn default() -> Self {
+        Zone {
+            zone_type: ZoneType::Farm,
+            plant_type: PlantType::Cabbage,
+            material_delivered: false,
+        }
+    }
+}
+
+pub struct NearestEntity {
+    pub entity: Entity,
+    pub position: Position,
+    pub distance: i32,
+}
+
+#[derive(Component, PartialEq, Copy, Clone, Debug)]
+pub enum ZoneType {
+    Farm, Pasture, Storage, Fishing, Hospital, Party, Meeting
+}
+
+
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Task {
     Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Meander, Idle,
-    Doctor, Forage, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Haul // Forms of work
+    Doctor, Forage, Plant, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Haul // Forms of work
 }
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Motivation {
@@ -149,21 +230,97 @@ pub enum Motivation {
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
+pub enum ItemType {
+    Cabbage, Carrot, PineLog, OakLog, CedarLog
+}
+
+impl ItemType {
+    pub fn sprite_index(&self) -> usize {
+        match self {
+            ItemType::Cabbage => 94*64+33,
+            ItemType::Carrot => 94*64+24,
+            ItemType::PineLog => 94*64+30,
+            ItemType::OakLog => 94*64+30,
+            ItemType::CedarLog => 94*64+30,
+        }
+    }
+    pub fn nutrition(&self) -> f32 {
+        match self {
+            ItemType::Cabbage => 10.0,
+            ItemType::Carrot => 10.0,
+            _ => 0.0,
+        }
+    }
+    // pub fn spoilage(&self) -> f32 {
+    //     match self {
+    //         ItemType::Cabbage => 1.0,
+    //         ItemType::Carrot => 1.0,
+    //         _ => 0.0,
+    //     }
+    // }
+    pub fn spoilage_rate(&self) -> f32 {
+        match self {
+            ItemType::Cabbage => 0.1,
+            ItemType::Carrot => 0.1,
+            _ => 0.01,
+        }
+    }
+}
+
+#[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum PlantType {
-    PineTree, OakTree, CedarTree, Bush, BerryBush
+    PineTree, OakTree, CedarTree, Bush, ThornBush, Cabbage, Aloe, FlowerBush, Weed, Carrot, Azalea, Vine, CactusRound, CactusUp
+}
+
+impl PlantType {
+    pub fn is_edible(&self) -> bool {
+        match self {
+            PlantType::Cabbage => true,
+            _ => false,
+        }
+    }
+    pub fn sprite_index(&self) -> usize {
+        match self {
+            PlantType::PineTree => 13*64+13,
+            PlantType::OakTree => 13*64+14,
+            PlantType::CedarTree => 13*64+15,
+            PlantType::Bush => 67*64+57,
+            PlantType::ThornBush => 67*64+57,
+            PlantType::Cabbage => 94*64+32,
+            PlantType::Aloe => 67*64+57,
+            PlantType::FlowerBush => 67*64+57,
+            PlantType::Weed => 67*64+57,
+            PlantType::Carrot => 94*64+31,
+            PlantType::Azalea => 67*64+57,
+            PlantType::Vine => 67*64+57,
+            PlantType::CactusRound => 67*64+57,
+            PlantType::CactusUp => 67*64+57,
+        }
+    }
+    pub fn is_forageable(&self) -> (Option<ItemType>, i32) {
+        match self {
+            PlantType::Cabbage => (Some(ItemType::Cabbage), 1),
+            PlantType::Carrot => (Some(ItemType::Carrot), 1),
+            _ => (None, 0),
+        }
+    }
+    pub fn is_choppable(&self) -> (Option<ItemType>, i32) {
+        match self {
+            PlantType::PineTree => (Some(ItemType::PineLog), 1),
+            PlantType::OakTree => (Some(ItemType::OakLog), 1),
+            PlantType::CedarTree => (Some(ItemType::CedarLog), 1),
+            _ => (None, 0),
+        }
+    }
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum SelectableType {
-    Foragable, Choppable, Mineable, Constructable, Harvestable, Unselecting
+    Foragable, Choppable, Gatherable, Mineable, Constructable, Harvestable, Unselecting, Zoning, Unzoning
 }
 
 #[derive(Component)]
 pub struct WorkTarget;
-
-pub enum EdiblePlantTypes {
-    BerryBush
-}
 
 #[derive(Component)]
 pub struct Renderable {
@@ -207,6 +364,17 @@ pub struct Targeting {
 pub struct Pathing {
     pub path: Vec<Position>,
     pub destination: Position,
+    pub unreachable: bool
+}
+
+impl Default for Pathing {
+    fn default() -> Self {
+        Pathing {
+            path: Vec::new(),
+            destination: Position { x: 0, y: 0, z: 0 },
+            unreachable: false
+        }
+    }
 }
 
 #[derive(Component)]
@@ -267,10 +435,6 @@ pub struct NeedsSleep {
     pub current: f32,
     pub max: f32,
     pub rate: f32,
-}
-
-pub enum SPRITES {
-    LOGS = 151,
 }
 
 #[derive(Component)]

@@ -46,19 +46,33 @@ pub fn keyboard_input(
 pub fn scrollwheel_input(
     mut commands: Commands,
     mut scroll_evr: EventReader<MouseWheel>,
-    mut camera: Query<&mut Transform, With<Camera>>
+    //mut camera: Query<&mut Transform, With<Camera>>
+    mut camera: Query<&mut OrthographicProjection, With<Camera>>,
 ) {
-    for mut transform in camera.iter_mut() {
-        let move_speed = 16.0;
-        //transform.translation.x += 5.0;
-        let mut next_position = transform.translation;
+    for mut projection in camera.iter_mut() {
+        let mut next_zoom = projection.scale;
         for ev in scroll_evr.iter() {
             if ev.y > 0.0 {
-                next_position.z += move_speed;
+                next_zoom += 0.1;
             } else if ev.y < 0.0 {
-                next_position.z -= move_speed;
+                next_zoom -= 0.1;
             }
         }
-        transform.translation = next_position;
+        // Limit next_zoom to between 0.5 and 1.5
+        next_zoom = next_zoom.min(1.5).max(0.5);
+        projection.scale = next_zoom;
     }
+    // for mut transform in camera.iter_mut() {
+    //     let move_speed = 16.0;
+    //     //transform.translation.x += 5.0;
+    //     let mut next_position = transform.translation;
+    //     for ev in scroll_evr.iter() {
+    //         if ev.y > 0.0 {
+    //             next_position.z += move_speed;
+    //         } else if ev.y < 0.0 {
+    //             next_position.z -= move_speed;
+    //         }
+    //     }
+    //     transform.translation = next_position;
+    // }
 }

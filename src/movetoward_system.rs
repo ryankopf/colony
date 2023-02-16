@@ -8,6 +8,7 @@ impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
         app
         .add_system(movement_path_generating)
+        .add_system(clear_unreachable_paths)
         .add_fixed_timestep_system(
             "half_second", 0,
             movement_along_path.run_in_bevy_state(GameState::InGame),
@@ -34,7 +35,7 @@ pub fn movement_toward_attackable(
         if let Some(closest_target) = closest_target {
             commands.entity(attacker).insert(Targeting { target: closest_target });
             let target_position = attackables.get(closest_target).unwrap().1;
-            commands.entity(attacker).insert( Pathing { path: vec![], destination: target_position.clone() });
+            commands.entity(attacker).insert( Pathing { path: vec![], destination: target_position.clone(), ..default() });
         }
     }
 
@@ -52,6 +53,7 @@ pub fn movement_path_generating(
 ) {
     let tiletypes: &std::collections::HashMap<Position, TileType> = &tilehash.hash;
     for (start_position, mut pathing) in entities.iter_mut() {
+        // println!("Pathing: {:?} to destination: {:?} - Unreachable? {:?}", pathing.path, pathing.destination, pathing.unreachable);
         let destination = pathing.destination;
         if pathing.path.len() != 0 { continue; }
         
@@ -103,7 +105,7 @@ pub fn movement_path_generating(
 
             for neighbor in neighbors {
                 if tiletypes.get(&neighbor).is_none() { continue; }
-                if tiletypes.get(&neighbor).unwrap().clone() == TileType::Wall {
+                if tiletypes.get(&neighbor).unwrap().is_wall() {
                     continue;
                 }
                 let h = neighbor.distance(&destination);
@@ -124,6 +126,20 @@ pub fn movement_path_generating(
                 openlist.insert(neighbor.clone(), Node { position: neighbor.clone(), g: g, f: f, parent: Some(current_position.clone()) });
 
             }
+        }
+        // Unreachable!
+        if pathing.path.len() == 0 {
+            pathing.unreachable = true;
+        }
+    }
+}
+pub fn clear_unreachable_paths(
+    mut commands: Commands,
+    entities: Query<(Entity, &Pathing)>,
+) {
+    for (entity, pathing) in entities.iter() {
+        if pathing.unreachable {
+            commands.entity(entity).remove::<Pathing>();
         }
     }
 }

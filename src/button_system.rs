@@ -6,7 +6,12 @@ pub struct ButtonPlugin;
 
 impl Plugin for ButtonPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(button_system);
+        app
+        .add_system_set(
+            SystemSet::on_update(GameState::MainMenu)
+                .with_system(button_system),
+        )
+        ;
     }
 }
 

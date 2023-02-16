@@ -18,13 +18,13 @@ pub fn startup(
     mut commands: Commands,
     sprite_sheet: Res<SpriteSheet>,
     asset_server: Res<AssetServer>,
-    mut font_handle: ResMut<MyFont>,
+    biome: Res<Biome>,
 ) {
-    *font_handle = MyFont(asset_server.load("fonts/Helvetica.ttf"));
+    
     // GENERATE UNITS
     for i in 1..6 {
         let position = Position { x: 3, y: 3*i, z: 0 };
-        let mut sprite =  TextureAtlasSprite::new(9 + (i*10) as usize);
+        let mut sprite =  TextureAtlasSprite::new(66*64+46 as usize);
         
         commands.spawn(SpriteSheetBundle {
             sprite: sprite,
@@ -37,14 +37,12 @@ pub fn startup(
             ..Default::default()
         })
         .insert(position)
-        .insert(SizeXYZ::flat_2(TILE_SIZE+1.0))
-        //.insert(MoveRandom)
         .insert(position.to_transform_layer(1.0))
         .insert(Attackable)
         .insert(NeedsFood { current: 100.0, max: 100.0, rate: 0.1 })
         .insert( GiveMeAName )
         .insert( Status {
-            needs_food: Some(NeedsFood { current: 5.1, max: 100.0, rate: 0.1 }),
+            needs_food: Some(NeedsFood { current: 25.1, max: 100.0, rate: 0.1 }),
             needs_entertainment: Some(NeedsEntertainment { current: 100.0, max: 100.0, rate: 0.1 }),
             needs_sleep: Some(NeedsSleep { current: 15.2, max: 100.0, rate: 0.1 }),
             index: 0,
@@ -83,23 +81,14 @@ pub fn startup(
         let position = Position { x: x, y: y, z: 0 };
         if taken_positions.contains_key(&position) { continue; }
         taken_positions.insert(position, 1);
-        let plant_type = match rng.gen_range(0..20) {
-            0 => PlantType::BerryBush,
-            1 => PlantType::OakTree,
-            _ => PlantType::PineTree,
-        };
-        let plant_color = match plant_type {
-            PlantType::BerryBush => Color::PURPLE,
-            PlantType::OakTree => Color::rgb(0.5, 0.3, 0.0),
-            PlantType::PineTree => Color::rgb(0.4, 0.4, 0.1),
-            _ => Color::DARK_GREEN,
-        };
-        let mut sprite =  TextureAtlasSprite::new(match plant_type {
-            PlantType::BerryBush => 33,
-            PlantType::OakTree => 30,
-            PlantType::PineTree => 31,
-            _ => 0,
-        });
+        let plant_type = biome.plants[rng.gen_range(0..biome.plants.len())];
+        // let plant_color = match plant_type {
+        //     PlantType::BerryBush => Color::PURPLE,
+        //     PlantType::OakTree => Color::rgb(0.5, 0.3, 0.0),
+        //     PlantType::PineTree => Color::rgb(0.4, 0.4, 0.1),
+        //     _ => Color::DARK_GREEN,
+        // };
+        let mut sprite =  TextureAtlasSprite::new(plant_type.sprite_index());
         
         let plant = commands
             .spawn(SpriteSheetBundle {
@@ -113,12 +102,11 @@ pub fn startup(
                 ..Default::default()
             })
             .insert(position)
-            .insert(SizeXYZ::flat_2(TILE_SIZE+1.0))
             .insert(position.to_transform_layer(0.5))
             .insert(Plant { growth: growth, plant_type: plant_type })
             .id()
             ;
-        if plant_type == PlantType::BerryBush && growth > 0.5 {
+        if plant_type.is_forageable().0.is_some() && growth > 0.5 {
             commands.entity(plant).insert(Foragable);
         }
         if [PlantType::OakTree,PlantType::PineTree].contains(&plant_type) && growth > 0.5 {
@@ -126,15 +114,4 @@ pub fn startup(
         }
     }
 
-}
-
-pub fn load_sprites(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut texture_atlases: ResMut<Assets<TextureAtlas>>,
-) {
-    let texture_handle = asset_server.load("sprites.png");
-    let texture_atlas = TextureAtlas::from_grid(texture_handle, Vec2::new(32.0, 32.0), 10, 20, None, None);
-    let texture_atlas_handle = texture_atlases.add(texture_atlas);
-    commands.insert_resource(SpriteSheet(texture_atlas_handle));
 }

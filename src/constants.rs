@@ -9,7 +9,6 @@ pub const VIEWAREA_HEIGHT: u32 = 40;
 pub const TILE_SIZE: f32 = 32.0;
 
 // UI CONSTANTS
-use bevy::prelude::*;
 
 // pub trait Standards {
 //     const STANDARD: Self;
@@ -23,3 +22,4 @@ use bevy::prelude::*;
 //         color: Color::WHITE,
 //     };
 // }
+

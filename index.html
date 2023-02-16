@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>IT IS A GAME</title>
+    <script>
+      (async () => {
+        let response = await fetch('target/wasm32-unknown-unknown/debug/colony.wasm');
+        let bytes = await response.arrayBuffer();
+        let { instance } = await WebAssembly.instantiate(bytes, { });
+
+        //console.log('The answer is: ', instance.exports.add_one(13));
+      })();
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

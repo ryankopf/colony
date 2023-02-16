@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="6ecd3d76-c9fb-48ee-b73d-604951ef4470" name="Extras">
+        <fileTransfer accessType="SFTP" host="54.92.198.217" port="22" sshConfigId="8586872f-eb3a-4145-b3d1-12158eef0a09" sshConfig="new.upcomingcons.com" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

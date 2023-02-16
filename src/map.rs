@@ -14,14 +14,18 @@ pub struct Map {
 pub fn generate_map(
     mut commands: Commands,
     sprite_sheet: Res<SpriteSheet>,
+    biome: Res<Biome>,
 ) {
     let mut tiletypes: std::collections::HashMap<Position, TileType> = std::collections::HashMap::new();
     for x in 0..MAP_WIDTH {
         for y in 0..MAP_LENGTH {
             let tyle_type = if x == 0 || x == MAP_WIDTH - 1 || y == 0 || y == MAP_LENGTH - 1 {
-                TileType::Wall
+                TileType::WallGame
             } else {
-                TileType::Floor
+                //Generate random number from 0 to biome.tiles.len()
+                //let random_index = rand::thread_rng().gen_range(0..biome.tiles.len());
+                biome.tiles.choose(&mut rand::thread_rng()).unwrap().clone()//.unwrap_or(TileType::Grass)
+                //TileType::Grass
             };
             spawn_tile(&mut commands, Position { x, y, z: 0 }, tyle_type.clone(), &sprite_sheet);
             tiletypes.insert( Position { x, y, z: 0 }, tyle_type);
@@ -47,7 +51,7 @@ fn spawn_tile(
     tile_type: TileType,
     sprite_sheet: &SpriteSheet,
 ) {
-    let sprite =  TextureAtlasSprite::new(match tile_type { TileType::Wall => 41, _ => 0 });
+    let sprite =  TextureAtlasSprite::new(tile_type.to_index());
     // sprite.color = Color::rgb(0.5, 0.5, 0.5);
     // sprite.custom_size = Some(Vec2::new(TILE_SIZE, TILE_SIZE));//Some(Vec2::splat(1.0));
         // commands.spawn(SpriteBundle {
