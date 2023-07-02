@@ -32,6 +32,12 @@ Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to 
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Art
+
+The art may fall under different licensing conditions. Please see the specific licenses regarding any artwork.
+
+Main tailset is from https://opengameart.org/content/dungeon-crawl-32x32-tiles and it is shown as CC-0.
+
 ## Contribution License
 
 By contributing to this project, you agree to license your contributions under the terms of the MIT license. Additionally, you grant the project owner, Ryan Kopf, an unlimited, irrevocable, perpetual, universe-wide license to use your contributions for any purpose, including but not limited to commercial purposes, without any additional restrictions or obligations.
