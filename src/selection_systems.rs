@@ -154,8 +154,6 @@ fn select_unzoning(
 ) {
     if event.is_empty() { return; }
     if dragging.looking_for != SelectableType::Unzoning { return; }
-    println!("Unzoning: {:?}", zonemarkers.iter().len());
-    println!("H: {:?}", highlighteds.iter().len());
     for entity in highlighteds.iter() {
         commands.entity(entity).remove::<Zone>();
         for (zonemarker, parent) in zonemarkers.iter() {

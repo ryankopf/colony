@@ -297,11 +297,17 @@ impl PlantType {
             PlantType::CactusUp => 67*64+57,
         }
     }
-    pub fn is_forageable(&self) -> (Option<ItemType>, i32) {
+    pub fn growth_speed(&self) -> f32 {
         match self {
-            PlantType::Cabbage => (Some(ItemType::Cabbage), 1),
-            PlantType::Carrot => (Some(ItemType::Carrot), 1),
-            _ => (None, 0),
+            PlantType::Cabbage => 0.001,
+            _ => 0.01
+        }
+    }
+    pub fn is_forageable(&self) -> (Option<ItemType>, i32, ForageType) {
+        match self {
+            PlantType::Cabbage => (Some(ItemType::Cabbage), 1, ForageType::Once),
+            PlantType::Carrot => (Some(ItemType::Carrot), 1, ForageType::Once),
+            _ => (None, 0, ForageType::Once),
         }
     }
     pub fn is_choppable(&self) -> (Option<ItemType>, i32) {
@@ -312,6 +318,11 @@ impl PlantType {
             _ => (None, 0),
         }
     }
+}
+
+#[derive(Component, PartialEq, Copy, Clone, Debug)]
+pub enum ForageType {
+    Once, Repeat
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]

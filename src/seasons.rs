@@ -21,7 +21,8 @@ pub fn seasons(
     for (entity, mut plant, mut transform, foragable, choppable) in plants.iter_mut() {
         if plant.growth < 1.0 {
             let rand = rand::thread_rng().gen_range(0..2);
-            plant.growth += match rand { 0 => 0.03, 1 => 0.01, _ => 0.0 };
+            let base_growth_speed = plant.plant_type.growth_speed();
+            plant.growth += match rand { 0 => 3.0 * base_growth_speed, 1 => base_growth_speed, _ => 0.0 };
             transform.scale = Vec3::new(plant.growth, plant.growth, 1.0);
             if plant.growth >= 0.5 {
                 // Is plant one that is typically edible?

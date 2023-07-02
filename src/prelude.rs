@@ -7,7 +7,7 @@ pub use rand::prelude::random;
 pub use rand::Rng;
 pub use super::components::{Position,
     MapTile, SizeXYZ, MoveRandom, MonsterGenerator, TileType, MoveTowardsNearestAttackable, GeneratedBy, Targeting, MoveTowardsTarget, Attackable, Pathing,
-    Plant, PlantType, ItemType, Foragable, Choppable,
+    Plant, PlantType, ItemType, Foragable, Choppable, ForageType,
     Status, NeedsFood, NeedsEntertainment, NeedsSleep,
     HasName, IsName, HasNameShown, TextName, GiveMeAName,
     Brain,

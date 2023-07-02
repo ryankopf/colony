@@ -56,7 +56,12 @@ fn spawn_food(
 ) {
     plant.growth = 0.1;
     let pt = plant.plant_type.is_forageable().0.unwrap_or( ItemType::Cabbage );
-    commands.entity(foragable_entity).remove::<Foragable>();
+    if plant.plant_type.is_forageable().2 == ForageType::Once {
+        commands.entity(foragable_entity).despawn_recursive();
+    } else {
+        commands.entity(foragable_entity).remove::<Foragable>();
+    }
+    
     // SPAWN TWO FOOD.
     for i in 2..4 {
         let mut p = foragable_position.clone();
