@@ -21,14 +21,14 @@ pub fn task_system_plant(
             let distance = position.distance(targetable_position);
             if distance <= 1 && targeting.is_some() && targeting.unwrap().target == targetable_entity {
                 commands.entity(entity).remove::<Targeting>();
-                spawn_plant(&mut commands, targetable_position, &sprite_sheet, &zone); // Did plant! Now, go ahead and try planting again....
+                spawn_plant(&mut commands, targetable_position, &sprite_sheet, zone); // Did plant! Now, go ahead and try planting again....
                 continue 'brains;
             }
             // Unless it is already targetted by someone other than you.
             if already_targeted.contains(&targetable_entity) { continue; }
               
             if nearest_entity.is_none() || distance < nearest_entity.as_ref().unwrap().distance {
-                nearest_entity = Some(NearestEntity { entity: targetable_entity, distance: distance, position: targetable_position.clone() })
+                nearest_entity = Some(NearestEntity { entity: targetable_entity, distance, position: *targetable_position })
             }
         }
         if let Some(nearest_entity) = nearest_entity {
@@ -51,7 +51,7 @@ fn spawn_plant(
     // commands.entity(foragable_entity).remove::<Foragable>();
     let sprite =  TextureAtlasSprite::new(zone.plant_type.sprite_index());
     commands.spawn(SpriteSheetBundle {
-        sprite: sprite,
+        sprite,
         texture_atlas: sprite_sheet.0.clone(),
         transform: Transform::from_xyz(
             position.x as f32 * TILE_SIZE,
@@ -60,7 +60,7 @@ fn spawn_plant(
         ),
         ..default()
     })
-    .insert(position.clone())
+    .insert(*position)
     .insert(position.to_transform_layer(0.5))
     .insert(Plant { growth: 0.4, plant_type: zone.plant_type })
     ;

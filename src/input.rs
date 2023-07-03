@@ -2,7 +2,7 @@
 use crate::prelude::*;
 
 pub fn keyboard_input(
-    mut commands: Commands,
+    _commands: Commands,
     input: Res<Input<KeyCode>>,
     mut camera: Query<&mut Transform, With<Camera>>,
     mut gamestate: ResMut<State<GameState>>,
@@ -33,17 +33,15 @@ pub fn keyboard_input(
             next_position.x += move_speed;
         }
         transform.translation = next_position;
-        if (next_position.x >= -15.0) && (next_position.x < VIEWAREA_WIDTH as f32 * MAP_WIDTH as f32) {
-            if (next_position.y >= -15.0) && (next_position.y < VIEWAREA_HEIGHT as f32 * MAP_LENGTH as f32) {
-                //transform.translation = next_position;
-            }
+        if (next_position.x >= -15.0) && (next_position.x < VIEWAREA_WIDTH as f32 * MAP_WIDTH as f32) && (next_position.y >= -15.0) && (next_position.y < VIEWAREA_HEIGHT as f32 * MAP_LENGTH as f32) {
+            //transform.translation = next_position;
         }
         //transform.translation = next_position;
     }
 }
 
 pub fn scrollwheel_input(
-    mut commands: Commands,
+    _commands: Commands,
     mut scroll_evr: EventReader<MouseWheel>,
     //mut camera: Query<&mut Transform, With<Camera>>
     mut camera: Query<&mut OrthographicProjection, With<Camera>>,

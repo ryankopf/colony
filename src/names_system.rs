@@ -2,7 +2,7 @@ use super::prelude::*;
 
 pub fn names_system(
     mut commands: Commands,
-    query: Query<(Entity, &HasName), (Without<HasNameShown>)>,
+    query: Query<(Entity, &HasName), Without<HasNameShown>>,
     asset_server: Res<AssetServer>
 ) {
     for (entity, has_name) in query.iter() {

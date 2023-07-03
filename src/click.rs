@@ -95,7 +95,7 @@ pub fn mouse_drag_system(
     // Yes, this runs all the time.
     // But it's not a problem, because it's a no-op if we're not dragging.
     if !dragging.dragging { return; }
-    if dragging.start_position == None { return; }
+    if dragging.start_position.is_none() { return; }
     let start_position = dragging.start_position.unwrap();
     let (camera, camera_transform) = q_camera.single();
     let window = windows.get_primary().unwrap();
@@ -103,29 +103,29 @@ pub fn mouse_drag_system(
     if let Some(screen_pos) = window.cursor_position() {
         end_position = Some(mouse_to_position(camera, camera_transform, window, screen_pos));
     }
-    if end_position == None { return; }
+    if end_position.is_none() { return; }
     let end_position = end_position.unwrap();
     // Now just take all objects with a position that matches and mark them as "Highlighted".
     // Somehow only allow the types I want to be highlighted. Foragable. Unit. Choppable. Food. Storable.
     for (entity, pos, highlighted) in positions.iter() {
         if (start_position.x.min(end_position.x) <= pos.x) && (pos.x <= start_position.x.max(end_position.x) && (start_position.y.min(end_position.y) <= pos.y) && (pos.y <= start_position.y.max(end_position.y))) {
-            if (highlighted.is_some()) { continue; }
+            if highlighted.is_some() { continue; }
             let highlight_box = commands.spawn(SpriteBundle {
                 sprite: Sprite {
                     color: Color::rgba(1.0, 1.0, 1.0, 0.2),
-                    custom_size: Some(Vec2::new(TILE_SIZE as f32, TILE_SIZE as f32)),
+                    custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                     ..default()
                 },
                 transform: Transform::from_xyz(0.0, 0.0, pos.z as f32 + 0.1),//pos.x as f32, pos.y as f32, pos.z as f32 + 0.1),
                 ..default()
             }).insert(HighlightBox).id();
-            commands.entity(entity).insert(Highlighted { ..default() });
+            commands.entity(entity).insert(Highlighted );
             commands.entity(entity).add_child(highlight_box);
         } else {
-            if (highlighted.is_none()) { continue; }
+            if highlighted.is_none() { continue; }
             commands.entity(entity).remove::<Highlighted>();
             for (highlight_box, parent) in highlightboxes.iter() {
-                if (parent.get() == entity) {
+                if parent.get() == entity {
                     commands.entity(highlight_box).despawn();
                 }
             }
@@ -146,11 +146,11 @@ pub fn mouse_move_system(
     if let Some(screen_pos) = window.cursor_position() {
         pos = Some(mouse_to_position(camera, camera_transform, window, screen_pos));
     }
-    if pos == None { return; }
+    if pos.is_none() { return; }
     let pos = pos.unwrap();
     // Append info for each object to the SelectedObjectInfo.
     object_info.info = vec![];
-    for (e, p, b) in positions.iter() {
+    for (_e, p, b) in positions.iter() {
         if (p.x == pos.x) && (p.y == pos.y) {
             object_info.info.push("Object ".to_string());
             if let Some(brain) = b {
@@ -162,13 +162,13 @@ pub fn mouse_move_system(
 }
 
 pub fn object_finder_system(
-    mut commands: Commands,
+    _commands: Commands,
     mut event: EventReader<ObjectFinderEvent>,
     mut people: Query<(&Position, &mut Brain)>,
     //tile_hash: Res<TileHash>,
 ) {
     for event in event.iter() {
-        for (position, mut brain) in people.iter_mut() {
+        for (position, _brain) in people.iter_mut() {
             if position == &event.position {
                 info!("found a person at {}/{}", position.x, position.y);
             }
@@ -187,7 +187,7 @@ fn mouse_to_position(
     screen_pos: Vec2,
 ) -> Position {
     // get the size of the window
-    let window_size = Vec2::new(window.width() as f32, window.height() as f32);
+    let window_size = Vec2::new(window.width(), window.height());
     
     // convert screen position [0..resolution] to ndc [-1..1] (gpu coordinates)
     let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE;
@@ -203,14 +203,14 @@ fn mouse_to_position(
 
     // get a Position
     //println!("World coords: {}/{}", world_pos.x, world_pos.y);
-    world_pos.x = world_pos.x + (TILE_SIZE / 2.0) as f32;
-    world_pos.y = world_pos.y + (TILE_SIZE / 2.0) as f32;
-    let position = Position { x: (world_pos.x / TILE_SIZE) as i32, y: (world_pos.y / TILE_SIZE) as i32, z: 0 };
+    world_pos.x += TILE_SIZE / 2.0;
+    world_pos.y += TILE_SIZE / 2.0;
+    
 
     // eprintln!("World coords: {}/{}", world_pos.x, world_pos.y);
     // eprintln!("Position: {}/{}", position.x, position.y);
     // event.send(ObjectFinderEvent { position });
     // dragging.dragging = true;
     // dragging.start_position = Some(position);
-    return position
+    Position { x: (world_pos.x / TILE_SIZE) as i32, y: (world_pos.y / TILE_SIZE) as i32, z: 0 }
 }

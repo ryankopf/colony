@@ -25,12 +25,12 @@ pub fn task_system_forage(
             if already_targeted.contains(&foragable_entity) { continue; }
             
             if nearest_entity.is_none() || distance < nearest_entity.as_ref().unwrap().distance {
-                nearest_entity = Some(NearestEntity { entity: foragable_entity, distance: distance, position: foragable_position.clone() })
+                nearest_entity = Some(NearestEntity { entity: foragable_entity, distance, position: *foragable_position })
             }
         }
         if let Some(nearest_entity) = nearest_entity {
             commands.entity(entity).insert(Targeting { target: nearest_entity.entity });
-            commands.entity(entity).insert(Pathing { path: vec![], destination: nearest_entity.position.clone(), ..default() });
+            commands.entity(entity).insert(Pathing { path: vec![], destination: nearest_entity.position, ..default() });
             already_targeted.push(nearest_entity.entity);
         } else { // Just foraged, or there was no foragable.
             commands.entity(entity).remove::<Targeting>();
@@ -64,12 +64,12 @@ fn spawn_food(
     
     // SPAWN TWO FOOD.
     for i in 2..4 {
-        let mut p = foragable_position.clone();
+        let mut p = *foragable_position;
         p.x += if (i%2) == 0 { i/2 } else { -i/2 };
         p.y += if (i%2) == 0 { i/2 } else { -i/2 };
         let sprite =  TextureAtlasSprite::new(pt.sprite_index());
         commands.spawn(SpriteSheetBundle {
-            sprite: sprite,
+            sprite,
             texture_atlas: sprite_sheet.0.clone(),
             ..Default::default()
         })

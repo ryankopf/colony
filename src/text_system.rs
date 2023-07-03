@@ -39,7 +39,7 @@ pub fn text_update_system(
     mut query: Query<&mut Text, With<FpsText>>
 ) {
     for mut text in &mut query {
-        text.sections[1].value = format!("ZZZZZZ");
+        text.sections[1].value = "ZZZZZZ".to_string();
         // if let Some(fps) = diagnostics.get(FrameTimeDiagnosticsPlugin::FPS) {
         //     if let Some(value) = fps.smoothed() {
         //         // Update the value of the second section

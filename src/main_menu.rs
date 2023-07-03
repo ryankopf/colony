@@ -19,8 +19,8 @@ impl Plugin for MainMenusPlugin {
 
 fn open_main_menu(
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    _asset_server: Res<AssetServer>,
+    _materials: ResMut<Assets<ColorMaterial>>,
     mut windows: ResMut<Windows>,
     font: Res<MyFont>,
 ) {
@@ -28,7 +28,7 @@ fn open_main_menu(
     let window = windows.get_primary_mut().unwrap();
     let width = window.width();
     let height = window.height();
-    let window_size = Vec2::new(width, height);
+    let _window_size = Vec2::new(width, height);
 
     // Create main menu
     let text_style = TextStyle {
@@ -95,7 +95,7 @@ fn open_main_menu(
                 ).with_text_alignment(TextAlignment::CENTER)
                 );
             });
-            ;
+
 
         })
         // .spawn(TextComponents {
@@ -125,7 +125,7 @@ fn open_main_menu(
 
 pub fn close_main_menu(
     mut commands: Commands,
-    mut state: ResMut<State<GameState>>,
+    _state: ResMut<State<GameState>>,
     mut query: Query<Entity, With<MainMenuOverlay>>,
 ) {
     for entity in query.iter_mut() {

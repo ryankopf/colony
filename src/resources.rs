@@ -41,16 +41,13 @@ impl Default for Dragging {
 pub struct MyFont(pub Handle<Font>);
 
 #[derive(Resource)]
+#[derive(Default)]
 pub struct SelectedObjectInformation {
     // It's a vec of strings.
     pub info: Vec<String>,
 }
 
-impl Default for SelectedObjectInformation {
-    fn default() -> Self {
-        Self { info: vec![] }
-    }
-}
+
 
 #[derive(Resource)]
 pub struct MenuState {

@@ -75,12 +75,8 @@ impl TileType {
         }
     }
     pub fn is_wall(&self) -> bool {
-        match self {
-            TileType::WallGame | TileType::WallStone => true,
-            TileType::WallWood | TileType::WallBrick => true,
-            TileType::WallMetal => true,
-            _ => false,
-        }
+        matches!(self, TileType::WallGame | TileType::WallStone | TileType::WallWood | TileType::WallBrick | TileType::WallMetal)
+
     }
 }
 
@@ -124,13 +120,10 @@ pub struct TextName;
 pub struct HighlightBox;
 
 #[derive(Component)]
+#[derive(Default)]
 pub struct Highlighted;
 
-impl Default for Highlighted {
-    fn default() -> Self {
-        Highlighted {}
-    }
-}
+
 
 #[derive(Component)]
 pub struct InGameButton;
@@ -146,6 +139,7 @@ pub struct Status {
     pub injured: bool
 }
 #[derive(Component, PartialEq)]
+#[derive(Default)]
 pub struct Brain {
     pub motivation: Option<Motivation>,
     pub task: Option<Task>,
@@ -158,15 +152,7 @@ impl Brain {
         self.order = None;
     }
 }
-impl Default for Brain {
-    fn default() -> Self {
-        Brain {
-            motivation: None,
-            task: None,
-            order: None,
-        }
-    }
-}
+
 
 #[derive(Component)]
 pub struct Foragable;
@@ -274,10 +260,7 @@ pub enum PlantType {
 
 impl PlantType {
     pub fn is_edible(&self) -> bool {
-        match self {
-            PlantType::Cabbage => true,
-            _ => false,
-        }
+        matches!(self, PlantType::Cabbage)
     }
     pub fn sprite_index(&self) -> usize {
         match self {
@@ -449,11 +432,6 @@ pub struct NeedsSleep {
 }
 
 #[derive(Component)]
+#[derive(Default)]
 pub struct Logs;
 
-impl Default for Logs {
-    fn default() -> Self {
-        Logs {
-        }
-    }
-}

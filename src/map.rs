@@ -39,7 +39,7 @@ pub fn _update_map_tiles(
 ) {
     let mut tiletypes: std::collections::HashMap<Position, TileType> = std::collections::HashMap::new();
     for (tile_position, tile_type) in tiles.iter() {
-        tiletypes.insert(tile_position.clone(), tile_type.clone());
+        tiletypes.insert(*tile_position, tile_type.clone());
     }
     println!("tiletypes: {:?}", tiletypes);
     commands.insert_resource(TileHash { hash: tiletypes });
@@ -63,7 +63,7 @@ fn spawn_tile(
         //     ..default()
         // })
     commands.spawn(SpriteSheetBundle {
-            sprite: sprite,
+            sprite,
             texture_atlas: sprite_sheet.0.clone(),
             transform: Transform::from_xyz(
                 position.x as f32 * TILE_SIZE,

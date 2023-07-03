@@ -2,11 +2,37 @@ use bevy::time::FixedTimestep;
 mod prelude;
 pub use crate::prelude::*;
 
-use std::time::Duration;
 use retrieve::mod_use;
-#[mod_use(biome, button_system, click, components, constants, game_ui, input, load, main_menu, map, monstergenerator_system, moverandom_system, movetoward_system,
-    namegiving_system, names_system, needs, pause, resources, seasons, selection_systems, spoilage_system, startup, statusdisplay_system,
-    task_system, text_system, thinking_system, window_system)]
+use std::time::Duration;
+#[mod_use(
+    biome,
+    button_system,
+    click,
+    components,
+    constants,
+    game_ui,
+    input,
+    load,
+    main_menu,
+    map,
+    monstergenerator_system,
+    moverandom_system,
+    movetoward_system,
+    namegiving_system,
+    names_system,
+    needs,
+    pause,
+    resources,
+    seasons,
+    selection_systems,
+    spoilage_system,
+    startup,
+    statusdisplay_system,
+    task_system,
+    text_system,
+    thinking_system,
+    window_system
+)]
 
 fn main() {
     //println!("Hello, world!");
@@ -15,16 +41,12 @@ fn main() {
         .add_plugin(BiomePlugin)
         .add_startup_system_to_stage(StartupStage::PreStartup, load_sprites)
         .add_startup_system_to_stage(StartupStage::PreStartup, load_font)
-        .add_fixed_timestep(
-            Duration::from_millis(500),
-            "half_second",
-        )
-        .add_fixed_timestep(
-            Duration::from_millis(2000),
-            "two_second",
-        )
+        .add_fixed_timestep(Duration::from_millis(500), "half_second")
+        .add_fixed_timestep(Duration::from_millis(2000), "two_second")
         .insert_resource(SelectedObjectInformation::default())
-        .insert_resource(MenuState { state: MenuStates::Home } )
+        .insert_resource(MenuState {
+            state: MenuStates::Home,
+        })
         .add_startup_system(generate_map)
         .add_plugin(StartupPlugin)
         .add_startup_system(setup_camera)
@@ -65,14 +87,8 @@ fn main() {
         .add_system(scrollwheel_input)
         .add_plugin(ClickPlugin)
         .add_system(bevy::window::close_on_esc)
-        .add_system_set(
-            SystemSet::on_enter(GameState::Paused)
-            .with_system(on_pause)
-        )
-        .add_system_set(
-            SystemSet::on_enter(GameState::InGame)
-            .with_system(on_unpause)
-        )
+        .add_system_set(SystemSet::on_enter(GameState::Paused).with_system(on_pause))
+        .add_system_set(SystemSet::on_enter(GameState::InGame).with_system(on_unpause))
         .run();
 }
 
@@ -81,7 +97,6 @@ fn main() {
 // ) {
 //     *state == GameState::InGame
 // }
-
 
 fn setup_camera(mut commands: Commands) {
     let mut camera = Camera2dBundle::default();
@@ -96,8 +111,8 @@ fn remove_bad_positions(
     tiletypes: Res<TileHash>,
 ) {
     for (entity, position) in query.iter() {
-        if tiletypes.hash.contains_key(&position) {
-            if tiletypes.hash.get(&position).unwrap().is_wall() {
+        if tiletypes.hash.contains_key(position) {
+            if tiletypes.hash.get(position).unwrap().is_wall() {
                 commands.entity(entity).despawn();
             }
         } else {
