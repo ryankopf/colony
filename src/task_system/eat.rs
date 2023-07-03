@@ -3,7 +3,7 @@ use crate::prelude::*;
 pub fn task_system_eat(
     mut commands: Commands,
     mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>, Option<&mut Status>), Without<Pathing>>,
-    mut query_food: Query<(Entity, &Position, &Food)>,
+    query_food: Query<(Entity, &Position, &Food)>,
 ) {
     // Set list of entities that are already being targetted.
     let mut already_targeted = query.iter().filter(|(_, _, _, targeting, _)| targeting.is_some()).map(|(_, _, _, targeting, _)| targeting.unwrap().target).collect::<Vec<Entity>>();
@@ -44,7 +44,7 @@ pub fn task_system_eat(
         }
         if let Some(closest_entity) = closest_entity {
             commands.entity(entity).insert(Targeting { target: closest_entity });
-            commands.entity(entity).insert(Pathing { path: vec![], destination: closest_position.unwrap().clone(), ..default() });
+            commands.entity(entity).insert(Pathing { path: vec![], destination: *closest_position.unwrap(), ..default() });
             already_targeted.push(closest_entity);
             found_food = true;
         } else {

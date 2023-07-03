@@ -35,7 +35,7 @@ pub fn movement_toward_attackable(
         if let Some(closest_target) = closest_target {
             commands.entity(attacker).insert(Targeting { target: closest_target });
             let target_position = attackables.get(closest_target).unwrap().1;
-            commands.entity(attacker).insert( Pathing { path: vec![], destination: target_position.clone(), ..default() });
+            commands.entity(attacker).insert( Pathing { path: vec![], destination: *target_position, ..default() });
         }
     }
 
@@ -55,14 +55,14 @@ pub fn movement_path_generating(
     for (start_position, mut pathing) in entities.iter_mut() {
         // println!("Pathing: {:?} to destination: {:?} - Unreachable? {:?}", pathing.path, pathing.destination, pathing.unreachable);
         let destination = pathing.destination;
-        if pathing.path.len() != 0 { continue; }
+        if !pathing.path.is_empty() { continue; }
         
         // F = G + H
         // G = distance from start
         // H = distance from end
         let mut openlist: std::collections::HashMap<Position, Node> = std::collections::HashMap::new();
         let mut closedlist: std::collections::HashMap<Position, Node> = std::collections::HashMap::new();
-        openlist.insert(start_position.clone(), Node { position: start_position.clone(), g: 0, f: 0, parent: None });
+        openlist.insert(*start_position, Node { position: *start_position, g: 0, f: 0, parent: None });
         while !openlist.is_empty() {
             let mut current_node = None;
             let mut lowest_f = -1;
@@ -72,26 +72,26 @@ pub fn movement_path_generating(
                     lowest_f = node.f;
                 }
             }
-            if let None = current_node {
+            if current_node.is_none() {
                 break;
             }
             let current_node = current_node.unwrap().clone();
-            let mut current_position = current_node.position.clone();
+            let mut current_position = current_node.position;
             openlist.remove(&current_position);
             // Add n to the CLOSED list
             let g = current_node.g + 1;
             let h = current_position.distance(&destination);
             let f = g + h;
-            closedlist.insert(current_position.clone(), Node { position: current_position.clone(), g: g, f: f, parent: current_node.parent });
+            closedlist.insert(current_position, Node { position: current_position, g, f, parent: current_node.parent });
             // IF n is the same as the goal, we have a solution. Backtrack to find the path.
             if current_position == destination {
                 let mut nodelist: Vec<Position> = vec![];
                 loop {
-                    nodelist.push(current_position.clone());
-                    if let None = closedlist.get(&current_position) { break; }
+                    nodelist.push(current_position);
+                    if closedlist.get(&current_position).is_none() { break; }
                     match closedlist.get(&current_position).unwrap().parent {
                         None => break,
-                        _ => current_position = closedlist.get(&current_position).unwrap().parent.clone().unwrap(),
+                        _ => current_position = closedlist.get(&current_position).unwrap().parent.unwrap(),
                     }
                 }
                 pathing.path = nodelist;
@@ -111,24 +111,20 @@ pub fn movement_path_generating(
                 let h = neighbor.distance(&destination);
                 let g = current_node.g + 1;
                 let f = g + h;
-                if openlist.contains_key(&neighbor) {
-                    if g > openlist.get(&neighbor).unwrap().g {
-                        continue;
-                    }
+                if openlist.contains_key(&neighbor) && g > openlist.get(&neighbor).unwrap().g {
+                    continue;
                 }
-                if closedlist.contains_key(&neighbor) {
-                    if g > closedlist.get(&neighbor).unwrap().g {
-                        continue;
-                    }
+                if closedlist.contains_key(&neighbor) && g > closedlist.get(&neighbor).unwrap().g {
+                    continue;
                 }
                 openlist.remove(&neighbor);
                 closedlist.remove(&neighbor);
-                openlist.insert(neighbor.clone(), Node { position: neighbor.clone(), g: g, f: f, parent: Some(current_position.clone()) });
+                openlist.insert(neighbor, Node { position: neighbor, g, f, parent: Some(current_position) });
 
             }
         }
         // Unreachable!
-        if pathing.path.len() == 0 {
+        if pathing.path.is_empty() {
             pathing.unreachable = true;
         }
     }
@@ -149,13 +145,13 @@ pub fn movement_along_path(
     mut entities: Query<(Entity, &mut Position, &mut Pathing, &mut Transform)>,
 ) {
     for (entity, mut position, mut pathing, mut transform) in entities.iter_mut() {
-        if pathing.path.len() == 0 { continue; }
+        if pathing.path.is_empty() { continue; }
         let next_position = pathing.path.pop().unwrap();
         *position = next_position;
         let next_transform = next_position.to_transform();
-        transform.translation.x = next_transform.translation.x as f32;
-        transform.translation.y = next_transform.translation.y as f32;
-        if pathing.path.len() == 0 {
+        transform.translation.x = next_transform.translation.x;
+        transform.translation.y = next_transform.translation.y;
+        if pathing.path.is_empty() {
             commands.entity(entity).remove::<Pathing>();
         }
     }

@@ -9,24 +9,24 @@ pub fn status_display_system (
     for (child, _) in q_children.iter_mut() {
         commands.entity(child).despawn();
     }
-    for (entity, has_name, mut status, brain, children) in query.iter_mut() {
+    for (entity, has_name, mut status, brain, _children) in query.iter_mut() {
         // Pick the text value to show.
         //let y = commands.entity(entity).log_components();//::<HasName>();
         //let mut text_value = "FIRE".to_string();
         let mut vec_statuses: Vec<String> = vec![];
         vec_statuses.push(has_name.name.clone());
         if let Some(n) = &status.needs_food {
-            if (n.current < 5.0) {
+            if n.current < 5.0 {
                 vec_statuses.push("HUNGRY".to_string());
             }
         }
         if let Some(n) = &status.needs_entertainment {
-            if (n.current < 5.0) {
+            if n.current < 5.0 {
                 vec_statuses.push("BORED".to_string());
             }
         }
         if let Some(n) = &status.needs_sleep {
-            if (n.current < 5.0) {
+            if n.current < 5.0 {
                 vec_statuses.push("TIRED".to_string());
             }
         }
@@ -41,7 +41,7 @@ pub fn status_display_system (
             status.index = 0;
         }
         let chosen_text = vec_statuses[status.index].clone();
-        status.index = status.index + 1;
+        status.index += 1;
         
         // NOW SHOW THE TEXT
         let font = asset_server.load("fonts/FiraSans-Medium.ttf");

@@ -33,19 +33,17 @@ pub fn monster_generator(
         for (tile_position, tile_type) in tile_types.iter() {
             let mut p2 = new_position;
             p2.z = 0;
-            if *tile_position == p2 {
-                if !tile_type.is_wall() {
-                    can_generate = true;
-                }
+            if *tile_position == p2 && !tile_type.is_wall() {
+                can_generate = true;
             }
         }
-        for (ent, parent) in generated_monsters.iter() {
+        for (_ent, parent) in generated_monsters.iter() {
             if parent.entity == entity {
                 can_generate = false;
             }
         }
 
-        if (!can_generate) {
+        if !can_generate {
             return;
         }
         commands
@@ -60,7 +58,7 @@ pub fn monster_generator(
             .insert(new_position)
             .insert(SizeXYZ::cube(1.1))
             .insert(new_position.to_transform_layer(1.0))
-            .insert(GeneratedBy { entity: entity })
+            .insert(GeneratedBy { entity })
             .insert(MoveTowardsNearestAttackable)
             //.insert( HasName { name: "Wolf".to_string() } )
             ;

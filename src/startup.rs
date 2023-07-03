@@ -17,17 +17,17 @@ impl Plugin for StartupPlugin {
 pub fn startup(
     mut commands: Commands,
     sprite_sheet: Res<SpriteSheet>,
-    asset_server: Res<AssetServer>,
+    _asset_server: Res<AssetServer>,
     biome: Res<Biome>,
 ) {
     
     // GENERATE UNITS
     for i in 1..6 {
         let position = Position { x: 3, y: 3*i, z: 0 };
-        let mut sprite =  TextureAtlasSprite::new(66*64+46 as usize);
+        let sprite =  TextureAtlasSprite::new(66*64+46_usize);
         
         commands.spawn(SpriteSheetBundle {
-            sprite: sprite,
+            sprite,
             texture_atlas: sprite_sheet.0.clone(),
             transform: Transform::from_xyz(
                 position.x as f32 * TILE_SIZE,
@@ -78,7 +78,7 @@ pub fn startup(
         let x = rng.gen_range(1..MAP_WIDTH-1);
         let y = rng.gen_range(1..MAP_LENGTH-1);
         let growth = rng.gen_range(0.1..1.0);
-        let position = Position { x: x, y: y, z: 0 };
+        let position = Position { x, y, z: 0 };
         if taken_positions.contains_key(&position) { continue; }
         taken_positions.insert(position, 1);
         let plant_type = biome.plants[rng.gen_range(0..biome.plants.len())];
@@ -88,11 +88,11 @@ pub fn startup(
         //     PlantType::PineTree => Color::rgb(0.4, 0.4, 0.1),
         //     _ => Color::DARK_GREEN,
         // };
-        let mut sprite =  TextureAtlasSprite::new(plant_type.sprite_index());
+        let sprite =  TextureAtlasSprite::new(plant_type.sprite_index());
         
         let plant = commands
             .spawn(SpriteSheetBundle {
-                sprite: sprite,
+                sprite,
                 texture_atlas: sprite_sheet.0.clone(),
                 transform: Transform::from_xyz(
                     position.x as f32 * TILE_SIZE,
@@ -103,7 +103,7 @@ pub fn startup(
             })
             .insert(position)
             .insert(position.to_transform_layer(0.5))
-            .insert(Plant { growth: growth, plant_type: plant_type })
+            .insert(Plant { growth, plant_type })
             .id()
             ;
         if plant_type.is_forageable().0.is_some() && growth > 0.5 {

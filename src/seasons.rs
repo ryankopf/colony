@@ -26,15 +26,11 @@ pub fn seasons(
             transform.scale = Vec3::new(plant.growth, plant.growth, 1.0);
             if plant.growth >= 0.5 {
                 // Is plant one that is typically edible?
-                if plant.plant_type.is_forageable().0.is_some() {
-                    if foragable.is_none() {
-                        commands.entity(entity).insert(Foragable);
-                    }
+                if plant.plant_type.is_forageable().0.is_some() && foragable.is_none() {
+                    commands.entity(entity).insert(Foragable);
                 }
-                if plant.plant_type.is_choppable().0.is_some() {
-                    if choppable.is_none() {
-                        commands.entity(entity).insert(Choppable);
-                    }
+                if plant.plant_type.is_choppable().0.is_some() && choppable.is_none() {
+                    commands.entity(entity).insert(Choppable);
                 }
             }
         } else {

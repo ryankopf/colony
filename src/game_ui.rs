@@ -24,7 +24,7 @@ pub fn initialize_game_ui(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
 ) {
-    let sprite =  TextureAtlasSprite::new(190);
+    let _sprite =  TextureAtlasSprite::new(190);
     commands.spawn(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
@@ -136,7 +136,7 @@ pub fn start_game_ui(
             ..default()
         },InGameButton)).with_children(|parent| {
             parent.spawn(TextBundle {
-                text: Text::from_section(button_text.clone(), text_style.clone() )
+                text: Text::from_section(button_text.to_owned(), text_style.clone() )
                 .with_alignment(TextAlignment::CENTER),
                 ..default()
             });
@@ -146,7 +146,7 @@ pub fn start_game_ui(
 }
 
 pub fn game_ui_click(
-    mut commands: Commands,
+    commands: Commands,
     mouse_button_input: Res<Input<MouseButton>>,
     windows: Res<Windows>,
     mut menu_state: ResMut<MenuState>,
@@ -229,12 +229,8 @@ pub fn game_ui_click(
                     MenuStates::Craft => {
                         menu_state.state = MenuStates::Home;
                     }
-                    _ => {
-                        dragging.looking_for = SelectableType::Unselecting;
-                    }
                 }
                 start_game_ui(commands, font, menu_state, game_buttons);
-                return;
             }
         }
     }

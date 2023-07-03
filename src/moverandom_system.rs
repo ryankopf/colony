@@ -19,12 +19,10 @@ pub fn movement_random(
         for (tile_position, tile_type) in tile_types.iter() {
             let mut p2 = new_position;
             p2.z = 0;
-            if *tile_position == p2 {
-                if !tile_type.is_wall() {
-                    *position = new_position;
-                    transform.translation.x = new_position.x as f32 * TILE_SIZE;
-                    transform.translation.y = new_position.y as f32 * TILE_SIZE;
-                }
+            if *tile_position == p2 && !tile_type.is_wall() {
+                *position = new_position;
+                transform.translation.x = new_position.x as f32 * TILE_SIZE;
+                transform.translation.y = new_position.y as f32 * TILE_SIZE;
             }
         }
         //*position = new_position;

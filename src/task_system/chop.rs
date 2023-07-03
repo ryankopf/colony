@@ -4,7 +4,7 @@ pub fn task_system_chop(
     mut commands: Commands,
     mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>), Without<Pathing>>,
     mut targets: Query<(Entity, &Position, &Choppable, &mut Plant), With<WorkTarget>>,
-    mut workmarkers: Query<(Entity, &Parent), With<WorkMarker>>,
+    workmarkers: Query<(Entity, &Parent), With<WorkMarker>>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
     let mut already_targeted = crate::set_already_targetted(&query);
@@ -18,7 +18,7 @@ pub fn task_system_chop(
             let distance = position.distance(targetable_position);
             if distance <= 1 && targeting.is_some() && targeting.unwrap().target == targetable_entity {
                 commands.entity(entity).remove::<Targeting>();
-                crate::remove_x_markers(&mut commands, &mut workmarkers, targetable_entity);
+                crate::remove_x_markers(&mut commands, & workmarkers, targetable_entity);
                 spawn_logs(&mut commands, targetable_entity, targetable_position, &sprite_sheet, &mut plant);
                 continue 'outer;
             }
@@ -33,7 +33,7 @@ pub fn task_system_chop(
         }
         if let Some(closest_entity) = closest_entity {
             commands.entity(entity).insert(Targeting { target: closest_entity });
-            commands.entity(entity).insert(Pathing { path: vec![], destination: closest_position.unwrap().clone(), ..default() });
+            commands.entity(entity).insert(Pathing { path: vec![], destination: *closest_position.unwrap(), ..default() });
             already_targeted.push(closest_entity);
         } else {
             commands.entity(entity).remove::<Targeting>();
@@ -55,19 +55,19 @@ fn spawn_logs(
     let pt = plant.plant_type.is_choppable().0.unwrap_or( ItemType::PineLog );
     for i in 2..4 {
         commands.entity(targetable_entity).despawn(); // OR commands.entity(doable_entity).remove::<Choppable>();
-        let mut p = targetable_position.clone();
+        let mut p = *targetable_position;
         p.x += if (i%2) == 0 { i/2 } else { -i/2 };
         p.y += if (i%2) == 0 { i/2 } else { -i/2 };
         let sprite =  TextureAtlasSprite::new( pt.sprite_index() );
         commands.spawn(SpriteSheetBundle {
-            sprite: sprite,
+            sprite,
             texture_atlas: sprite_sheet.0.clone(),
             ..Default::default()
         })
-        .insert(Logs { ..default() } )
+        .insert(Logs  )
         .insert(p)
         .insert(p.to_transform_layer(2.0))
-        .insert( pt.clone() )
+        .insert( pt )
         ;
     }
 }

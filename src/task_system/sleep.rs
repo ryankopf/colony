@@ -6,7 +6,7 @@ pub fn task_system_sleep(
     mut query_bed: Query<(Entity, &Position, &Bed)>,
 ) {
     for (entity, mut brain, position) in query.iter_mut() {
-        if let None = &brain.task {
+        if brain.task.is_none() {
             continue; // Has no task.
         }
         let task = brain.task.unwrap();
@@ -27,7 +27,7 @@ pub fn task_system_sleep(
             if distance == shortest_distance {
                 // Set target.
                 commands.entity(entity).insert(Targeting { target: bed_entity });
-                commands.entity(entity).insert(Pathing { path: vec![], destination: bed_position.clone(), ..default() });
+                commands.entity(entity).insert(Pathing { path: vec![], destination: *bed_position, ..default() });
                 found_bed = true;
                 break;
             }
@@ -39,11 +39,11 @@ pub fn task_system_sleep(
 }
 
 pub fn task_system_sleeping(
-    mut commands: Commands,
+    _commands: Commands,
     mut query: Query<(&mut Brain, &mut Status)>
 ) {
     for (mut brain, mut status) in query.iter_mut() {
-        if (brain.task != Some(Task::Sleeping)) { continue; }
+        if brain.task != Some(Task::Sleeping) { continue; }
         if let Some(n) = &mut status.needs_sleep {
             n.current += 10.0;
             if n.current >= n.max {
