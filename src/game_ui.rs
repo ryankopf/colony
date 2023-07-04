@@ -5,61 +5,51 @@ pub struct GameUiPlugin;
 
 impl Plugin for GameUiPlugin {
     fn build(&self, app: &mut App) {
-        app
-        .add_startup_system(initialize_game_ui)
-        .add_system_set(
-            SystemSet::on_enter(GameState::InGame)
-                .with_system(start_game_ui),
-        )
-        // .add_startup_system(start_game_ui)
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_system(game_ui_click),
-        )
-        ;
+        app.add_startup_system(initialize_game_ui)
+            .add_system_set(SystemSet::on_enter(GameState::InGame).with_system(start_game_ui))
+            // .add_startup_system(start_game_ui)
+            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(game_ui_click));
     }
 }
 
-pub fn initialize_game_ui(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
-    let _sprite =  TextureAtlasSprite::new(190);
-    commands.spawn(NodeBundle {
-        style: Style {
-            position_type: PositionType::Absolute,
-            position: UiRect {
-                left: Val::Px(0.0),
-                bottom: Val::Px(0.0),
-                ..Default::default()
-            },
-            justify_content: JustifyContent::Center,
-            align_items: AlignItems::Center,
-            size: Size::new(Val::Percent(100.0), Val::Px(32.0)),
-            ..Default::default()
-        },
-        background_color: Color::rgba(0.65, 0.65, 0.65, 0.65).into(),
-        ..Default::default()
-    })
-    .with_children(|parent| {
-        // Add Icon
-        for i in 0..6 {
-            parent.spawn(ImageBundle {
-                style: Style {
-                    position_type: PositionType::Absolute,
-                    position: UiRect {
-                        left: Val::Px(32.0 * i as f32),
-                        top: Val::Px(0.0),
-                        ..Default::default()
-                    },
-                    size: Size::new(Val::Px(32.0), Val::Px(32.0)),
+pub fn initialize_game_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let _sprite = TextureAtlasSprite::new(190);
+    commands
+        .spawn(NodeBundle {
+            style: Style {
+                position_type: PositionType::Absolute,
+                position: UiRect {
+                    left: Val::Px(0.0),
+                    bottom: Val::Px(0.0),
                     ..Default::default()
                 },
-                image: asset_server.load(format!("i-{}.png",i)).into(),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                size: Size::new(Val::Percent(100.0), Val::Px(32.0)),
                 ..Default::default()
-            });
-        }
-    });
+            },
+            background_color: Color::rgba(0.65, 0.65, 0.65, 0.65).into(),
+            ..Default::default()
+        })
+        .with_children(|parent| {
+            // Add Icon
+            for i in 0..6 {
+                parent.spawn(ImageBundle {
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        position: UiRect {
+                            left: Val::Px(32.0 * i as f32),
+                            top: Val::Px(0.0),
+                            ..Default::default()
+                        },
+                        size: Size::new(Val::Px(32.0), Val::Px(32.0)),
+                        ..Default::default()
+                    },
+                    image: asset_server.load(format!("i-{}.png", i)).into(),
+                    ..Default::default()
+                });
+            }
+        });
 }
 
 pub fn start_game_ui(
@@ -73,75 +63,64 @@ pub fn start_game_ui(
         font_size: 18.0,
         color: Color::WHITE,
     };
-    let buttons = [vec![
-        "TASKS",
-        "FARM",
-        "ZONE",
-        "BUILD",
-        "CRAFT",
-    ],vec![ // tasks
-        "BACK",
-        "CLEAR", // 1
-        "CHOP",
-        "FORAGE",
-        "GATHER",
-        "HUNT",
-        "MINE",
-    ],vec![ // farm
-        "BACK",
-        "NOTHING", // 1
-        "BERRIES",
-        "PINE",
-        "OAK",
-        "CEDAR",
-    ],vec![ // zone
-        "BACK",
-        "NOTHING", // 1
-        "FISHING",
-        "HOSPITAL",
-        "PARTY",
-        "MEETING",
-    ],vec![ // build
-        "BACK",
-        "NOTHING", // 1
-        "WALL",
-        "BED",
-        "TABLE",
-        "CHAIR",
-    ],
-    ]
-    ;
+    let buttons = [
+        vec!["TASKS", "FARM", "ZONE", "BUILD", "CRAFT"],
+        vec![
+            // tasks
+            "BACK", "CLEAR", // 1
+            "CHOP", "FORAGE", "GATHER", "HUNT", "MINE",
+        ],
+        vec![
+            // farm
+            "BACK", "NOTHING", // 1
+            "BERRIES", "PINE", "OAK", "CEDAR",
+        ],
+        vec![
+            // zone
+            "BACK", "NOTHING", // 1
+            "FISHING", "HOSPITAL", "PARTY", "MEETING",
+        ],
+        vec![
+            // build
+            "BACK", "NOTHING", // 1
+            "WALL", "BED", "TABLE", "CHAIR",
+        ],
+    ];
     for button in game_buttons.iter() {
         commands.entity(button).despawn_recursive();
     }
     //println!("BUTTON: {:?}", buttons[menu_state.i]);
-    if (buttons.len()-1) < menu_state.state.to_index() {
+    if (buttons.len() - 1) < menu_state.state.to_index() {
         menu_state.state = MenuStates::Home;
     }
     for (i, button_text) in buttons[menu_state.state.to_index()].iter().enumerate() {
-        commands.spawn((ButtonBundle {
-            style: Style {
-                position_type: PositionType::Absolute,
-                position: UiRect {
-                    left: Val::Px(100.0 + 100.0 * i as f32),
-                    bottom: Val::Px(30.0),
+        commands
+            .spawn((
+                ButtonBundle {
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        position: UiRect {
+                            left: Val::Px(100.0 + 100.0 * i as f32),
+                            bottom: Val::Px(30.0),
+                            ..default()
+                        },
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        size: Size::new(Val::Px(84.0), Val::Px(64.0)),
+                        ..default()
+                    },
+                    background_color: Color::rgba(0.65, 0.65, 0.85, 0.65).into(),
                     ..default()
                 },
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                size: Size::new(Val::Px(84.0), Val::Px(64.0)),
-                ..default()
-            },
-            background_color: Color::rgba(0.65, 0.65, 0.85, 0.65).into(),
-            ..default()
-        },InGameButton)).with_children(|parent| {
-            parent.spawn(TextBundle {
-                text: Text::from_section(button_text.to_owned(), text_style.clone() )
-                .with_alignment(TextAlignment::CENTER),
-                ..default()
+                InGameButton,
+            ))
+            .with_children(|parent| {
+                parent.spawn(TextBundle {
+                    text: Text::from_section(button_text.to_owned(), text_style.clone())
+                        .with_alignment(TextAlignment::CENTER),
+                    ..default()
+                });
             });
-        })
-        ;
     }
 }
 
@@ -161,65 +140,66 @@ pub fn game_ui_click(
             if wc.y > 30.0 && wc.y < 92.0 {
                 let button_index = (wc.x as i32 - 100) / 100;
                 match menu_state.state {
-                    MenuStates::Home => {
+                    MenuStates::Home => match button_index {
+                        0 => menu_state.state = MenuStates::Tasks,
+                        1 => menu_state.state = MenuStates::Farm,
+                        2 => menu_state.state = MenuStates::Zone,
+                        3 => menu_state.state = MenuStates::Build,
+                        4 => menu_state.state = MenuStates::Craft,
+                        _ => {}
+                    },
+                    MenuStates::Tasks => {
+                        // chop, forage, gather, hunt, mine
                         match button_index {
-                            0 => { menu_state.state = MenuStates::Tasks },
-                            1 => { menu_state.state = MenuStates::Farm },
-                            2 => { menu_state.state = MenuStates::Zone },
-                            3 => { menu_state.state = MenuStates::Build },
-                            4 => { menu_state.state = MenuStates::Craft },
-                            _ => { },
-                        }
-                    }
-                    MenuStates::Tasks => { // chop, forage, gather, hunt, mine
-                        match button_index {
-                            0 => { menu_state.state = MenuStates::Home; },
+                            0 => {
+                                menu_state.state = MenuStates::Home;
+                            }
                             1 => {
                                 dragging.looking_for = SelectableType::Unselecting;
-                            },
+                            }
                             2 => {
                                 dragging.looking_for = SelectableType::Choppable;
-                            },
+                            }
                             3 => {
                                 dragging.looking_for = SelectableType::Foragable;
                                 dragging.zone_type = ZoneType::Farm;
-                            },
+                            }
                             4 => {
                                 dragging.looking_for = SelectableType::Gatherable;
                                 dragging.zone_type = ZoneType::Farm;
-                            },
-                            _ => { },
+                            }
+                            _ => {}
                         }
                     }
-                    MenuStates::Farm => {
-                        match button_index {
-                            0 => { menu_state.state = MenuStates::Home; },
-                            1 => {
-                                dragging.looking_for = SelectableType::Unzoning;
-                            },
-                            2 => {
-                                dragging.looking_for = SelectableType::Zoning;
-                                dragging.zone_type = ZoneType::Farm;
-                                dragging.plant_type = PlantType::Cabbage;
-                            },
-                            3 => {
-                                dragging.looking_for = SelectableType::Zoning;
-                                dragging.zone_type = ZoneType::Farm;
-                                dragging.plant_type = PlantType::PineTree;
-                            },
-                            4 => {
-                                dragging.looking_for = SelectableType::Zoning;
-                                dragging.zone_type = ZoneType::Farm;
-                                dragging.plant_type = PlantType::OakTree;
-                            },
-                            5 => {
-                                dragging.looking_for = SelectableType::Zoning;
-                                dragging.zone_type = ZoneType::Farm;
-                                dragging.plant_type = PlantType::CedarTree;
-                            },
-                            _ => { },
+                    MenuStates::Farm => match button_index {
+                        0 => {
+                            menu_state.state = MenuStates::Home;
                         }
-                    }
+                        1 => {
+                            dragging.looking_for = SelectableType::Unzoning;
+                        }
+                        2 => {
+                            dragging.looking_for = SelectableType::Zoning;
+                            dragging.zone_type = ZoneType::Farm;
+                            dragging.plant_type = PlantType::Cabbage;
+                        }
+                        3 => {
+                            dragging.looking_for = SelectableType::Zoning;
+                            dragging.zone_type = ZoneType::Farm;
+                            dragging.plant_type = PlantType::PineTree;
+                        }
+                        4 => {
+                            dragging.looking_for = SelectableType::Zoning;
+                            dragging.zone_type = ZoneType::Farm;
+                            dragging.plant_type = PlantType::OakTree;
+                        }
+                        5 => {
+                            dragging.looking_for = SelectableType::Zoning;
+                            dragging.zone_type = ZoneType::Farm;
+                            dragging.plant_type = PlantType::CedarTree;
+                        }
+                        _ => {}
+                    },
                     MenuStates::Zone => {
                         menu_state.state = MenuStates::Home;
                     }

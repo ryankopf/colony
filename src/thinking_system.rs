@@ -14,15 +14,11 @@ impl Plugin for ThinkingPlugin {
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(5.0))
                 .with_system(remotivate_system),
-        )
-        ;
+        );
     }
 }
 
-pub fn thinking_system(
-    _commands: Commands,
-    mut query: Query<(Entity, &mut Brain, &mut Status)>,
-) {
+pub fn thinking_system(_commands: Commands, mut query: Query<(Entity, &mut Brain, &mut Status)>) {
     for (_entity, mut brain, status) in query.iter_mut() {
         // if does_thinking.thinking {
         //     continue;
@@ -40,7 +36,7 @@ pub fn thinking_system(
         // Has meaningful work available to do.
         // Has a desire.
         // Wants to socialize or be entertained.
-        
+
         // THEN ASSIGN A TASK BASED ON THE MOTIVATION
         if let Some(_m) = &brain.task {
             continue; // Already has a task.
@@ -56,7 +52,7 @@ pub fn thinking_system(
                 } else {
                     brain.motivation = Some(Motivation::Danger);
                 }
-            // Process needs.
+                // Process needs.
             }
             // FOOD
             if brain.motivation.is_none() {
@@ -167,13 +163,9 @@ pub fn thinking_system(
         if let Some(_task) = &brain.task {
             //println!("{:?} has a task: {:?}", entity, brain.task)
         }
-        
     }
 }
-pub fn remotivate_system(
-    _commands: Commands,
-    mut query: Query<(Entity, &mut Brain)>,
-) {
+pub fn remotivate_system(_commands: Commands, mut query: Query<(Entity, &mut Brain)>) {
     for (_entity, mut brain) in query.iter_mut() {
         if let Some(m) = brain.task {
             if m == Task::Work || m == Task::Play || m == Task::Meander {
@@ -182,5 +174,4 @@ pub fn remotivate_system(
             }
         }
     }
-    
 }

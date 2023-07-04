@@ -5,29 +5,12 @@ pub struct SelectionPlugin;
 
 impl Plugin for SelectionPlugin {
     fn build(&self, app: &mut App) {
-        app
-        .add_event::<SelectionEvent>()
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_unselecting),
-        )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_foragables),
-        )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_choppables),
-        )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_zoning),
-        )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_unzoning),
-        )
-        ;
+        app.add_event::<SelectionEvent>()
+            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_unselecting))
+            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_foragables))
+            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_choppables))
+            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_zoning))
+            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_unzoning));
     }
 }
 
@@ -41,8 +24,12 @@ pub fn select_foragables(
     event: EventReader<SelectionEvent>,
     dragging: Res<Dragging>,
 ) {
-    if event.is_empty() { return; }
-    if dragging.looking_for != SelectableType::Foragable { return; }
+    if event.is_empty() {
+        return;
+    }
+    if dragging.looking_for != SelectableType::Foragable {
+        return;
+    }
     for (entity, foragable) in query.iter_mut() {
         if foragable.is_some() {
             commands.entity(entity).insert(WorkTarget);
@@ -60,20 +47,32 @@ pub fn select_choppables(
     dragging: Res<Dragging>,
     font: Res<MyFont>,
 ) {
-    if event.is_empty() { return; }
-    if dragging.looking_for != SelectableType::Choppable { return; }
+    if event.is_empty() {
+        return;
+    }
+    if dragging.looking_for != SelectableType::Choppable {
+        return;
+    }
     for (entity, selection_reason) in query.iter_mut() {
         if selection_reason.is_some() {
             commands.entity(entity).insert(WorkTarget);
-            let child = commands.spawn((
-                Text2dBundle {
-                    text: Text::from_section("X", TextStyle { font: font.0.clone(), ..default() })
+            let child = commands
+                .spawn((
+                    Text2dBundle {
+                        text: Text::from_section(
+                            "X",
+                            TextStyle {
+                                font: font.0.clone(),
+                                ..default()
+                            },
+                        )
                         .with_alignment(TextAlignment::CENTER),
-                    ..default()
-                },
-                WorkMarker
-            ))
-            .insert(Transform::from_xyz(10.0, 20.0, 100.0)).id();
+                        ..default()
+                    },
+                    WorkMarker,
+                ))
+                .insert(Transform::from_xyz(10.0, 20.0, 100.0))
+                .id();
             commands.entity(entity).push_children(&[child]);
         }
     }
@@ -89,22 +88,38 @@ pub fn select_zoning(
     event: EventReader<SelectionEvent>,
     dragging: Res<Dragging>,
 ) {
-    if event.is_empty() { return; }
-    if dragging.looking_for != SelectableType::Zoning { return; }
+    if event.is_empty() {
+        return;
+    }
+    if dragging.looking_for != SelectableType::Zoning {
+        return;
+    }
     'outer: for (entity, selection_reason) in query.iter() {
-        for zoned in zoned.iter() { if zoned == entity { continue 'outer; } } // Don't zone tiles that already have a zone.
+        for zoned in zoned.iter() {
+            if zoned == entity {
+                continue 'outer;
+            }
+        } // Don't zone tiles that already have a zone.
         if selection_reason.is_some() {
-            commands.entity(entity).insert(Zone { zone_type: dragging.zone_type, plant_type: dragging.plant_type, ..default() } );
-            let zonemarker = commands.spawn( (SpriteBundle {
-                sprite: Sprite {
-                        color: Color::rgba(0.8, 0.8, 1.0, 0.1),
-                        custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+            commands.entity(entity).insert(Zone {
+                zone_type: dragging.zone_type,
+                plant_type: dragging.plant_type,
+                ..default()
+            });
+            let zonemarker = commands
+                .spawn((
+                    SpriteBundle {
+                        sprite: Sprite {
+                            color: Color::rgba(0.8, 0.8, 1.0, 0.1),
+                            custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+                            ..default()
+                        },
+                        transform: Transform::from_xyz(0.0, 0.0, 300.0),
                         ..default()
                     },
-                transform: Transform::from_xyz(0.0, 0.0, 300.0),
-                ..default()
-            }, ZoneMarker))
-            .id();
+                    ZoneMarker,
+                ))
+                .id();
             commands.entity(entity).push_children(&[zonemarker]);
         }
     }
@@ -132,12 +147,18 @@ fn select_unselecting(
     event: EventReader<SelectionEvent>,
     dragging: Res<Dragging>,
 ) {
-    if event.is_empty() { return; }
-    if dragging.looking_for != SelectableType::Unselecting { return; }
+    if event.is_empty() {
+        return;
+    }
+    if dragging.looking_for != SelectableType::Unselecting {
+        return;
+    }
     for entity in highlighteds.iter() {
         commands.entity(entity).remove::<WorkTarget>();
         for (workmarker, parent) in workmarkers.iter() {
-            if parent.get() != entity { continue; }
+            if parent.get() != entity {
+                continue;
+            }
             commands.entity(workmarker).despawn();
         }
     }
@@ -152,12 +173,18 @@ fn select_unzoning(
     event: EventReader<SelectionEvent>,
     dragging: Res<Dragging>,
 ) {
-    if event.is_empty() { return; }
-    if dragging.looking_for != SelectableType::Unzoning { return; }
+    if event.is_empty() {
+        return;
+    }
+    if dragging.looking_for != SelectableType::Unzoning {
+        return;
+    }
     for entity in highlighteds.iter() {
         commands.entity(entity).remove::<Zone>();
         for (zonemarker, parent) in zonemarkers.iter() {
-            if parent.get() != entity { continue; }
+            if parent.get() != entity {
+                continue;
+            }
             commands.entity(zonemarker).despawn();
         }
     }

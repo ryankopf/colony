@@ -6,7 +6,9 @@ pub fn task_system_meander(
     tile_types: Query<(&Position, &TileType)>,
 ) {
     for (_entity, mut brain, mut position, mut transform) in query.iter_mut() {
-        if brain.task != Some(Task::Meander) { continue; }
+        if brain.task != Some(Task::Meander) {
+            continue;
+        }
         brain.task = Some(Task::Meander);
         let mut new_position = *position;
         let mut rng = rand::thread_rng();

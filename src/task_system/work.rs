@@ -1,11 +1,11 @@
 use crate::prelude::*;
 
-pub fn task_system_work(
-    mut query: Query<(Entity, &mut Brain, &Position), Without<Targeting>>
-) {
+pub fn task_system_work(mut query: Query<(Entity, &mut Brain, &Position), Without<Targeting>>) {
     for (_entity, mut brain, _position) in query.iter_mut() {
         // There is no work right now.
-        if brain.task != Some(Task::Work) { continue; }
+        if brain.task != Some(Task::Work) {
+            continue;
+        }
         let mut rng = rand::thread_rng();
         // Generate number between 0 and 10
         let number: u8 = rng.gen_range(0..5);

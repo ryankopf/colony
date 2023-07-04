@@ -5,24 +5,33 @@ pub struct SeasonsPlugin;
 
 impl Plugin for SeasonsPlugin {
     fn build(&self, app: &mut App) {
-        app
-        .add_fixed_timestep_system(
-            "two_second", 0,
+        app.add_fixed_timestep_system(
+            crate::task_system::TWO_SECOND,
+            0,
             seasons.run_in_bevy_state(GameState::InGame),
-        )
-        ;
+        );
     }
 }
 
 pub fn seasons(
     mut commands: Commands,
-    mut plants: Query<(Entity, &mut Plant, &mut Transform, Option<&Foragable>, Option<&Choppable>)>,
+    mut plants: Query<(
+        Entity,
+        &mut Plant,
+        &mut Transform,
+        Option<&Foragable>,
+        Option<&Choppable>,
+    )>,
 ) {
     for (entity, mut plant, mut transform, foragable, choppable) in plants.iter_mut() {
         if plant.growth < 1.0 {
             let rand = rand::thread_rng().gen_range(0..2);
             let base_growth_speed = plant.plant_type.growth_speed();
-            plant.growth += match rand { 0 => 3.0 * base_growth_speed, 1 => base_growth_speed, _ => 0.0 };
+            plant.growth += match rand {
+                0 => 3.0 * base_growth_speed,
+                1 => base_growth_speed,
+                _ => 0.0,
+            };
             transform.scale = Vec3::new(plant.growth, plant.growth, 1.0);
             if plant.growth >= 0.5 {
                 // Is plant one that is typically edible?

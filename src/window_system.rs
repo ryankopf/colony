@@ -20,7 +20,7 @@ pub fn set_window_icon(
     };
 
     let icon = winit::window::Icon::from_rgba(icon_rgba, icon_width, icon_height).unwrap();
-    
+
     primary.set_title("Orc Fortress");
     primary.set_window_icon(Some(icon));
 }

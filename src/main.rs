@@ -1,102 +1,99 @@
-use bevy::time::FixedTimestep;
+mod biome;
+mod button_system;
+mod click;
+mod components;
+mod constants;
+mod game_ui;
+mod input;
+mod load;
+mod main_menu;
+mod map;
+mod monstergenerator_system;
+mod moverandom_system;
+mod movetoward_system;
+mod namegiving_system;
+mod names_system;
+mod needs;
+mod pause;
 mod prelude;
-pub use crate::prelude::*;
+mod resources;
+mod seasons;
+mod selection_systems;
+mod spoilage_system;
+mod startup;
+mod statusdisplay_system;
+mod task_system;
+mod text_system;
+mod thinking_system;
+mod window_system;
 
-use retrieve::mod_use;
+pub use prelude::*;
 use std::time::Duration;
-#[mod_use(
-    biome,
-    button_system,
-    click,
-    components,
-    constants,
-    game_ui,
-    input,
-    load,
-    main_menu,
-    map,
-    monstergenerator_system,
-    moverandom_system,
-    movetoward_system,
-    namegiving_system,
-    names_system,
-    needs,
-    pause,
-    resources,
-    seasons,
-    selection_systems,
-    spoilage_system,
-    startup,
-    statusdisplay_system,
-    task_system,
-    text_system,
-    thinking_system,
-    window_system
-)]
 
 fn main() {
-    //println!("Hello, world!");
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugin(BiomePlugin)
-        .add_startup_system_to_stage(StartupStage::PreStartup, load_sprites)
-        .add_startup_system_to_stage(StartupStage::PreStartup, load_font)
-        .add_fixed_timestep(Duration::from_millis(500), "half_second")
-        .add_fixed_timestep(Duration::from_millis(2000), "two_second")
+        .add_plugin(biome::BiomePlugin)
+        // Loading assets
+        .add_startup_system_to_stage(StartupStage::PreStartup, load::load_sprites)
+        .add_startup_system_to_stage(StartupStage::PreStartup, load::load_font)
+        // fixing tick rates
+        .add_fixed_timestep(Duration::from_millis(500), task_system::HALF_SECOND)
+        .add_fixed_timestep(Duration::from_millis(2000), task_system::TWO_SECOND)
         .insert_resource(SelectedObjectInformation::default())
         .insert_resource(MenuState {
             state: MenuStates::Home,
         })
-        .add_startup_system(generate_map)
-        .add_plugin(StartupPlugin)
+        // Map generation
+        .add_plugin(startup::StartupPlugin)
+        .add_startup_system(map::generate_map)
+        // Display & menus
+        .add_plugin(main_menu::MainMenusPlugin)
+        .add_plugin(game_ui::GameUiPlugin)
         .add_startup_system(setup_camera)
-        .add_system(text_system)
-        .add_startup_system(text_test)
-        .add_startup_system(set_window_icon)
-        .add_startup_system(set_window_maximized)
-        .add_plugin(MainMenusPlugin)
-        .add_state(GameState::InGame)
+        .add_startup_system(text_system::text_test)
+        .add_startup_system(window_system::set_window_icon)
+        .add_startup_system(window_system::set_window_maximized)
+        .add_system(text_system::text_system)
+        .add_system(text_system::text_update_system)
+        // Game states
         .add_loopless_state(GameState::InGame)
-        .add_plugin(ButtonPlugin)
+        .add_state(GameState::InGame)
+        .add_system(bevy::window::close_on_esc)
+        .add_system_set(SystemSet::on_enter(GameState::Paused).with_system(pause::on_pause))
+        .add_system_set(SystemSet::on_enter(GameState::InGame).with_system(pause::on_unpause))
+        // Input
+        .add_plugin(button_system::ButtonPlugin)
+        .add_plugin(selection_systems::SelectionPlugin)
+        .add_plugin(click::ClickPlugin)
+        .add_system(input::keyboard_input)
+        .add_system(input::scrollwheel_input)
         .add_system_set(
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(0.1))
-                .with_system(movement_random),
+                .with_system(moverandom_system::movement_random),
         )
-        .add_plugin(SelectionPlugin)
-        .add_plugin(MonsterGeneratorPlugin)
-        .add_plugin(MovementPlugin)
-        .add_plugin(SeasonsPlugin)
-        .add_plugin(NeedsPlugin)
+        // NPC behaviour
+        .add_plugin(task_system::TaskPlugin)
+        .add_plugin(movetoward_system::MovementPlugin)
+        .add_plugin(needs::NeedsPlugin)
+        .add_system(movetoward_system::movement_toward_attackable)
         .add_system_set(
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(status_display_system),
+                .with_system(statusdisplay_system::status_display_system),
         )
-        .add_plugin(GameUiPlugin)
-        .add_plugin(ThinkingPlugin)
-        .add_plugin(TaskPlugin)
-        .add_plugin(SpoilagePlugin)
+        .add_plugin(thinking_system::ThinkingPlugin)
+        // World simulation
+        .add_plugin(spoilage_system::SpoilagePlugin)
+        .add_plugin(seasons::SeasonsPlugin)
         .add_system(remove_bad_positions)
-        .add_system(namegiving_system)
-        .add_system(names_system)
-        .add_system(text_update_system)
-        .add_system(movement_toward_attackable)
-        .add_event::<FoodNotifEvent>()
-        .add_system(keyboard_input)
-        .add_system(scrollwheel_input)
-        .add_plugin(ClickPlugin)
-        .add_system(bevy::window::close_on_esc)
-        .add_system_set(SystemSet::on_enter(GameState::Paused).with_system(on_pause))
-        .add_system_set(SystemSet::on_enter(GameState::InGame).with_system(on_unpause))
+        .add_system(namegiving_system::namegiving_system)
+        .add_system(names_system::names_system)
+        .add_plugin(monstergenerator_system::MonsterGeneratorPlugin)
+        .add_event::<needs::FoodNotifEvent>()
         .run();
 }
-
-// pub fn in_game(
-//     state: Res<GameState>,
-// ) {
-//     *state == GameState::InGame
-// }
 
 fn setup_camera(mut commands: Commands) {
     let mut camera = Camera2dBundle::default();

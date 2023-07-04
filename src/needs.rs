@@ -6,16 +6,14 @@ pub struct NeedsPlugin;
 impl Plugin for NeedsPlugin {
     fn build(&self, app: &mut App) {
         app.add_fixed_timestep_system(
-            "two_second", 0,
+            crate::task_system::TWO_SECOND,
+            0,
             needs_status_system.run_in_bevy_state(GameState::InGame),
-        )
-        ;
+        );
     }
 }
 
-pub fn needs_status_system(
-    mut query: Query<&mut Status>
-) {
+pub fn needs_status_system(mut query: Query<&mut Status>) {
     for mut status in query.iter_mut() {
         if let Some(needs_food) = status.needs_food.as_mut() {
             needs_food.current -= needs_food.rate;

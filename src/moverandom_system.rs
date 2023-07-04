@@ -1,10 +1,9 @@
 use super::prelude::*;
 
 pub fn movement_random(
-    mut entities: Query<(&mut Position, &mut Transform), (With <MoveRandom>, Without<TileType>)>,
+    mut entities: Query<(&mut Position, &mut Transform), (With<MoveRandom>, Without<TileType>)>,
     tile_types: Query<(&Position, &TileType)>,
 ) {
-    //let mut head_position = Position { x: 0, y: 0, z: 0 };
     for (mut position, mut transform) in entities.iter_mut() {
         let mut new_position = *position;
         let mut rng = rand::thread_rng();
@@ -25,6 +24,5 @@ pub fn movement_random(
                 transform.translation.y = new_position.y as f32 * TILE_SIZE;
             }
         }
-        //*position = new_position;
     }
 }

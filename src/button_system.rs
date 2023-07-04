@@ -1,20 +1,14 @@
-use bevy::prelude::*;
 use super::prelude::*;
+use bevy::prelude::*;
 
 // Make Plugin
 pub struct ButtonPlugin;
 
 impl Plugin for ButtonPlugin {
     fn build(&self, app: &mut App) {
-        app
-        .add_system_set(
-            SystemSet::on_update(GameState::MainMenu)
-                .with_system(button_system),
-        )
-        ;
+        app.add_system_set(SystemSet::on_update(GameState::MainMenu).with_system(button_system));
     }
 }
-
 
 const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);

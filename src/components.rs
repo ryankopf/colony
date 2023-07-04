@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use super::prelude::*;
+use bevy::prelude::*;
 
 #[derive(Component, Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub struct Position {
@@ -36,7 +36,12 @@ pub enum GameState {
 
 #[derive(PartialEq)]
 pub enum MenuStates {
-    Home, Tasks, Farm, Zone, Build, Craft
+    Home,
+    Tasks,
+    Farm,
+    Zone,
+    Build,
+    Craft,
 }
 
 impl MenuStates {
@@ -54,29 +59,44 @@ impl MenuStates {
 
 #[derive(Component, PartialEq, Clone, Debug)]
 pub enum TileType {
-    Grass, Dirt, Gravel, Sand, Stone, Water,
-    WallGame, WallStone, WallWood, WallBrick, WallMetal,
+    Grass,
+    Dirt,
+    Gravel,
+    Sand,
+    Stone,
+    Water,
+    WallGame,
+    WallStone,
+    WallWood,
+    WallBrick,
+    WallMetal,
 }
 
 impl TileType {
     pub fn to_index(&self) -> usize {
         match self {
-            TileType::Grass => 9*64+11,
-            TileType::Dirt => 4*64+1,
-            TileType::Gravel => 7*64+42,
-            TileType::Sand => 7*64+42,
-            TileType::Stone => 3*64+61,
-            TileType::Water => 5*64+12,
-            TileType::WallGame => 7*64+20,
-            TileType::WallStone => 7*64+21,
-            TileType::WallWood => 7*64+22,
-            TileType::WallBrick => 4*64+10,
-            TileType::WallMetal => 7*64+24,
+            TileType::Grass => 9 * 64 + 11,
+            TileType::Dirt => 4 * 64 + 1,
+            TileType::Gravel => 7 * 64 + 42,
+            TileType::Sand => 7 * 64 + 42,
+            TileType::Stone => 3 * 64 + 61,
+            TileType::Water => 5 * 64 + 12,
+            TileType::WallGame => 7 * 64 + 20,
+            TileType::WallStone => 7 * 64 + 21,
+            TileType::WallWood => 7 * 64 + 22,
+            TileType::WallBrick => 4 * 64 + 10,
+            TileType::WallMetal => 7 * 64 + 24,
         }
     }
     pub fn is_wall(&self) -> bool {
-        matches!(self, TileType::WallGame | TileType::WallStone | TileType::WallWood | TileType::WallBrick | TileType::WallMetal)
-
+        matches!(
+            self,
+            TileType::WallGame
+                | TileType::WallStone
+                | TileType::WallWood
+                | TileType::WallBrick
+                | TileType::WallMetal
+        )
     }
 }
 
@@ -119,11 +139,8 @@ pub struct TextName;
 #[derive(Component)]
 pub struct HighlightBox;
 
-#[derive(Component)]
-#[derive(Default)]
+#[derive(Component, Default)]
 pub struct Highlighted;
-
-
 
 #[derive(Component)]
 pub struct InGameButton;
@@ -136,10 +153,9 @@ pub struct Status {
     pub index: usize,
     pub crisis: Option<String>,
     pub danger: Option<String>,
-    pub injured: bool
+    pub injured: bool,
 }
-#[derive(Component, PartialEq)]
-#[derive(Default)]
+#[derive(Component, PartialEq, Default)]
 pub struct Brain {
     pub motivation: Option<Motivation>,
     pub task: Option<Task>,
@@ -152,7 +168,6 @@ impl Brain {
         self.order = None;
     }
 }
-
 
 #[derive(Component)]
 pub struct Foragable;
@@ -174,7 +189,6 @@ pub struct WorkMarker;
 
 #[derive(Component)]
 pub struct ZoneMarker;
-
 
 #[derive(Component)]
 pub struct Zone {
@@ -201,33 +215,84 @@ pub struct NearestEntity {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ZoneType {
-    Farm, Pasture, Storage, Fishing, Hospital, Party, Meeting
+    Farm,
+    Pasture,
+    Storage,
+    Fishing,
+    Hospital,
+    Party,
+    Meeting,
 }
-
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Task {
-    Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Meander, Idle,
-    Doctor, Forage, Plant, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Haul // Forms of work
+    Crisis,
+    Flee,
+    Fight,
+    Eat,
+    Hospital,
+    Sleep,
+    Sleeping,
+    Play,
+    Order,
+    Work,
+    Meander,
+    Idle,
+    Doctor,
+    Forage,
+    Plant,
+    Harvest,
+    Mine,
+    Chop,
+    Construct,
+    Hunt,
+    Milk,
+    Cook,
+    Fish,
+    Craft,
+    Clean,
+    Haul, // Forms of work
 }
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Motivation {
-    Crisis, Order, Danger, Hunger, Thirst, Tired, Bored, Injured, Sick, Happy, Sad, Angry, Lonely, Love, Fear, Hate, Work, Meander, Idle
+    Crisis,
+    Order,
+    Danger,
+    Hunger,
+    Thirst,
+    Tired,
+    Bored,
+    Injured,
+    Sick,
+    Happy,
+    Sad,
+    Angry,
+    Lonely,
+    Love,
+    Fear,
+    Hate,
+    Work,
+    Meander,
+    Idle,
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ItemType {
-    Cabbage, Carrot, PineLog, OakLog, CedarLog
+    Cabbage,
+    Carrot,
+    PineLog,
+    OakLog,
+    CedarLog,
 }
 
 impl ItemType {
     pub fn sprite_index(&self) -> usize {
         match self {
-            ItemType::Cabbage => 94*64+33,
-            ItemType::Carrot => 94*64+24,
-            ItemType::PineLog => 94*64+30,
-            ItemType::OakLog => 94*64+30,
-            ItemType::CedarLog => 94*64+30,
+            ItemType::Cabbage => 94 * 64 + 33,
+            ItemType::Carrot => 94 * 64 + 24,
+            ItemType::PineLog => 94 * 64 + 30,
+            ItemType::OakLog => 94 * 64 + 30,
+            ItemType::CedarLog => 94 * 64 + 30,
         }
     }
     pub fn nutrition(&self) -> f32 {
@@ -255,7 +320,20 @@ impl ItemType {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum PlantType {
-    PineTree, OakTree, CedarTree, Bush, ThornBush, Cabbage, Aloe, FlowerBush, Weed, Carrot, Azalea, Vine, CactusRound, CactusUp
+    PineTree,
+    OakTree,
+    CedarTree,
+    Bush,
+    ThornBush,
+    Cabbage,
+    Aloe,
+    FlowerBush,
+    Weed,
+    Carrot,
+    Azalea,
+    Vine,
+    CactusRound,
+    CactusUp,
 }
 
 impl PlantType {
@@ -264,26 +342,26 @@ impl PlantType {
     }
     pub fn sprite_index(&self) -> usize {
         match self {
-            PlantType::PineTree => 13*64+13,
-            PlantType::OakTree => 13*64+14,
-            PlantType::CedarTree => 13*64+15,
-            PlantType::Bush => 67*64+57,
-            PlantType::ThornBush => 67*64+57,
-            PlantType::Cabbage => 94*64+32,
-            PlantType::Aloe => 67*64+57,
-            PlantType::FlowerBush => 67*64+57,
-            PlantType::Weed => 67*64+57,
-            PlantType::Carrot => 94*64+31,
-            PlantType::Azalea => 67*64+57,
-            PlantType::Vine => 67*64+57,
-            PlantType::CactusRound => 67*64+57,
-            PlantType::CactusUp => 67*64+57,
+            PlantType::PineTree => 13 * 64 + 13,
+            PlantType::OakTree => 13 * 64 + 14,
+            PlantType::CedarTree => 13 * 64 + 15,
+            PlantType::Bush => 67 * 64 + 57,
+            PlantType::ThornBush => 67 * 64 + 57,
+            PlantType::Cabbage => 94 * 64 + 32,
+            PlantType::Aloe => 67 * 64 + 57,
+            PlantType::FlowerBush => 67 * 64 + 57,
+            PlantType::Weed => 67 * 64 + 57,
+            PlantType::Carrot => 94 * 64 + 31,
+            PlantType::Azalea => 67 * 64 + 57,
+            PlantType::Vine => 67 * 64 + 57,
+            PlantType::CactusRound => 67 * 64 + 57,
+            PlantType::CactusUp => 67 * 64 + 57,
         }
     }
     pub fn growth_speed(&self) -> f32 {
         match self {
             PlantType::Cabbage => 0.001,
-            _ => 0.01
+            _ => 0.01,
         }
     }
     pub fn is_forageable(&self) -> (Option<ItemType>, i32, ForageType) {
@@ -305,12 +383,21 @@ impl PlantType {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ForageType {
-    Once, Repeat
+    Once,
+    Repeat,
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum SelectableType {
-    Foragable, Choppable, Gatherable, Mineable, Constructable, Harvestable, Unselecting, Zoning, Unzoning
+    Foragable,
+    Choppable,
+    Gatherable,
+    Mineable,
+    Constructable,
+    Harvestable,
+    Unselecting,
+    Zoning,
+    Unzoning,
 }
 
 #[derive(Component)]
@@ -331,9 +418,9 @@ pub struct Player {}
 
 #[derive(Component)]
 pub struct Viewshed {
-    pub visible_tiles : Vec<Position>,
-    pub range : i32,
-    pub dirty : bool
+    pub visible_tiles: Vec<Position>,
+    pub range: i32,
+    pub dirty: bool,
 }
 
 #[derive(Component)]
@@ -358,7 +445,7 @@ pub struct Targeting {
 pub struct Pathing {
     pub path: Vec<Position>,
     pub destination: Position,
-    pub unreachable: bool
+    pub unreachable: bool,
 }
 
 impl Default for Pathing {
@@ -366,7 +453,7 @@ impl Default for Pathing {
         Pathing {
             path: Vec::new(),
             destination: Position { x: 0, y: 0, z: 0 },
-            unreachable: false
+            unreachable: false,
         }
     }
 }
@@ -431,7 +518,5 @@ pub struct NeedsSleep {
     pub rate: f32,
 }
 
-#[derive(Component)]
-#[derive(Default)]
+#[derive(Component, Default)]
 pub struct Logs;
-

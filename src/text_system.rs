@@ -16,7 +16,10 @@ pub fn text_system(
             TextBundle::from_section(
                 // Accepts a `String` or any type that converts into a `String`, such as `&str`
                 info,
-                TextStyle { font: font.0.clone(), ..default() },
+                TextStyle {
+                    font: font.0.clone(),
+                    ..default()
+                },
             ) // Set the alignment of the Text
             .with_text_alignment(TextAlignment::TOP_LEFT)
             // Set the style of the TextBundle itself.
@@ -34,10 +37,7 @@ pub fn text_system(
     }
 }
 
-
-pub fn text_update_system(
-    mut query: Query<&mut Text, With<FpsText>>
-) {
+pub fn text_update_system(mut query: Query<&mut Text, With<FpsText>>) {
     for mut text in &mut query {
         text.sections[1].value = "ZZZZZZ".to_string();
         // if let Some(fps) = diagnostics.get(FrameTimeDiagnosticsPlugin::FPS) {
@@ -48,7 +48,6 @@ pub fn text_update_system(
         // }
     }
 }
-
 
 #[derive(Component)]
 pub struct ObjectText;
@@ -65,8 +64,4 @@ struct AnimateRotation;
 #[derive(Component)]
 struct AnimateScale;
 
-pub fn text_test(
-    
-) {
-    
-}
+pub fn text_test() {}

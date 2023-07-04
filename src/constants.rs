@@ -1,4 +1,3 @@
-
 // MAP CONSTANTS
 pub const MAP_WIDTH: i32 = 58;
 pub const MAP_LENGTH: i32 = 30;
@@ -22,4 +21,3 @@ pub const TILE_SIZE: f32 = 32.0;
 //         color: Color::WHITE,
 //     };
 // }
-
