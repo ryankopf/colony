@@ -1,10 +1,6 @@
 use crate::prelude::*;
 
-pub fn task_system_sleep(
-    mut commands: Commands,
-    mut query: Query<(Entity, &mut Brain, &Position), Without<Targeting>>,
-    mut query_bed: Query<(Entity, &Position, &Bed)>,
-) {
+pub fn task_system_sleep(mut commands: Commands, mut query: Query<(Entity, &mut Brain, &Position), Without<Targeting>>, mut query_bed: Query<(Entity, &Position, &Bed)>) {
     for (entity, mut brain, position) in query.iter_mut() {
         if brain.task.is_none() {
             continue; // Has no task.
@@ -30,14 +26,8 @@ pub fn task_system_sleep(
             let distance = position.distance(bed_position);
             if distance == shortest_distance {
                 // Set target.
-                commands
-                    .entity(entity)
-                    .insert(Targeting { target: bed_entity });
-                commands.entity(entity).insert(Pathing {
-                    path: vec![],
-                    destination: *bed_position,
-                    ..default()
-                });
+                commands.entity(entity).insert(Targeting { target: bed_entity });
+                commands.entity(entity).insert(Pathing { path: vec![], destination: *bed_position, ..default() });
                 found_bed = true;
                 break;
             }

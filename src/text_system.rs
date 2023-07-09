@@ -1,11 +1,6 @@
 use super::prelude::*;
 
-pub fn text_system(
-    mut commands: Commands,
-    font: Res<MyFont>,
-    object_info: Res<SelectedObjectInformation>,
-    texts: Query<Entity, With<ObjectText>>,
-) {
+pub fn text_system(mut commands: Commands, font: Res<MyFont>, object_info: Res<SelectedObjectInformation>, texts: Query<Entity, With<ObjectText>>) {
     for text in texts.iter() {
         commands.entity(text).despawn();
     }
@@ -16,22 +11,11 @@ pub fn text_system(
             TextBundle::from_section(
                 // Accepts a `String` or any type that converts into a `String`, such as `&str`
                 info,
-                TextStyle {
-                    font: font.0.clone(),
-                    ..default()
-                },
+                TextStyle { font: font.0.clone(), ..default() },
             ) // Set the alignment of the Text
             .with_text_alignment(TextAlignment::TOP_LEFT)
             // Set the style of the TextBundle itself.
-            .with_style(Style {
-                position_type: PositionType::Absolute,
-                position: UiRect {
-                    bottom: Val::Px(45.0 + (i as f32 * 20.0)),
-                    left: Val::Px(15.0),
-                    ..default()
-                },
-                ..default()
-            }),
+            .with_style(Style { position_type: PositionType::Absolute, position: UiRect { bottom: Val::Px(45.0 + (i as f32 * 20.0)), left: Val::Px(15.0), ..default() }, ..default() }),
             ObjectText,
         ));
     }

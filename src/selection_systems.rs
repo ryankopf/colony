@@ -5,25 +5,13 @@ pub struct SelectionPlugin;
 
 impl Plugin for SelectionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<SelectionEvent>()
-            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_unselecting))
-            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_foragables))
-            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_choppables))
-            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_zoning))
-            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_unzoning));
+        app.add_event::<SelectionEvent>().add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_unselecting)).add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_foragables)).add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_choppables)).add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_zoning)).add_system_set(SystemSet::on_update(GameState::InGame).with_system(select_unzoning));
     }
 }
 
 pub struct SelectionEvent;
 
-pub fn select_foragables(
-    mut commands: Commands,
-    mut query: Query<(Entity, Option<&Foragable>), With<Highlighted>>,
-    highlighteds: Query<Entity, With<Highlighted>>,
-    highlightboxes: Query<Entity, With<HighlightBox>>,
-    event: EventReader<SelectionEvent>,
-    dragging: Res<Dragging>,
-) {
+pub fn select_foragables(mut commands: Commands, mut query: Query<(Entity, Option<&Foragable>), With<Highlighted>>, highlighteds: Query<Entity, With<Highlighted>>, highlightboxes: Query<Entity, With<HighlightBox>>, event: EventReader<SelectionEvent>, dragging: Res<Dragging>) {
     if event.is_empty() {
         return;
     }
@@ -38,15 +26,7 @@ pub fn select_foragables(
     unhighlight(commands, highlighteds, highlightboxes);
 }
 
-pub fn select_choppables(
-    mut commands: Commands,
-    mut query: Query<(Entity, Option<&Choppable>), With<Highlighted>>,
-    highlighteds: Query<Entity, With<Highlighted>>,
-    highlightboxes: Query<Entity, With<HighlightBox>>,
-    event: EventReader<SelectionEvent>,
-    dragging: Res<Dragging>,
-    font: Res<MyFont>,
-) {
+pub fn select_choppables(mut commands: Commands, mut query: Query<(Entity, Option<&Choppable>), With<Highlighted>>, highlighteds: Query<Entity, With<Highlighted>>, highlightboxes: Query<Entity, With<HighlightBox>>, event: EventReader<SelectionEvent>, dragging: Res<Dragging>, font: Res<MyFont>) {
     if event.is_empty() {
         return;
     }
@@ -56,38 +36,14 @@ pub fn select_choppables(
     for (entity, selection_reason) in query.iter_mut() {
         if selection_reason.is_some() {
             commands.entity(entity).insert(WorkTarget);
-            let child = commands
-                .spawn((
-                    Text2dBundle {
-                        text: Text::from_section(
-                            "X",
-                            TextStyle {
-                                font: font.0.clone(),
-                                ..default()
-                            },
-                        )
-                        .with_alignment(TextAlignment::CENTER),
-                        ..default()
-                    },
-                    WorkMarker,
-                ))
-                .insert(Transform::from_xyz(10.0, 20.0, 100.0))
-                .id();
+            let child = commands.spawn((Text2dBundle { text: Text::from_section("X", TextStyle { font: font.0.clone(), ..default() }).with_alignment(TextAlignment::CENTER), ..default() }, WorkMarker)).insert(Transform::from_xyz(10.0, 20.0, 100.0)).id();
             commands.entity(entity).push_children(&[child]);
         }
     }
     unhighlight(commands, highlighteds, highlightboxes);
 }
 
-pub fn select_zoning(
-    mut commands: Commands,
-    query: Query<(Entity, Option<&MapTile>), With<Highlighted>>,
-    zoned: Query<Entity, With<Zone>>,
-    highlighteds: Query<Entity, With<Highlighted>>,
-    highlightboxes: Query<Entity, With<HighlightBox>>,
-    event: EventReader<SelectionEvent>,
-    dragging: Res<Dragging>,
-) {
+pub fn select_zoning(mut commands: Commands, query: Query<(Entity, Option<&MapTile>), With<Highlighted>>, zoned: Query<Entity, With<Zone>>, highlighteds: Query<Entity, With<Highlighted>>, highlightboxes: Query<Entity, With<HighlightBox>>, event: EventReader<SelectionEvent>, dragging: Res<Dragging>) {
     if event.is_empty() {
         return;
     }
@@ -101,36 +57,15 @@ pub fn select_zoning(
             }
         } // Don't zone tiles that already have a zone.
         if selection_reason.is_some() {
-            commands.entity(entity).insert(Zone {
-                zone_type: dragging.zone_type,
-                plant_type: dragging.plant_type,
-                ..default()
-            });
-            let zonemarker = commands
-                .spawn((
-                    SpriteBundle {
-                        sprite: Sprite {
-                            color: Color::rgba(0.8, 0.8, 1.0, 0.1),
-                            custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                            ..default()
-                        },
-                        transform: Transform::from_xyz(0.0, 0.0, 300.0),
-                        ..default()
-                    },
-                    ZoneMarker,
-                ))
-                .id();
+            commands.entity(entity).insert(Zone { zone_type: dragging.zone_type, plant_type: dragging.plant_type, ..default() });
+            let zonemarker = commands.spawn((SpriteBundle { sprite: Sprite { color: Color::rgba(0.8, 0.8, 1.0, 0.1), custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)), ..default() }, transform: Transform::from_xyz(0.0, 0.0, 300.0), ..default() }, ZoneMarker)).id();
             commands.entity(entity).push_children(&[zonemarker]);
         }
     }
     unhighlight(commands, highlighteds, highlightboxes);
 }
 
-fn unhighlight(
-    mut commands: Commands,
-    highlighteds: Query<Entity, With<Highlighted>>,
-    highlightboxes: Query<Entity, With<HighlightBox>>,
-) {
+fn unhighlight(mut commands: Commands, highlighteds: Query<Entity, With<Highlighted>>, highlightboxes: Query<Entity, With<HighlightBox>>) {
     for entity in highlighteds.iter() {
         commands.entity(entity).remove::<Highlighted>();
     }
@@ -139,14 +74,7 @@ fn unhighlight(
     }
 }
 
-fn select_unselecting(
-    mut commands: Commands,
-    highlighteds: Query<Entity, With<Highlighted>>,
-    workmarkers: Query<(Entity, &Parent), With<WorkMarker>>,
-    highlightboxes: Query<Entity, With<HighlightBox>>,
-    event: EventReader<SelectionEvent>,
-    dragging: Res<Dragging>,
-) {
+fn select_unselecting(mut commands: Commands, highlighteds: Query<Entity, With<Highlighted>>, workmarkers: Query<(Entity, &Parent), With<WorkMarker>>, highlightboxes: Query<Entity, With<HighlightBox>>, event: EventReader<SelectionEvent>, dragging: Res<Dragging>) {
     if event.is_empty() {
         return;
     }
@@ -165,14 +93,7 @@ fn select_unselecting(
     unhighlight(commands, highlighteds, highlightboxes);
 }
 
-fn select_unzoning(
-    mut commands: Commands,
-    highlighteds: Query<Entity, With<Highlighted>>,
-    zonemarkers: Query<(Entity, &Parent), With<ZoneMarker>>,
-    highlightboxes: Query<Entity, With<HighlightBox>>,
-    event: EventReader<SelectionEvent>,
-    dragging: Res<Dragging>,
-) {
+fn select_unzoning(mut commands: Commands, highlighteds: Query<Entity, With<Highlighted>>, zonemarkers: Query<(Entity, &Parent), With<ZoneMarker>>, highlightboxes: Query<Entity, With<HighlightBox>>, event: EventReader<SelectionEvent>, dragging: Res<Dragging>) {
     if event.is_empty() {
         return;
     }

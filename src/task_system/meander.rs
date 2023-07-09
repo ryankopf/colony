@@ -1,10 +1,6 @@
 use crate::prelude::*;
 
-pub fn task_system_meander(
-    _commands: Commands,
-    mut query: Query<(Entity, &mut Brain, &mut Position, &mut Transform), Without<TileType>>,
-    tile_types: Query<(&Position, &TileType)>,
-) {
+pub fn task_system_meander(_commands: Commands, mut query: Query<(Entity, &mut Brain, &mut Position, &mut Transform), Without<TileType>>, tile_types: Query<(&Position, &TileType)>) {
     for (_entity, mut brain, mut position, mut transform) in query.iter_mut() {
         if brain.task != Some(Task::Meander) {
             continue;

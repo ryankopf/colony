@@ -6,25 +6,11 @@ pub struct ClickPlugin;
 
 impl Plugin for ClickPlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<ObjectFinderEvent>()
-            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(mouse_click_input))
-            .add_system_set(SystemSet::on_update(GameState::InGame).with_system(mouse_drag_system))
-            .add_system_set(
-                SystemSet::on_update(GameState::InGame).with_system(object_finder_system),
-            )
-            .add_system(mouse_move_system)
-            .insert_resource(Dragging { ..default() });
+        app.add_event::<ObjectFinderEvent>().add_system_set(SystemSet::on_update(GameState::InGame).with_system(mouse_click_input)).add_system_set(SystemSet::on_update(GameState::InGame).with_system(mouse_drag_system)).add_system_set(SystemSet::on_update(GameState::InGame).with_system(object_finder_system)).add_system(mouse_move_system).insert_resource(Dragging { ..default() });
     }
 }
 
-pub fn mouse_click_input(
-    mouse_button_input: Res<Input<MouseButton>>,
-    windows: Res<Windows>,
-    q_camera: Query<(&Camera, &GlobalTransform)>,
-    mut event: EventWriter<ObjectFinderEvent>,
-    mut dragging: ResMut<Dragging>,
-    mut selection_event: EventWriter<SelectionEvent>,
-) {
+pub fn mouse_click_input(mouse_button_input: Res<Input<MouseButton>>, windows: Res<Windows>, q_camera: Query<(&Camera, &GlobalTransform)>, mut event: EventWriter<ObjectFinderEvent>, mut dragging: ResMut<Dragging>, mut selection_event: EventWriter<SelectionEvent>) {
     if mouse_button_input.just_pressed(MouseButton::Left) {
         let (camera, camera_transform) = q_camera.single();
         let window = windows.get_primary().unwrap();
@@ -61,12 +47,7 @@ pub fn mouse_click_input(
             }
         }
         if let Some(screen_pos) = window.cursor_position() {
-            position = Some(mouse_to_position(
-                camera,
-                camera_transform,
-                window,
-                screen_pos,
-            ));
+            position = Some(mouse_to_position(camera, camera_transform, window, screen_pos));
         }
         if let Some(position) = position {
             event.send(ObjectFinderEvent { position });
@@ -103,12 +84,7 @@ pub fn mouse_drag_system(
     let window = windows.get_primary().unwrap();
     let mut end_position = None;
     if let Some(screen_pos) = window.cursor_position() {
-        end_position = Some(mouse_to_position(
-            camera,
-            camera_transform,
-            window,
-            screen_pos,
-        ));
+        end_position = Some(mouse_to_position(camera, camera_transform, window, screen_pos));
     }
     if end_position.is_none() {
         return;
@@ -117,21 +93,13 @@ pub fn mouse_drag_system(
     // Now just take all objects with a position that matches and mark them as "Highlighted".
     // Somehow only allow the types I want to be highlighted. Foragable. Unit. Choppable. Food. Storable.
     for (entity, pos, highlighted) in positions.iter() {
-        if (start_position.x.min(end_position.x) <= pos.x)
-            && (pos.x <= start_position.x.max(end_position.x)
-                && (start_position.y.min(end_position.y) <= pos.y)
-                && (pos.y <= start_position.y.max(end_position.y)))
-        {
+        if (start_position.x.min(end_position.x) <= pos.x) && (pos.x <= start_position.x.max(end_position.x) && (start_position.y.min(end_position.y) <= pos.y) && (pos.y <= start_position.y.max(end_position.y))) {
             if highlighted.is_some() {
                 continue;
             }
             let highlight_box = commands
                 .spawn(SpriteBundle {
-                    sprite: Sprite {
-                        color: Color::rgba(1.0, 1.0, 1.0, 0.2),
-                        custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                        ..default()
-                    },
+                    sprite: Sprite { color: Color::rgba(1.0, 1.0, 1.0, 0.2), custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)), ..default() },
                     transform: Transform::from_xyz(0.0, 0.0, pos.z as f32 + 0.1), //pos.x as f32, pos.y as f32, pos.z as f32 + 0.1),
                     ..default()
                 })
@@ -164,12 +132,7 @@ pub fn mouse_move_system(
     let window = windows.get_primary().unwrap();
     let mut pos = None;
     if let Some(screen_pos) = window.cursor_position() {
-        pos = Some(mouse_to_position(
-            camera,
-            camera_transform,
-            window,
-            screen_pos,
-        ));
+        pos = Some(mouse_to_position(camera, camera_transform, window, screen_pos));
     }
     if pos.is_none() {
         return;
@@ -182,9 +145,7 @@ pub fn mouse_move_system(
             object_info.info.push("Object ".to_string());
             if let Some(brain) = b {
                 object_info.info.push(format!("Task: {:?}", brain.task));
-                object_info
-                    .info
-                    .push(format!("Motivation: {:?}", brain.motivation));
+                object_info.info.push(format!("Motivation: {:?}", brain.motivation));
             }
         }
     }
@@ -209,12 +170,7 @@ pub struct ObjectFinderEvent {
     pub position: Position,
 }
 
-fn mouse_to_position(
-    camera: &Camera,
-    camera_transform: &GlobalTransform,
-    window: &Window,
-    screen_pos: Vec2,
-) -> Position {
+fn mouse_to_position(camera: &Camera, camera_transform: &GlobalTransform, window: &Window, screen_pos: Vec2) -> Position {
     // get the size of the window
     let window_size = Vec2::new(window.width(), window.height());
 
@@ -240,9 +196,5 @@ fn mouse_to_position(
     // event.send(ObjectFinderEvent { position });
     // dragging.dragging = true;
     // dragging.start_position = Some(position);
-    Position {
-        x: (world_pos.x / TILE_SIZE) as i32,
-        y: (world_pos.y / TILE_SIZE) as i32,
-        z: 0,
-    }
+    Position { x: (world_pos.x / TILE_SIZE) as i32, y: (world_pos.y / TILE_SIZE) as i32, z: 0 }
 }

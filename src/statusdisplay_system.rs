@@ -1,11 +1,6 @@
 use crate::prelude::*;
 
-pub fn status_display_system(
-    mut commands: Commands,
-    mut query: Query<(Entity, &HasName, &mut Status, &Brain, &Children)>,
-    mut q_children: Query<(Entity, &Parent), With<TextName>>,
-    asset_server: Res<AssetServer>,
-) {
+pub fn status_display_system(mut commands: Commands, mut query: Query<(Entity, &HasName, &mut Status, &Brain, &Children)>, mut q_children: Query<(Entity, &Parent), With<TextName>>, asset_server: Res<AssetServer>) {
     for (child, _) in q_children.iter_mut() {
         commands.entity(child).despawn();
     }
@@ -39,27 +34,9 @@ pub fn status_display_system(
 
         // NOW SHOW THE TEXT
         let font = asset_server.load("fonts/FiraSans-Medium.ttf");
-        let text_style = TextStyle {
-            font: font.clone(),
-            font_size: 18.0,
-            color: Color::WHITE,
-        };
-        let text_alignment_center = TextAlignment {
-            vertical: VerticalAlign::Center,
-            horizontal: HorizontalAlign::Center,
-        };
-        let child = commands
-            .spawn((
-                Text2dBundle {
-                    text: Text::from_section(chosen_text, text_style.clone())
-                        .with_alignment(text_alignment_center),
-                    ..default()
-                },
-                TextName,
-            ))
-            .insert(Transform::from_xyz(0.0, 30.0, 100.0))
-            .insert(IsName)
-            .id();
+        let text_style = TextStyle { font: font.clone(), font_size: 18.0, color: Color::WHITE };
+        let text_alignment_center = TextAlignment { vertical: VerticalAlign::Center, horizontal: HorizontalAlign::Center };
+        let child = commands.spawn((Text2dBundle { text: Text::from_section(chosen_text, text_style.clone()).with_alignment(text_alignment_center), ..default() }, TextName)).insert(Transform::from_xyz(0.0, 30.0, 100.0)).insert(IsName).id();
 
         commands.entity(entity).push_children(&[child]);
     }

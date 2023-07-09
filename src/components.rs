@@ -9,18 +9,10 @@ pub struct Position {
 }
 impl Position {
     pub fn to_transform(&self) -> Transform {
-        Transform::from_xyz(
-            self.x as f32 * TILE_SIZE,
-            self.y as f32 * TILE_SIZE,
-            self.z as f32,
-        )
+        Transform::from_xyz(self.x as f32 * TILE_SIZE, self.y as f32 * TILE_SIZE, self.z as f32)
     }
     pub fn to_transform_layer(&self, layer: f32) -> Transform {
-        Transform::from_xyz(
-            self.x as f32 * TILE_SIZE,
-            self.y as f32 * TILE_SIZE,
-            self.z as f32 + layer,
-        )
+        Transform::from_xyz(self.x as f32 * TILE_SIZE, self.y as f32 * TILE_SIZE, self.z as f32 + layer)
     }
     pub fn distance(&self, other: &Position) -> i32 {
         (((self.x - other.x).pow(2) + (self.y - other.y).pow(2)) as f32).sqrt() as i32
@@ -89,14 +81,7 @@ impl TileType {
         }
     }
     pub fn is_wall(&self) -> bool {
-        matches!(
-            self,
-            TileType::WallGame
-                | TileType::WallStone
-                | TileType::WallWood
-                | TileType::WallBrick
-                | TileType::WallMetal
-        )
+        matches!(self, TileType::WallGame | TileType::WallStone | TileType::WallWood | TileType::WallBrick | TileType::WallMetal)
     }
 }
 
@@ -114,11 +99,7 @@ pub struct Food {
 }
 impl Default for Food {
     fn default() -> Self {
-        Food {
-            nutrition: 10.0,
-            spoilage: 1.0,
-            spoilage_rate: 0.1,
-        }
+        Food { nutrition: 10.0, spoilage: 1.0, spoilage_rate: 0.1 }
     }
 }
 
@@ -199,11 +180,7 @@ pub struct Zone {
 
 impl Default for Zone {
     fn default() -> Self {
-        Zone {
-            zone_type: ZoneType::Farm,
-            plant_type: PlantType::Cabbage,
-            material_delivered: false,
-        }
+        Zone { zone_type: ZoneType::Farm, plant_type: PlantType::Cabbage, material_delivered: false }
     }
 }
 
@@ -449,11 +426,7 @@ pub struct Pathing {
 
 impl Default for Pathing {
     fn default() -> Self {
-        Pathing {
-            path: Vec::new(),
-            destination: Position { x: 0, y: 0, z: 0 },
-            unreachable: false,
-        }
+        Pathing { path: Vec::new(), destination: Position { x: 0, y: 0, z: 0 }, unreachable: false }
     }
 }
 
@@ -474,25 +447,13 @@ pub struct SizeXYZ {
 }
 impl SizeXYZ {
     pub fn cube(x: f32) -> Self {
-        Self {
-            width: x,
-            height: x,
-            depth: x,
-        }
+        Self { width: x, height: x, depth: x }
     }
     pub fn flat(x: f32) -> Self {
-        Self {
-            width: x,
-            height: x,
-            depth: 0.1,
-        }
+        Self { width: x, height: x, depth: 0.1 }
     }
     pub fn flat_2(x: f32) -> Self {
-        Self {
-            width: x,
-            height: x,
-            depth: 1.0,
-        }
+        Self { width: x, height: x, depth: 1.0 }
     }
 }
 

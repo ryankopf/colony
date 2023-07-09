@@ -1,9 +1,6 @@
 use super::prelude::*;
 
-pub fn movement_random(
-    mut entities: Query<(&mut Position, &mut Transform), (With<MoveRandom>, Without<TileType>)>,
-    tile_types: Query<(&Position, &TileType)>,
-) {
+pub fn movement_random(mut entities: Query<(&mut Position, &mut Transform), (With<MoveRandom>, Without<TileType>)>, tile_types: Query<(&Position, &TileType)>) {
     for (mut position, mut transform) in entities.iter_mut() {
         let mut new_position = *position;
         let mut rng = rand::thread_rng();

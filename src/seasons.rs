@@ -5,24 +5,11 @@ pub struct SeasonsPlugin;
 
 impl Plugin for SeasonsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_fixed_timestep_system(
-            crate::task_system::TWO_SECOND,
-            0,
-            seasons.run_in_bevy_state(GameState::InGame),
-        );
+        app.add_fixed_timestep_system(crate::task_system::TWO_SECOND, 0, seasons.run_in_bevy_state(GameState::InGame));
     }
 }
 
-pub fn seasons(
-    mut commands: Commands,
-    mut plants: Query<(
-        Entity,
-        &mut Plant,
-        &mut Transform,
-        Option<&Foragable>,
-        Option<&Choppable>,
-    )>,
-) {
+pub fn seasons(mut commands: Commands, mut plants: Query<(Entity, &mut Plant, &mut Transform, Option<&Foragable>, Option<&Choppable>)>) {
     for (entity, mut plant, mut transform, foragable, choppable) in plants.iter_mut() {
         if plant.growth < 1.0 {
             let rand = rand::thread_rng().gen_range(0..2);

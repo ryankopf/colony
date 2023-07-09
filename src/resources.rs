@@ -25,13 +25,7 @@ pub struct Dragging {
 
 impl Default for Dragging {
     fn default() -> Self {
-        Self {
-            dragging: false,
-            start_position: None,
-            looking_for: SelectableType::Foragable,
-            zone_type: ZoneType::Farm,
-            plant_type: PlantType::Cabbage,
-        }
+        Self { dragging: false, start_position: None, looking_for: SelectableType::Foragable, zone_type: ZoneType::Farm, plant_type: PlantType::Cabbage }
     }
 }
 

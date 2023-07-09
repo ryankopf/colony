@@ -6,86 +6,21 @@ pub struct StartupPlugin;
 
 impl Plugin for StartupPlugin {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(startup)
-            .insert_resource(MyFont(Handle::<Font>::default()));
+        app.add_startup_system(startup).insert_resource(MyFont(Handle::<Font>::default()));
     }
 }
 
-pub fn startup(
-    mut commands: Commands,
-    sprite_sheet: Res<SpriteSheet>,
-    _asset_server: Res<AssetServer>,
-    biome: Res<Biome>,
-) {
+pub fn startup(mut commands: Commands, sprite_sheet: Res<SpriteSheet>, _asset_server: Res<AssetServer>, biome: Res<Biome>) {
     // GENERATE UNITS
     for i in 1..6 {
-        let position = Position {
-            x: 3,
-            y: 3 * i,
-            z: 0,
-        };
+        let position = Position { x: 3, y: 3 * i, z: 0 };
         let sprite = TextureAtlasSprite::new(66 * 64 + 46_usize);
 
-        commands
-            .spawn(SpriteSheetBundle {
-                sprite,
-                texture_atlas: sprite_sheet.0.clone(),
-                transform: Transform::from_xyz(
-                    position.x as f32 * TILE_SIZE,
-                    position.y as f32 * TILE_SIZE,
-                    position.z as f32 * TILE_SIZE,
-                ),
-                ..Default::default()
-            })
-            .insert(position)
-            .insert(position.to_transform_layer(1.0))
-            .insert(Attackable)
-            .insert(NeedsFood {
-                current: 100.0,
-                max: 100.0,
-                rate: 0.1,
-            })
-            .insert(GiveMeAName)
-            .insert(Status {
-                needs_food: Some(NeedsFood {
-                    current: 25.1,
-                    max: 100.0,
-                    rate: 0.1,
-                }),
-                needs_entertainment: Some(NeedsEntertainment {
-                    current: 100.0,
-                    max: 100.0,
-                    rate: 0.1,
-                }),
-                needs_sleep: Some(NeedsSleep {
-                    current: 15.2,
-                    max: 100.0,
-                    rate: 0.1,
-                }),
-                index: 0,
-                crisis: None,
-                danger: None,
-                injured: false,
-            })
-            .insert(Brain {
-                ..Default::default()
-            });
+        commands.spawn(SpriteSheetBundle { sprite, texture_atlas: sprite_sheet.0.clone(), transform: Transform::from_xyz(position.x as f32 * TILE_SIZE, position.y as f32 * TILE_SIZE, position.z as f32 * TILE_SIZE), ..Default::default() }).insert(position).insert(position.to_transform_layer(1.0)).insert(Attackable).insert(NeedsFood { current: 100.0, max: 100.0, rate: 0.1 }).insert(GiveMeAName).insert(Status { needs_food: Some(NeedsFood { current: 25.1, max: 100.0, rate: 0.1 }), needs_entertainment: Some(NeedsEntertainment { current: 100.0, max: 100.0, rate: 0.1 }), needs_sleep: Some(NeedsSleep { current: 15.2, max: 100.0, rate: 0.1 }), index: 0, crisis: None, danger: None, injured: false }).insert(Brain { ..Default::default() });
     }
 
     let position = Position { x: 10, y: 10, z: 0 };
-    commands
-        .spawn(SpriteBundle {
-            sprite: Sprite {
-                color: Color::BLACK,
-                custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                ..default()
-            },
-            ..default()
-        })
-        .insert(position)
-        .insert(SizeXYZ::cube(1.1))
-        .insert(super::components::MonsterGenerator)
-        .insert(position.to_transform_layer(1.0));
+    commands.spawn(SpriteBundle { sprite: Sprite { color: Color::BLACK, custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)), ..default() }, ..default() }).insert(position).insert(SizeXYZ::cube(1.1)).insert(super::components::MonsterGenerator).insert(position.to_transform_layer(1.0));
 
     // GENERATE PLANTS
     // List taken positions as a Hashmap
@@ -109,21 +44,7 @@ pub fn startup(
         // };
         let sprite = TextureAtlasSprite::new(plant_type.sprite_index());
 
-        let plant = commands
-            .spawn(SpriteSheetBundle {
-                sprite,
-                texture_atlas: sprite_sheet.0.clone(),
-                transform: Transform::from_xyz(
-                    position.x as f32 * TILE_SIZE,
-                    position.y as f32 * TILE_SIZE,
-                    position.z as f32 * TILE_SIZE,
-                ),
-                ..Default::default()
-            })
-            .insert(position)
-            .insert(position.to_transform_layer(0.5))
-            .insert(Plant { growth, plant_type })
-            .id();
+        let plant = commands.spawn(SpriteSheetBundle { sprite, texture_atlas: sprite_sheet.0.clone(), transform: Transform::from_xyz(position.x as f32 * TILE_SIZE, position.y as f32 * TILE_SIZE, position.z as f32 * TILE_SIZE), ..Default::default() }).insert(position).insert(position.to_transform_layer(0.5)).insert(Plant { growth, plant_type }).id();
         if plant_type.is_forageable().0.is_some() && growth > 0.5 {
             commands.entity(plant).insert(Foragable);
         }

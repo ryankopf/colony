@@ -41,9 +41,7 @@ fn main() {
         .add_fixed_timestep(Duration::from_millis(500), task_system::HALF_SECOND)
         .add_fixed_timestep(Duration::from_millis(2000), task_system::TWO_SECOND)
         .insert_resource(SelectedObjectInformation::default())
-        .insert_resource(MenuState {
-            state: MenuStates::Home,
-        })
+        .insert_resource(MenuState { state: MenuStates::Home })
         // Map generation
         .add_plugin(startup::StartupPlugin)
         .add_startup_system(map::generate_map)
@@ -68,21 +66,13 @@ fn main() {
         .add_plugin(click::ClickPlugin)
         .add_system(input::keyboard_input)
         .add_system(input::scrollwheel_input)
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(0.1))
-                .with_system(moverandom_system::movement_random),
-        )
+        .add_system_set(SystemSet::new().with_run_criteria(FixedTimestep::step(0.1)).with_system(moverandom_system::movement_random))
         // NPC behaviour
         .add_plugin(task_system::TaskPlugin)
         .add_plugin(movetoward_system::MovementPlugin)
         .add_plugin(needs::NeedsPlugin)
         .add_system(movetoward_system::movement_toward_attackable)
-        .add_system_set(
-            SystemSet::new()
-                .with_run_criteria(FixedTimestep::step(0.5))
-                .with_system(statusdisplay_system::status_display_system),
-        )
+        .add_system_set(SystemSet::new().with_run_criteria(FixedTimestep::step(0.5)).with_system(statusdisplay_system::status_display_system))
         .add_plugin(thinking_system::ThinkingPlugin)
         // World simulation
         .add_plugin(spoilage_system::SpoilagePlugin)
@@ -102,11 +92,7 @@ fn setup_camera(mut commands: Commands) {
     commands.spawn(camera);
 }
 
-fn remove_bad_positions(
-    mut commands: Commands,
-    query: Query<(Entity, &Position), Without<MapTile>>,
-    tiletypes: Res<TileHash>,
-) {
+fn remove_bad_positions(mut commands: Commands, query: Query<(Entity, &Position), Without<MapTile>>, tiletypes: Res<TileHash>) {
     for (entity, position) in query.iter() {
         if tiletypes.hash.contains_key(position) {
             if tiletypes.hash.get(position).unwrap().is_wall() {

@@ -1,25 +1,8 @@
 use crate::prelude::*;
 
-pub fn task_system_eat(
-    mut commands: Commands,
-    mut query: Query<
-        (
-            Entity,
-            &mut Brain,
-            &Position,
-            Option<&Targeting>,
-            Option<&mut Status>,
-        ),
-        Without<Pathing>,
-    >,
-    query_food: Query<(Entity, &Position, &Food)>,
-) {
+pub fn task_system_eat(mut commands: Commands, mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>, Option<&mut Status>), Without<Pathing>>, query_food: Query<(Entity, &Position, &Food)>) {
     // Set list of entities that are already being targetted.
-    let mut already_targeted = query
-        .iter()
-        .filter(|(_, _, _, targeting, _)| targeting.is_some())
-        .map(|(_, _, _, targeting, _)| targeting.unwrap().target)
-        .collect::<Vec<Entity>>();
+    let mut already_targeted = query.iter().filter(|(_, _, _, targeting, _)| targeting.is_some()).map(|(_, _, _, targeting, _)| targeting.unwrap().target).collect::<Vec<Entity>>();
     for (entity, mut brain, position, targeting, mut status) in query.iter_mut() {
         if brain.task != Some(Task::Eat) {
             continue;
@@ -33,10 +16,7 @@ pub fn task_system_eat(
         let mut closest_position = None;
         for (food_entity, food_position, _) in query_food.iter() {
             // Future food nutrition & distance calculate.
-            if already_targeted.contains(&food_entity)
-                && (targeting.is_none()
-                    || (targeting.is_some() && targeting.unwrap().target != food_entity))
-            {
+            if already_targeted.contains(&food_entity) && (targeting.is_none() || (targeting.is_some() && targeting.unwrap().target != food_entity)) {
                 continue;
             }
             let distance = position.distance(food_position);
@@ -67,14 +47,8 @@ pub fn task_system_eat(
             }
         }
         if let Some(closest_entity) = closest_entity {
-            commands.entity(entity).insert(Targeting {
-                target: closest_entity,
-            });
-            commands.entity(entity).insert(Pathing {
-                path: vec![],
-                destination: *closest_position.unwrap(),
-                ..default()
-            });
+            commands.entity(entity).insert(Targeting { target: closest_entity });
+            commands.entity(entity).insert(Pathing { path: vec![], destination: *closest_position.unwrap(), ..default() });
             already_targeted.push(closest_entity);
             found_food = true;
         } else {

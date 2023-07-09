@@ -16,53 +16,20 @@ pub fn initialize_game_ui(mut commands: Commands, asset_server: Res<AssetServer>
     let _sprite = TextureAtlasSprite::new(190);
     commands
         .spawn(NodeBundle {
-            style: Style {
-                position_type: PositionType::Absolute,
-                position: UiRect {
-                    left: Val::Px(0.0),
-                    bottom: Val::Px(0.0),
-                    ..Default::default()
-                },
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                size: Size::new(Val::Percent(100.0), Val::Px(32.0)),
-                ..Default::default()
-            },
+            style: Style { position_type: PositionType::Absolute, position: UiRect { left: Val::Px(0.0), bottom: Val::Px(0.0), ..Default::default() }, justify_content: JustifyContent::Center, align_items: AlignItems::Center, size: Size::new(Val::Percent(100.0), Val::Px(32.0)), ..Default::default() },
             background_color: Color::rgba(0.65, 0.65, 0.65, 0.65).into(),
             ..Default::default()
         })
         .with_children(|parent| {
             // Add Icon
             for i in 0..6 {
-                parent.spawn(ImageBundle {
-                    style: Style {
-                        position_type: PositionType::Absolute,
-                        position: UiRect {
-                            left: Val::Px(32.0 * i as f32),
-                            top: Val::Px(0.0),
-                            ..Default::default()
-                        },
-                        size: Size::new(Val::Px(32.0), Val::Px(32.0)),
-                        ..Default::default()
-                    },
-                    image: asset_server.load(format!("i-{}.png", i)).into(),
-                    ..Default::default()
-                });
+                parent.spawn(ImageBundle { style: Style { position_type: PositionType::Absolute, position: UiRect { left: Val::Px(32.0 * i as f32), top: Val::Px(0.0), ..Default::default() }, size: Size::new(Val::Px(32.0), Val::Px(32.0)), ..Default::default() }, image: asset_server.load(format!("i-{}.png", i)).into(), ..Default::default() });
             }
         });
 }
 
-pub fn start_game_ui(
-    mut commands: Commands,
-    font: Res<MyFont>,
-    mut menu_state: ResMut<MenuState>,
-    game_buttons: Query<Entity, With<InGameButton>>,
-) {
-    let text_style = TextStyle {
-        font: font.0.clone(),
-        font_size: 18.0,
-        color: Color::WHITE,
-    };
+pub fn start_game_ui(mut commands: Commands, font: Res<MyFont>, mut menu_state: ResMut<MenuState>, game_buttons: Query<Entity, With<InGameButton>>) {
+    let text_style = TextStyle { font: font.0.clone(), font_size: 18.0, color: Color::WHITE };
     let buttons = [
         vec!["TASKS", "FARM", "ZONE", "BUILD", "CRAFT"],
         vec![
@@ -93,42 +60,19 @@ pub fn start_game_ui(
         commands
             .spawn((
                 ButtonBundle {
-                    style: Style {
-                        position_type: PositionType::Absolute,
-                        position: UiRect {
-                            left: Val::Px(100.0 + 100.0 * i as f32),
-                            bottom: Val::Px(30.0),
-                            ..default()
-                        },
-                        justify_content: JustifyContent::Center,
-                        align_items: AlignItems::Center,
-                        size: Size::new(Val::Px(84.0), Val::Px(64.0)),
-                        ..default()
-                    },
+                    style: Style { position_type: PositionType::Absolute, position: UiRect { left: Val::Px(100.0 + 100.0 * i as f32), bottom: Val::Px(30.0), ..default() }, justify_content: JustifyContent::Center, align_items: AlignItems::Center, size: Size::new(Val::Px(84.0), Val::Px(64.0)), ..default() },
                     background_color: Color::rgba(0.65, 0.65, 0.85, 0.65).into(),
                     ..default()
                 },
                 InGameButton,
             ))
             .with_children(|parent| {
-                parent.spawn(TextBundle {
-                    text: Text::from_section(button_text.to_owned(), text_style.clone())
-                        .with_alignment(TextAlignment::CENTER),
-                    ..default()
-                });
+                parent.spawn(TextBundle { text: Text::from_section(button_text.to_owned(), text_style.clone()).with_alignment(TextAlignment::CENTER), ..default() });
             });
     }
 }
 
-pub fn game_ui_click(
-    commands: Commands,
-    mouse_button_input: Res<Input<MouseButton>>,
-    windows: Res<Windows>,
-    mut menu_state: ResMut<MenuState>,
-    font: Res<MyFont>,
-    game_buttons: Query<Entity, With<InGameButton>>,
-    mut dragging: ResMut<Dragging>,
-) {
+pub fn game_ui_click(commands: Commands, mouse_button_input: Res<Input<MouseButton>>, windows: Res<Windows>, mut menu_state: ResMut<MenuState>, font: Res<MyFont>, game_buttons: Query<Entity, With<InGameButton>>, mut dragging: ResMut<Dragging>) {
     if mouse_button_input.just_pressed(MouseButton::Left) {
         let window = windows.get_primary().unwrap();
         let wc = window.cursor_position();
