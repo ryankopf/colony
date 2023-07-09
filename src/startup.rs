@@ -1,7 +1,6 @@
 use super::components::{Position, SizeXYZ};
 use super::prelude::*;
 
-
 // Make Startup Plugin
 pub struct StartupPlugin;
 

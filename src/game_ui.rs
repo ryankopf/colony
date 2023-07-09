@@ -67,23 +67,19 @@ pub fn start_game_ui(
         vec!["TASKS", "FARM", "ZONE", "BUILD", "CRAFT"],
         vec![
             // tasks
-            "BACK", "CLEAR", // 1
-            "CHOP", "FORAGE", "GATHER", "HUNT", "MINE",
+            "BACK", "CLEAR", "CHOP", "FORAGE", "GATHER", "HUNT", "MINE",
         ],
         vec![
             // farm
-            "BACK", "NOTHING", // 1
-            "BERRIES", "PINE", "OAK", "CEDAR",
+            "BACK", "NOTHING", "BERRIES", "PINE", "OAK", "CEDAR",
         ],
         vec![
             // zone
-            "BACK", "NOTHING", // 1
-            "FISHING", "HOSPITAL", "PARTY", "MEETING",
+            "BACK", "NOTHING", "FISHING", "HOSPITAL", "PARTY", "MEETING",
         ],
         vec![
             // build
-            "BACK", "NOTHING", // 1
-            "WALL", "BED", "TABLE", "CHAIR",
+            "BACK", "NOTHING", "WALL", "BED", "TABLE", "CHAIR",
         ],
     ];
     for button in game_buttons.iter() {
