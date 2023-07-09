@@ -29,47 +29,47 @@ impl Position {
 
 #[derive(Clone, Copy, Eq, PartialEq, Debug, Hash)]
 pub enum GameState {
-    MainMenu,
     InGame,
+    MainMenu,
     Paused,
 }
 
 #[derive(PartialEq)]
 pub enum MenuStates {
-    Home,
-    Tasks,
-    Farm,
-    Zone,
     Build,
     Craft,
+    Farm,
+    Home,
+    Tasks,
+    Zone,
 }
 
 impl MenuStates {
     pub fn to_index(&self) -> usize {
         match self {
-            MenuStates::Home => 0,
-            MenuStates::Tasks => 1,
-            MenuStates::Farm => 2,
-            MenuStates::Zone => 3,
             MenuStates::Build => 4,
             MenuStates::Craft => 5,
+            MenuStates::Farm => 2,
+            MenuStates::Home => 0,
+            MenuStates::Tasks => 1,
+            MenuStates::Zone => 3,
         }
     }
 }
 
 #[derive(Component, PartialEq, Clone, Debug)]
 pub enum TileType {
-    Grass,
     Dirt,
+    Grass,
     Gravel,
     Sand,
     Stone,
-    Water,
     WallGame,
     WallStone,
     WallWood,
     WallBrick,
     WallMetal,
+    Water,
 }
 
 impl TileType {
@@ -216,73 +216,72 @@ pub struct NearestEntity {
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ZoneType {
     Farm,
-    Pasture,
-    Storage,
     Fishing,
     Hospital,
-    Party,
     Meeting,
+    Party,
+    Pasture,
+    Storage,
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Task {
-    Crisis,
-    Flee,
-    Fight,
-    Eat,
-    Hospital,
-    Sleep,
-    Sleeping,
-    Play,
-    Order,
-    Work,
-    Meander,
-    Idle,
-    Doctor,
-    Forage,
-    Plant,
-    Harvest,
-    Mine,
     Chop,
     Construct,
-    Hunt,
-    Milk,
     Cook,
-    Fish,
     Craft,
-    Clean,
-    Haul, // Forms of work
+    Crisis,
+    Doctor,
+    Eat,
+    Fight,
+    Fish,
+    Flee,
+    Forage,
+    Harvest,
+    Haul,
+    Hospital,
+    Hunt,
+    Idle,
+    Meander,
+    Milk,
+    Mine,
+    Order,
+    Plant,
+    Play,
+    Sleep,
+    Sleeping,
+    Work, // Forms of work
 }
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Motivation {
-    Crisis,
-    Order,
-    Danger,
-    Hunger,
-    Thirst,
-    Tired,
-    Bored,
-    Injured,
-    Sick,
-    Happy,
-    Sad,
     Angry,
+    Bored,
+    Crisis,
+    Danger,
+    Fear,
+    Happy,
+    Hate,
+    Hunger,
+    Idle,
+    Injured,
     Lonely,
     Love,
-    Fear,
-    Hate,
-    Work,
     Meander,
-    Idle,
+    Order,
+    Sad,
+    Sick,
+    Thirst,
+    Tired,
+    Work,
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ItemType {
     Cabbage,
     Carrot,
-    PineLog,
-    OakLog,
     CedarLog,
+    OakLog,
+    PineLog,
 }
 
 impl ItemType {
@@ -320,20 +319,20 @@ impl ItemType {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum PlantType {
-    PineTree,
-    OakTree,
-    CedarTree,
-    Bush,
-    ThornBush,
-    Cabbage,
     Aloe,
-    FlowerBush,
-    Weed,
-    Carrot,
     Azalea,
-    Vine,
+    Bush,
+    Cabbage,
     CactusRound,
     CactusUp,
+    Carrot,
+    CedarTree,
+    FlowerBush,
+    OakTree,
+    PineTree,
+    ThornBush,
+    Vine,
+    Weed,
 }
 
 impl PlantType {
@@ -389,15 +388,15 @@ pub enum ForageType {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum SelectableType {
-    Foragable,
-    Choppable,
-    Gatherable,
-    Mineable,
     Constructable,
+    Choppable,
+    Foragable,
+    Gatherable,
     Harvestable,
+    Mineable,
     Unselecting,
-    Zoning,
     Unzoning,
+    Zoning,
 }
 
 #[derive(Component)]
