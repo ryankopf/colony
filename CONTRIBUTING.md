@@ -16,6 +16,10 @@ To contribute to COLONY, follow these steps:
 
 Please make sure to adhere to the code style and conventions used in the project.
 
+## Pull Requests
+
+We asked that all pull requests focus on one change/issue/improvement at a time, if possible. Combining pull requests that do multiple things, such as major reformatting and then minor changes, should instead be done in separate PRs.
+
 ## Issue Reporting
 
 If you encounter any issues or have suggestions for improvements, please open an issue on the [issue tracker](https://github.com/ryankopf/colony/issues).
