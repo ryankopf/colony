@@ -29,19 +29,19 @@ impl Position {
 
 #[derive(Clone, Copy, Eq, PartialEq, Debug, Hash)]
 pub enum GameState {
-    MainMenu,
     InGame,
+    MainMenu,
     Paused,
 }
 
 #[derive(PartialEq)]
-pub enum MenuStates {
+pub enum MenuStates { // Sorted in order of display.
     Home, Tasks, Farm, Zone, Build, Craft
 }
 
 impl MenuStates {
     pub fn to_index(&self) -> usize {
-        match self {
+        match self { // Sorted in order of display.
             MenuStates::Home => 0,
             MenuStates::Tasks => 1,
             MenuStates::Farm => 2,
@@ -54,8 +54,17 @@ impl MenuStates {
 
 #[derive(Component, PartialEq, Clone, Debug)]
 pub enum TileType {
-    Grass, Dirt, Gravel, Sand, Stone, Water,
-    WallGame, WallStone, WallWood, WallBrick, WallMetal,
+    Grass,
+    Dirt,
+    Gravel,
+    Sand,
+    Stone,
+    Water,
+    WallBrick,
+    WallGame,
+    WallMetal,
+    WallStone,
+    WallWood,
 }
 
 impl TileType {
@@ -206,18 +215,22 @@ pub enum ZoneType {
 
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
-pub enum Task {
+pub enum Task { // Sorted in order of prioritization.
     Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Meander, Idle,
     Doctor, Forage, Plant, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Haul // Forms of work
 }
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
-pub enum Motivation {
+pub enum Motivation { // Sorted in order of prioritization.
     Crisis, Order, Danger, Hunger, Thirst, Tired, Bored, Injured, Sick, Happy, Sad, Angry, Lonely, Love, Fear, Hate, Work, Meander, Idle
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ItemType {
-    Cabbage, Carrot, PineLog, OakLog, CedarLog
+    Cabbage,
+    Carrot,
+    CedarLog,
+    PineLog,
+    OakLog,
 }
 
 impl ItemType {
@@ -225,9 +238,9 @@ impl ItemType {
         match self {
             ItemType::Cabbage => 94*64+33,
             ItemType::Carrot => 94*64+24,
+            ItemType::CedarLog => 94*64+30,
             ItemType::PineLog => 94*64+30,
             ItemType::OakLog => 94*64+30,
-            ItemType::CedarLog => 94*64+30,
         }
     }
     pub fn nutrition(&self) -> f32 {
@@ -255,7 +268,20 @@ impl ItemType {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum PlantType {
-    PineTree, OakTree, CedarTree, Bush, ThornBush, Cabbage, Aloe, FlowerBush, Weed, Carrot, Azalea, Vine, CactusRound, CactusUp
+    Aloe,
+    Azalea,
+    Bush,
+    Cabbage,
+    CactusRound,
+    CactusUp,
+    Carrot,
+    CedarTree,
+    FlowerBush,
+    PineTree,
+    OakTree,
+    ThornBush,
+    Vine,
+    Weed,
 }
 
 impl PlantType {
@@ -264,20 +290,20 @@ impl PlantType {
     }
     pub fn sprite_index(&self) -> usize {
         match self {
-            PlantType::PineTree => 13*64+13,
-            PlantType::OakTree => 13*64+14,
-            PlantType::CedarTree => 13*64+15,
-            PlantType::Bush => 67*64+57,
-            PlantType::ThornBush => 67*64+57,
-            PlantType::Cabbage => 94*64+32,
             PlantType::Aloe => 67*64+57,
-            PlantType::FlowerBush => 67*64+57,
-            PlantType::Weed => 67*64+57,
-            PlantType::Carrot => 94*64+31,
             PlantType::Azalea => 67*64+57,
-            PlantType::Vine => 67*64+57,
+            PlantType::Bush => 67*64+57,
+            PlantType::Cabbage => 94*64+32,
             PlantType::CactusRound => 67*64+57,
             PlantType::CactusUp => 67*64+57,
+            PlantType::Carrot => 94*64+31,
+            PlantType::CedarTree => 13*64+15,
+            PlantType::PineTree => 13*64+13,
+            PlantType::OakTree => 13*64+14,
+            PlantType::ThornBush => 67*64+57,
+            PlantType::FlowerBush => 67*64+57,
+            PlantType::Vine => 67*64+57,
+            PlantType::Weed => 67*64+57,
         }
     }
     pub fn growth_speed(&self) -> f32 {
@@ -310,7 +336,15 @@ pub enum ForageType {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum SelectableType {
-    Foragable, Choppable, Gatherable, Mineable, Constructable, Harvestable, Unselecting, Zoning, Unzoning
+    Choppable,
+    Constructable,
+    Foragable,
+    Gatherable,
+    Harvestable,
+    Mineable,
+    Unselecting,
+    Unzoning,
+    Zoning,
 }
 
 #[derive(Component)]

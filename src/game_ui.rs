@@ -81,7 +81,7 @@ pub fn start_game_ui(
         "CRAFT",
     ],vec![ // tasks
         "BACK",
-        "CLEAR", // 1
+        "CLEAR",
         "CHOP",
         "FORAGE",
         "GATHER",
@@ -89,21 +89,21 @@ pub fn start_game_ui(
         "MINE",
     ],vec![ // farm
         "BACK",
-        "NOTHING", // 1
+        "NOTHING",
         "BERRIES",
         "PINE",
         "OAK",
         "CEDAR",
     ],vec![ // zone
         "BACK",
-        "NOTHING", // 1
+        "NOTHING",
         "FISHING",
         "HOSPITAL",
         "PARTY",
         "MEETING",
     ],vec![ // build
         "BACK",
-        "NOTHING", // 1
+        "NOTHING",
         "WALL",
         "BED",
         "TABLE",
