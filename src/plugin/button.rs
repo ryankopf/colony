@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use super::prelude::*;
+use crate::prelude::*;
 
 // Make Plugin
 pub struct ButtonPlugin;

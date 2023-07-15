@@ -1,8 +1,8 @@
-use super::prelude::*;
+use crate::prelude::*;
 
 #[derive(Resource)]
 pub struct TileHash {
-    pub hash: std::collections::HashMap<Position, TileType>,
+    pub hash: HashMap<Position, TileType>,
 }
 
 

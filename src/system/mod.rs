@@ -1,0 +1,9 @@
+pub mod map;
+pub mod text;
+pub mod window;
+pub mod moverandom;
+pub mod namegiving;
+pub mod names;
+pub mod statusdisplay;
+pub mod input;
+pub mod pause;

@@ -1,3 +1,4 @@
+use crate::plugin::task::set_already_targetted;
 use crate::prelude::*;
 
 pub fn task_system_plant(
@@ -8,7 +9,7 @@ pub fn task_system_plant(
     obstacles: Query<(Entity, &Position), Without<MapTile>>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
-    let mut already_targeted = crate::set_already_targetted(&query);
+    let mut already_targeted = set_already_targetted(&query);
     'brains: for (entity, mut brain, position, targeting) in query.iter_mut() {
         if brain.task != Some(Task::Plant) { continue; }
         let mut nearest_entity: Option<NearestEntity> = None;

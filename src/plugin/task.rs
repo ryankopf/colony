@@ -1,4 +1,4 @@
-use super::prelude::*;
+use crate::prelude::*;
 mod chop;
 mod eat;
 mod forage;

@@ -1,4 +1,4 @@
-use super::prelude::*;
+use crate::prelude::*;
 
 pub fn text_system(
     mut commands: Commands,

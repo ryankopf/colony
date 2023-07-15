@@ -7,7 +7,7 @@ pub fn task_system_chop(
     workmarkers: Query<(Entity, &Parent), With<WorkMarker>>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
-    let mut already_targeted = crate::set_already_targetted(&query);
+    let mut already_targeted = crate::plugin::task::set_already_targetted(&query);
     'outer: for (entity, mut brain, position, targeting) in query.iter_mut() {
         if brain.task != Some(Task::Chop) { continue; }
         let mut shortest_distance = -1;
@@ -18,7 +18,7 @@ pub fn task_system_chop(
             let distance = position.distance(targetable_position);
             if distance <= 1 && targeting.is_some() && targeting.unwrap().target == targetable_entity {
                 commands.entity(entity).remove::<Targeting>();
-                crate::remove_x_markers(&mut commands, & workmarkers, targetable_entity);
+                crate::plugin::task::remove_x_markers(&mut commands, & workmarkers, targetable_entity);
                 spawn_logs(&mut commands, targetable_entity, targetable_position, &sprite_sheet, &mut plant);
                 continue 'outer;
             }

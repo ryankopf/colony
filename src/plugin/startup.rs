@@ -1,6 +1,7 @@
 use bevy::prelude::*;
-use super::components::{Position, SizeXYZ};
-use super::prelude::*;
+use crate::components::{Position, SizeXYZ};
+use crate::MonsterGenerator;
+use crate::prelude::*;
 
 // Make Startup Plugin
 pub struct StartupPlugin;
@@ -66,7 +67,7 @@ pub fn startup(
             })
             .insert(position)
             .insert(SizeXYZ::cube(1.1))
-            .insert(super::components::MonsterGenerator)
+            .insert(MonsterGenerator)
             .insert(position.to_transform_layer(1.0))
             ;
 
