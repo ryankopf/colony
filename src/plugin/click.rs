@@ -1,5 +1,5 @@
-use super::prelude::*;
-use super::selection_systems::SelectionEvent;
+use crate::prelude::*;
+use super::selection::SelectionEvent;
 
 // Make plugin.
 pub struct ClickPlugin;

@@ -1,4 +1,4 @@
-use super::prelude::*;
+use crate::prelude::*;
 
 // Make Plugin
 pub struct BiomePlugin;

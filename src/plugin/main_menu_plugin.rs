@@ -1,9 +1,9 @@
-use super::prelude::*;
+use crate::prelude::*;
 
 struct MainMenuPlugin;
 
 impl Plugin for MainMenuPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut App) {
         app.add_state(GameState::MainMenu)
         .add_system_set_to_stage(
             CoreStage::PreUpdate,

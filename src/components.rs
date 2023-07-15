@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use super::prelude::*;
+use crate::prelude::*;
 
 #[derive(Component, Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub struct Position {

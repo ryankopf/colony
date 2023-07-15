@@ -1,4 +1,4 @@
-use super::prelude::*;
+use crate::prelude::*;
 
 pub fn movement_random(
     mut entities: Query<(&mut Position, &mut Transform), (With <MoveRandom>, Without<TileType>)>,

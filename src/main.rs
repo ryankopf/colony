@@ -1,38 +1,41 @@
-use bevy::time::FixedTimestep;
-mod prelude;
-pub use crate::prelude::*;
-
-use retrieve::mod_use;
 use std::time::Duration;
-#[mod_use(
-    biome,
-    button_system,
-    click,
-    components,
-    constants,
-    game_ui,
-    input,
-    load,
-    main_menu,
-    map,
-    monstergenerator_system,
-    moverandom_system,
-    movetoward_system,
-    namegiving_system,
-    names_system,
-    needs,
-    pause,
-    resources,
-    seasons,
-    selection_systems,
-    spoilage_system,
-    startup,
-    statusdisplay_system,
-    task_system,
-    text_system,
-    thinking_system,
-    window_system
-)]
+
+use bevy::time::FixedTimestep;
+use plugin::biome::BiomePlugin;
+use system::input::{keyboard_input, scrollwheel_input};
+use crate::load::{load_font, load_sprites};
+use crate::system::map::generate_map;
+use plugin::monstergenerator::MonsterGeneratorPlugin;
+use system::moverandom::movement_random;
+use system::pause::{on_pause, on_unpause};
+use crate::plugin::main_menu::MainMenusPlugin;
+
+pub use crate::prelude::*;
+use plugin::startup::StartupPlugin;
+use crate::plugin::button::ButtonPlugin;
+use crate::plugin::click::ClickPlugin;
+use crate::plugin::game_ui::GameUiPlugin;
+use crate::plugin::movetoward::{movement_toward_attackable, MovementPlugin};
+use crate::plugin::needs::{FoodNotifEvent, NeedsPlugin};
+use crate::plugin::seasons::SeasonsPlugin;
+use crate::plugin::selection::SelectionPlugin;
+use crate::plugin::spoilage::SpoilagePlugin;
+use crate::plugin::task::TaskPlugin;
+use crate::plugin::thinking::ThinkingPlugin;
+use crate::system::namegiving::namegiving_system;
+use crate::system::names::names_system;
+use crate::system::statusdisplay::status_display_system;
+use crate::system::text::{text_system, text_test, text_update_system};
+use crate::system::window::{set_window_icon, set_window_maximized};
+
+mod plugin;
+mod system;
+
+mod prelude;
+mod components;
+mod constants;
+mod load;
+mod resources;
 
 fn main() {
     //println!("Hello, world!");
@@ -91,12 +94,6 @@ fn main() {
         .add_system_set(SystemSet::on_enter(GameState::InGame).with_system(on_unpause))
         .run();
 }
-
-// pub fn in_game(
-//     state: Res<GameState>,
-// ) {
-//     *state == GameState::InGame
-// }
 
 fn setup_camera(mut commands: Commands) {
     let mut camera = Camera2dBundle::default();
