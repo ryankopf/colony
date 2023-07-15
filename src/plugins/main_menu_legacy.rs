@@ -1,7 +1,9 @@
 use crate::prelude::*;
 
+#[cfg(feature="legacy")]
 struct MainMenuPlugin;
 
+#[cfg(feature="legacy")]
 impl Plugin for MainMenuPlugin {
     fn build(&self, app: &mut App) {
         app.add_state(GameState::MainMenu)
@@ -23,6 +25,7 @@ impl Plugin for MainMenuPlugin {
     }
 }
 
+#[cfg(feature="legacy")]
 pub fn initialize_main_menu(
     mut commands: Commands,
     asset_server: Res<AssetServer>,

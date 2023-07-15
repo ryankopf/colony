@@ -1,5 +1,5 @@
 pub mod main_menu;
-pub mod main_menu_plugin;
+pub mod main_menu_legacy;
 pub mod task;
 pub mod startup;
 pub mod button;
