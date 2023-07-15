@@ -1,6 +1,5 @@
 use std::time::Duration;
 
-use bevy::time::FixedTimestep;
 use crate::plugins::biome::BiomePlugin;
 use crate::systems::input::{keyboard_input, scrollwheel_input};
 use crate::load::{load_font, load_sprites};
@@ -20,7 +19,7 @@ use crate::plugins::needs::{FoodNotifEvent, NeedsPlugin};
 use crate::plugins::seasons::SeasonsPlugin;
 use crate::plugins::selection::SelectionPlugin;
 use crate::plugins::spoilage::SpoilagePlugin;
-use crate::plugins::task::TaskPlugin;
+use crate::plugins::task::{HALF_SECOND, TaskPlugin, TWO_SECOND};
 use crate::plugins::thinking::ThinkingPlugin;
 use crate::systems::namegiving::namegiving_system;
 use crate::systems::names::names_system;

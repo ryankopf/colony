@@ -6,7 +6,7 @@ pub fn task_system_forage(
     mut foragables: Query<(Entity, &Position, &Foragable, &mut Plant)>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
-    let mut already_targeted = crate::plugin::task::set_already_targetted(&query);
+    let mut already_targeted = crate::plugins::task::set_already_targetted(&query);
     for (entity, mut brain, position, targeting) in query.iter_mut() {
         if brain.task != Some(Task::Forage) { continue; }
         let mut did_foraging = false;

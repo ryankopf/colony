@@ -1,3 +1,4 @@
+#[cfg(feature="legacy")]
 use crate::prelude::*;
 
 #[cfg(feature="legacy")]

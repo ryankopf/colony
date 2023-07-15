@@ -1,4 +1,4 @@
-use crate::plugin::task::set_already_targetted;
+use crate::plugins::task::set_already_targetted;
 use crate::prelude::*;
 
 pub fn task_system_plant(

@@ -1,4 +1,4 @@
-use crate::task_system::TWO_SECOND;
+use crate::plugins::task::TWO_SECOND;
 use crate::prelude::*;
 
 // Make plugin.
