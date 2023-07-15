@@ -44,8 +44,8 @@ fn main() {
         .add_plugin(BiomePlugin)
         .add_startup_system_to_stage(StartupStage::PreStartup, load_sprites)
         .add_startup_system_to_stage(StartupStage::PreStartup, load_font)
-        .add_fixed_timestep(Duration::from_millis(500), "half_second")
-        .add_fixed_timestep(Duration::from_millis(2000), "two_second")
+        .add_fixed_timestep(Duration::from_millis(500), HALF_SECOND)
+        .add_fixed_timestep(Duration::from_millis(2000), TWO_SECOND)
         .insert_resource(SelectedObjectInformation::default())
         .insert_resource(MenuState {
             state: MenuStates::Home,
