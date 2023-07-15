@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use crate::task_system::TWO_SECOND;
 
 // Create Plugin
 pub struct SeasonsPlugin;
@@ -7,7 +8,7 @@ impl Plugin for SeasonsPlugin {
     fn build(&self, app: &mut App) {
         app
         .add_fixed_timestep_system(
-            "two_second", 0,
+            TWO_SECOND, 0,
             seasons.run_in_bevy_state(GameState::InGame),
         )
         ;

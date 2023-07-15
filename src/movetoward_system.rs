@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::prelude::*;
+use crate::task_system::HALF_SECOND;
 
 pub struct MovementPlugin;
 
@@ -10,7 +11,7 @@ impl Plugin for MovementPlugin {
         .add_system(movement_path_generating)
         .add_system(clear_unreachable_paths)
         .add_fixed_timestep_system(
-            "half_second", 0,
+            HALF_SECOND, 0,
             movement_along_path.run_in_bevy_state(GameState::InGame),
         )
         ;
