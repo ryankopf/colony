@@ -1,3 +1,5 @@
+use crate::components::HoverNote;
+
 use super::prelude::*;
 use super::selection_systems::SelectionEvent;
 
@@ -137,7 +139,7 @@ pub fn mouse_move_system(
     windows: Res<Windows>,
     q_camera: Query<(&Camera, &GlobalTransform)>,
     // dragging: Res<Dragging>, Use to only highlight a specific type in the future??
-    positions: Query<(Entity, &Position, Option<&Brain>)>,
+    positions: Query<(Entity, &Position, Option<&Brain>, Option<&Food>, Option<&Plant>)>,
     mut object_info: ResMut<SelectedObjectInformation>,
 ) {
     let (camera, camera_transform) = q_camera.single();
@@ -150,12 +152,21 @@ pub fn mouse_move_system(
     let pos = pos.unwrap();
     // Append info for each object to the SelectedObjectInfo.
     object_info.info = vec![];
-    for (_e, p, b) in positions.iter() {
+    for (_e, p, b, f, plant) in positions.iter() {
         if (p.x == pos.x) && (p.y == pos.y) {
-            object_info.info.push("Object ".to_string());
+            if let Some(f) = f {
+                object_info.info.push(f.hover_note());
+            }
+            if let Some(plant) = plant {
+                object_info.info.push(plant.hover_note());
+            }
             if let Some(brain) = b {
-                object_info.info.push(format!("Task: {:?}", brain.task));
-                object_info.info.push(format!("Motivation: {:?}", brain.motivation));
+                if let Some(task) = brain.task {
+                    object_info.info.push(format!("Task: {:?}", task));
+                }
+                if let Some(motivation) = brain.motivation {
+                    object_info.info.push(format!("Motivation: {:?}", motivation));
+                }
             }
         }
     }

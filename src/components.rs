@@ -95,19 +95,31 @@ pub struct PauseOverlay;
 #[derive(Component)]
 pub struct MainMenuOverlay;
 
+pub trait HoverNote {
+    fn hover_note(&self) -> String;
+}
+
 #[derive(Component)]
 pub struct Food {
     pub nutrition: f32,
     pub spoilage: f32,
     pub spoilage_rate: f32,
+    pub name: String,
 }
 impl Default for Food {
     fn default() -> Self {
         Food {
             nutrition: 10.0,
             spoilage: 1.0,
-            spoilage_rate: 0.1,
+            spoilage_rate: 0.03,
+            name: "Food".to_string(),
         }
+    }
+}
+impl HoverNote for Food {
+    fn hover_note(&self) -> String {
+        let spoilage_percent = self.spoilage * 100.0;
+        format!("Spoilage: {:.2}%", spoilage_percent)
     }
 }
 
@@ -176,6 +188,11 @@ pub struct GiveMeAName;
 pub struct Plant {
     pub growth: f32,
     pub plant_type: PlantType,
+}
+impl HoverNote for Plant {
+    fn hover_note(&self) -> String {
+        format!("{:?} Growth: {:.2}%", self.plant_type, self.growth * 100.0)
+    }
 }
 
 #[derive(Component)]
@@ -342,6 +359,7 @@ pub enum SelectableType {
     Gatherable,
     Harvestable,
     Mineable,
+    Nothing,
     Unselecting,
     Unzoning,
     Zoning,

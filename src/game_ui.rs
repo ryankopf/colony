@@ -90,7 +90,7 @@ pub fn start_game_ui(
     ],vec![ // farm
         "BACK",
         "NOTHING",
-        "BERRIES",
+        "CABBAGE",
         "PINE",
         "OAK",
         "CEDAR",
@@ -173,7 +173,10 @@ pub fn game_ui_click(
                     }
                     MenuStates::Tasks => { // chop, forage, gather, hunt, mine
                         match button_index {
-                            0 => { menu_state.state = MenuStates::Home; },
+                            0 => {
+                                dragging.looking_for = SelectableType::Nothing;
+                                menu_state.state = MenuStates::Home;
+                            },
                             1 => {
                                 dragging.looking_for = SelectableType::Unselecting;
                             },
@@ -193,7 +196,10 @@ pub fn game_ui_click(
                     }
                     MenuStates::Farm => {
                         match button_index {
-                            0 => { menu_state.state = MenuStates::Home; },
+                            0 => {
+                                dragging.looking_for = SelectableType::Nothing;
+                                menu_state.state = MenuStates::Home;
+                            },
                             1 => {
                                 dragging.looking_for = SelectableType::Unzoning;
                             },

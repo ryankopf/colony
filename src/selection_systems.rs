@@ -27,6 +27,10 @@ impl Plugin for SelectionPlugin {
             SystemSet::on_update(GameState::InGame)
             .with_system(select_unzoning),
         )
+        .add_system_set(
+            SystemSet::on_update(GameState::InGame)
+            .with_system(select_nothing),
+        )
         ;
     }
 }
@@ -141,6 +145,18 @@ fn select_unselecting(
             commands.entity(workmarker).despawn();
         }
     }
+    unhighlight(commands, highlighteds, highlightboxes);
+}
+
+fn select_nothing(
+    mut commands: Commands,
+    highlighteds: Query<Entity, With<Highlighted>>,
+    highlightboxes: Query<Entity, With<HighlightBox>>,
+    event: EventReader<SelectionEvent>,
+    dragging: Res<Dragging>,
+) {
+    if event.is_empty() { return; }
+    if dragging.looking_for != SelectableType::Nothing { return; }
     unhighlight(commands, highlighteds, highlightboxes);
 }
 
