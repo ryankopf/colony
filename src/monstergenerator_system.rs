@@ -18,6 +18,7 @@ pub fn monster_generator(
     entities: Query<(Entity, &Position), With<MonsterGenerator>>,
     tile_types: Query<(&Position, &TileType)>,
     generated_monsters: Query<(Entity, &GeneratedBy)>,
+    sprite_sheet: Res<SpriteSheet>,
 ) {
     for (entity, position) in entities.iter() {
         let mut new_position = *position;
@@ -46,13 +47,11 @@ pub fn monster_generator(
         if !can_generate {
             return;
         }
+        let sprite =  TextureAtlasSprite::new(ActorType::Rat.sprite_index()); // TO DO
         commands
-            .spawn(SpriteBundle {
-                sprite: Sprite {
-                    color: Color::RED,
-                    custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                    ..default()
-                },
+            .spawn(SpriteSheetBundle {
+                sprite,
+                texture_atlas: sprite_sheet.0.clone(),
                 ..default()
             })
             .insert(new_position)

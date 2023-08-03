@@ -51,7 +51,7 @@ fn spawn_tile(
     tile_type: TileType,
     sprite_sheet: &SpriteSheet,
 ) {
-    let sprite =  TextureAtlasSprite::new(tile_type.to_index());
+    let sprite =  TextureAtlasSprite::new(tile_type.sprite_index());
     // sprite.color = Color::rgb(0.5, 0.5, 0.5);
     // sprite.custom_size = Some(Vec2::new(TILE_SIZE, TILE_SIZE));//Some(Vec2::splat(1.0));
         // commands.spawn(SpriteBundle {

@@ -52,6 +52,25 @@ impl MenuStates {
     }
 }
 
+
+#[derive(Component, PartialEq, Copy, Clone, Debug)]
+pub enum ActorType { // Entity? Character? Creature? Actor? Avatar? Unit? Agent?
+    Pig,
+    Rat,
+}
+impl ActorType {
+    pub fn sprite_row_and_col(&self) -> (usize, usize) {
+        match self {
+            ActorType::Pig => (64, 0),
+            ActorType::Rat => (64, 19),
+        }
+    }
+    pub fn sprite_index(&self) -> usize {
+        let (row, col) = self.sprite_row_and_col();
+        row * 64 + col
+    }
+}
+
 #[derive(Component, PartialEq, Clone, Debug)]
 pub enum TileType {
     Grass,
@@ -68,20 +87,24 @@ pub enum TileType {
 }
 
 impl TileType {
-    pub fn to_index(&self) -> usize {
+    pub fn sprite_row_and_col(&self) -> (usize, usize) {
         match self {
-            TileType::Grass => 9*64+11,
-            TileType::Dirt => 4*64+1,
-            TileType::Gravel => 7*64+42,
-            TileType::Sand => 7*64+42,
-            TileType::Stone => 3*64+61,
-            TileType::Water => 5*64+12,
-            TileType::WallGame => 7*64+20,
-            TileType::WallStone => 7*64+21,
-            TileType::WallWood => 7*64+22,
-            TileType::WallBrick => 4*64+10,
-            TileType::WallMetal => 7*64+24,
+            TileType::Grass => (9, 11),
+            TileType::Dirt => (4, 1),
+            TileType::Gravel => (7, 42),
+            TileType::Sand => (7, 42),
+            TileType::Stone => (3, 61),
+            TileType::Water => (5, 12),
+            TileType::WallGame => (7, 20),
+            TileType::WallStone => (7, 21),
+            TileType::WallWood => (7, 22),
+            TileType::WallBrick => (4, 10),
+            TileType::WallMetal => (7, 24),
         }
+    }
+    pub fn sprite_index(&self) -> usize {
+        let (row, col) = self.sprite_row_and_col();
+        row * 64 + col
     }
     pub fn is_wall(&self) -> bool {
         matches!(self, TileType::WallGame | TileType::WallStone | TileType::WallWood | TileType::WallBrick | TileType::WallMetal)
@@ -305,23 +328,27 @@ impl PlantType {
     pub fn is_edible(&self) -> bool {
         matches!(self, PlantType::Cabbage)
     }
-    pub fn sprite_index(&self) -> usize {
+    pub fn sprite_row_and_col(&self) -> (usize, usize) {
         match self {
-            PlantType::Aloe => 67*64+57,
-            PlantType::Azalea => 67*64+57,
-            PlantType::Bush => 67*64+57,
-            PlantType::Cabbage => 94*64+32,
-            PlantType::CactusRound => 67*64+57,
-            PlantType::CactusUp => 67*64+57,
-            PlantType::Carrot => 94*64+31,
-            PlantType::CedarTree => 13*64+15,
-            PlantType::PineTree => 13*64+13,
-            PlantType::OakTree => 13*64+14,
-            PlantType::ThornBush => 67*64+57,
-            PlantType::FlowerBush => 67*64+57,
-            PlantType::Vine => 67*64+57,
-            PlantType::Weed => 67*64+57,
+            PlantType::Aloe => (67, 57),
+            PlantType::Azalea => (67, 57),
+            PlantType::Bush => (67, 57),
+            PlantType::Cabbage => (94, 32),
+            PlantType::CactusRound => (67, 57),
+            PlantType::CactusUp => (67, 57),
+            PlantType::Carrot => (94, 31),
+            PlantType::CedarTree => (13, 15),
+            PlantType::PineTree => (13, 13),
+            PlantType::OakTree => (13, 14),
+            PlantType::ThornBush => (67, 57),
+            PlantType::FlowerBush => (67, 57),
+            PlantType::Vine => (67, 57),
+            PlantType::Weed => (67, 57),
         }
+    }
+    pub fn sprite_index(&self) -> usize {
+        let (row, col) = self.sprite_row_and_col();
+        row * 64 + col
     }
     pub fn growth_speed(&self) -> f32 {
         match self {

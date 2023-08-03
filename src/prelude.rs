@@ -1,5 +1,5 @@
 pub use super::components::{
-    Attackable, Bed, Brain, Choppable, Food, Foragable, ForageType, GameState, GeneratedBy,
+    ActorType, Attackable, Bed, Brain, Choppable, Food, Foragable, ForageType, GameState, GeneratedBy,
     GiveMeAName, HasName, HasNameShown, HighlightBox, Highlighted, InGameButton, IsName, ItemType,
     Logs, MainMenuOverlay, MapTile, MenuStates, MonsterGenerator, Motivation, MoveRandom,
     MoveTowardsNearestAttackable, MoveTowardsTarget, NearestEntity, NeedsEntertainment, NeedsFood,
