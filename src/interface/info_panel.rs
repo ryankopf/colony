@@ -1,4 +1,4 @@
-use super::prelude::*;
+use crate::prelude::*;
 
 // Create plugin.
 pub struct InfoPanelPlugin;

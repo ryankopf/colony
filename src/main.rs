@@ -9,12 +9,9 @@ use crate::task_system::{HALF_SECOND, TWO_SECOND};
 #[mod_use(
     biome,
     button_system,
-    click,
     components,
     constants,
-    game_ui,
-    info_panel,
-    input,
+    interface,
     load,
     main_menu,
     map,
