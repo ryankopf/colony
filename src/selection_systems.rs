@@ -149,7 +149,7 @@ fn select_unselecting(
 }
 
 fn select_nothing(
-    mut commands: Commands,
+    commands: Commands,
     highlighteds: Query<Entity, With<Highlighted>>,
     highlightboxes: Query<Entity, With<HighlightBox>>,
     event: EventReader<SelectionEvent>,

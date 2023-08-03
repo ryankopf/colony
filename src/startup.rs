@@ -39,7 +39,7 @@ pub fn startup(
         .insert(position)
         .insert(position.to_transform_layer(1.0))
         .insert(Attackable)
-        .insert(NeedsFood { current: 100.0, max: 100.0, rate: 0.1 })
+        // .insert(NeedsFood { current: 100.0, max: 100.0, rate: 0.1 })
         .insert( GiveMeAName )
         .insert( Status {
             needs_food: Some(NeedsFood { current: 25.1, max: 100.0, rate: 0.1 }),

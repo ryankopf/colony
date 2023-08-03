@@ -59,6 +59,15 @@ pub fn monster_generator(
             .insert(new_position.to_transform_layer(1.0))
             .insert(GeneratedBy { entity })
             .insert(MoveTowardsNearestAttackable)
+            .insert( Status {
+                needs_food: None,//Some(NeedsFood { current: 25.1, max: 100.0, rate: 0.1 }),
+                needs_entertainment: None,//Some(NeedsEntertainment { current: 100.0, max: 100.0, rate: 0.1 }),
+                needs_sleep: None,//Some(NeedsSleep { current: 15.2, max: 100.0, rate: 0.1 }),
+                index: 0,
+                crisis: None,
+                danger: None,
+                injured: false
+            } )
             //.insert( HasName { name: "Wolf".to_string() } )
             ;
         //*position = new_position;

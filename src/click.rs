@@ -1,5 +1,3 @@
-use crate::components::HoverNote;
-
 use super::prelude::*;
 use super::selection_systems::SelectionEvent;
 
@@ -173,15 +171,24 @@ pub fn mouse_move_system(
 }
 
 pub fn object_finder_system(
-    _commands: Commands,
+    mut commands: Commands,
     mut event: EventReader<ObjectFinderEvent>,
-    mut people: Query<(&Position, &mut Brain)>,
-    //tile_hash: Res<TileHash>,
+    mut people: Query<(Entity, &Position, &mut Brain, Option<&Status>, Option<&ClickedOn>)>,
+    mut info_panel: ResMut<InfoPanelInformation>,
 ) {
     for event in event.iter() {
-        for (position, _brain) in people.iter_mut() {
+        for (entity, position, _brain, status, clickedon) in people.iter_mut() {
+            if clickedon.is_some() {
+                commands.entity(entity).remove::<ClickedOn>();
+                continue;
+            }
             if position == &event.position {
-                info!("found a person at {}/{}", position.x, position.y);
+                if let Some(status) = status {
+                    commands.entity(entity).insert(ClickedOn);
+                    info_panel.info = vec![];
+                    info_panel.info.push(format!("Position: {}, {}", position.x, position.y));
+                    info_panel.info.extend_from_slice(&status.info_panel());
+                }
             }
         }
     }

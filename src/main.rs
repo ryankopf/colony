@@ -13,6 +13,7 @@ use crate::task_system::{HALF_SECOND, TWO_SECOND};
     components,
     constants,
     game_ui,
+    info_panel,
     input,
     load,
     main_menu,
@@ -46,6 +47,7 @@ fn main() {
         .add_fixed_timestep(Duration::from_millis(500), HALF_SECOND)
         .add_fixed_timestep(Duration::from_millis(2000), TWO_SECOND)
         .insert_resource(SelectedObjectInformation::default())
+        .insert_resource(InfoPanelInformation::default())
         .insert_resource(MenuState {
             state: MenuStates::Home,
         })
@@ -76,6 +78,7 @@ fn main() {
                 .with_system(status_display_system),
         )
         .add_plugin(GameUiPlugin)
+        .add_plugin(InfoPanelPlugin)
         .add_plugin(ThinkingPlugin)
         .add_plugin(TaskPlugin)
         .add_plugin(SpoilagePlugin)

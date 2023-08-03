@@ -20,7 +20,7 @@ impl Plugin for MovementPlugin {
 
 pub fn movement_toward_attackable(
     mut commands: Commands,
-    attackers: Query<(Entity, &Position), (With<MoveTowardsNearestAttackable>, Without<Targeting>)>,
+    attackers: Query<(Entity, &Position), (With<MoveTowardsNearestAttackable>, Without<Pathing>)>,
     attackables: Query<(Entity, &Position), With<Attackable>>
 ) {
     for (attacker, attacker_position) in attackers.iter() {

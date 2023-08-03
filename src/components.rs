@@ -167,10 +167,15 @@ pub struct HighlightBox;
 #[derive(Default)]
 pub struct Highlighted;
 
-
+#[derive(Component)]
+pub struct ClickedOn;
 
 #[derive(Component)]
 pub struct InGameButton;
+
+pub trait InfoPanel {
+    fn info_panel(&self) -> Vec<String>;
+}
 
 #[derive(Component)]
 pub struct Status {
@@ -182,6 +187,23 @@ pub struct Status {
     pub danger: Option<String>,
     pub injured: bool
 }
+impl InfoPanel for Status {
+    fn info_panel(&self) -> Vec<String> {
+        let mut info_lines = Vec::new();
+        if let Some(needs_food) = &self.needs_food {
+            info_lines.push(format!("Food: {:.2}%", needs_food.current / needs_food.max * 100.0));
+        }
+        if let Some(needs_entertainment) = &self.needs_entertainment {
+            info_lines.push(format!("Entertainment: {:.2}%", needs_entertainment.current / needs_entertainment.max * 100.0));
+        }
+        if let Some(needs_sleep) = &self.needs_sleep {
+            info_lines.push(format!("Sleep: {:.2}%", needs_sleep.current / needs_sleep.max * 100.0));
+        }
+        info_lines
+    }
+}
+
+
 #[derive(Component, PartialEq)]
 #[derive(Default)]
 pub struct Brain {
