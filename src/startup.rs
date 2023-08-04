@@ -24,7 +24,7 @@ pub fn startup(
     // GENERATE UNITS
     for i in 1..6 {
         let position = Position { x: 3, y: 3*i, z: 0 };
-        let sprite =  TextureAtlasSprite::new(66*64+46_usize);
+        let sprite =  TextureAtlasSprite::new(ActorType::Human.sprite_index()); // TO DO
         
         commands.spawn(SpriteSheetBundle {
             sprite,

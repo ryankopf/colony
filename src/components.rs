@@ -55,12 +55,14 @@ impl MenuStates {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ActorType { // Entity? Character? Creature? Actor? Avatar? Unit? Agent?
+    Human,
     Pig,
     Rat,
 }
 impl ActorType {
     pub fn sprite_row_and_col(&self) -> (usize, usize) {
         match self {
+            ActorType::Human => (66, 46),
             ActorType::Pig => (64, 0),
             ActorType::Rat => (64, 19),
         }

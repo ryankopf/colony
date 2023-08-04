@@ -47,6 +47,7 @@ pub struct SelectedObjectInformation {
 #[derive(Resource, Default)]
 pub struct InfoPanelInformation {
     pub info: Vec<String>,
+    pub name: String,
 }
 
 #[derive(Resource)]

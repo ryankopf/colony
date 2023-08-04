@@ -21,8 +21,28 @@ pub fn show_info_panel(
     for text in texts.iter() {
         commands.entity(text).despawn();
     }
+    commands.spawn((
+        TextBundle::from_section(
+            &object_info.name,
+            TextStyle {
+                font: font.0.clone(),
+                font_size: 24.0,
+                ..default()
+            },
+        ) // Set the alignment of the Text
+        .with_text_alignment(TextAlignment::TOP_LEFT)
+        .with_style(Style {
+            position_type: PositionType::Absolute,
+            position: UiRect {
+                top: Val::Px(15.0),
+                left: Val::Px(15.0),
+                ..default()
+            },
+            ..default()
+        }),
+        InfoPanelText,
+    ));
     for (i, info) in object_info.info.iter().enumerate() {
-        println!("Info: {}", info);
         commands.spawn((
             TextBundle::from_section(
                 info,
@@ -45,14 +65,22 @@ pub fn show_info_panel(
 
 pub fn info_system(
     mut commands: Commands,
-    mut people: Query<(Entity, &Position, &Status, &ClickedOn)>,
+    mut people: Query<(Entity, &Position, &Status, &ClickedOn, Option<&HasName>)>,
     mut info_panel: ResMut<InfoPanelInformation>,
 ) {
-    for (entity, position, status, _clickedon) in people.iter_mut() {
-        commands.entity(entity).insert(ClickedOn);
+    if let Some((entity, position, status, _clickedon, has_name)) = people.iter_mut().last() {
+        if let Some(has_name) = has_name {
+            info_panel.name = has_name.name.clone();
+        }
         info_panel.info = vec![];
         info_panel.info.push(format!("Position: {}, {}", position.x, position.y));
         info_panel.info.extend_from_slice(&status.info_panel());
+    }
+    let count = people.iter().count();
+    for (index, (entity, _, _, clickedon, _)) in people.iter_mut().enumerate() {
+        if index < count - 1 {
+            commands.entity(entity).remove::<ClickedOn>();
+        }
     }
 }
 
