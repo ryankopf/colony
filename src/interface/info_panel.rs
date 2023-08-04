@@ -68,7 +68,7 @@ pub fn info_system(
     mut people: Query<(Entity, &Position, &Status, &ClickedOn, Option<&HasName>)>,
     mut info_panel: ResMut<InfoPanelInformation>,
 ) {
-    if let Some((entity, position, status, _clickedon, has_name)) = people.iter_mut().last() {
+    if let Some((_, position, status, _clickedon, has_name)) = people.iter_mut().last() {
         if let Some(has_name) = has_name {
             info_panel.name = has_name.name.clone();
         }
@@ -77,7 +77,7 @@ pub fn info_system(
         info_panel.info.extend_from_slice(&status.info_panel());
     }
     let count = people.iter().count();
-    for (index, (entity, _, _, clickedon, _)) in people.iter_mut().enumerate() {
+    for (index, (entity, _, _, _, _)) in people.iter_mut().enumerate() {
         if index < count - 1 {
             commands.entity(entity).remove::<ClickedOn>();
         }
