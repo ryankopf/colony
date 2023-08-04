@@ -191,21 +191,167 @@ pub struct ClickedOn;
 #[derive(Component)]
 pub struct InGameButton;
 
+#[derive(Component)]
+pub struct Skill {
+    pub experience: i32,
+    pub exp_lost: i32, // Forgetting/atrophied skills. Easier to regain.
+}
+
+#[derive(Component)]
+pub struct Attributeset {
+    pub strength: i32,
+    pub dexterity: i32,
+    pub constitution: i32,
+    pub intelligence: i32,
+    pub wisdom: i32,
+    pub charisma: i32,
+}
+impl Default for Attributeset {
+    fn default() -> Self {
+        Attributeset {
+            strength: 10,
+            dexterity: 10,
+            constitution: 10,
+            intelligence: 10,
+            wisdom: 10,
+            charisma: 10,
+        }
+    }
+}
+
+#[derive(Component)]
+pub enum AfflictionType {
+    Bleeding,
+    BrokenBone,
+    Bruised,
+    Burned,
+    Concussion,
+    Cut,
+    Dehydration,
+    Disease,
+    Exhaustion,
+    FoodPoisoning,
+    Frostbite,
+    Hypothermia,
+    Infection,
+    Inflammation,
+    InternalBleeding,
+    InternalInfection,
+    InternalInflammation,
+    InternalPain,
+    InternalPoisoning,
+    InternalSwelling,
+    InternalTrauma,
+    Pain,
+    Poisoned,
+    Swelling,
+    Trauma,
+    Wound,
+    WoundInfection,
+    WoundInflammation,
+    WoundPain,
+    WoundSwelling,
+    WoundTrauma,
+}
+#[derive(Component)]
+pub enum AfflictionLocation {
+    Head,
+    Torso,
+    LeftArm,
+    RightArm,
+    LeftLeg,
+    RightLeg,
+    LeftHand,
+    RightHand,
+    LeftFoot,
+    RightFoot,
+    LeftEye,
+    RightEye,
+    LeftEar,
+    RightEar,
+    LeftLung,
+    RightLung,
+    Heart,
+    Stomach,
+    Liver,
+    Spleen,
+    Kidneys,
+    Bladder,
+    Intestines,
+    Genitals,
+    Tail,
+    Horns,
+    Wings,
+    Tentacles,
+    Pseudopods,
+    Claws,
+    Teeth,
+    Beak,
+    Tongue,
+    Trunk,
+}
+
+#[derive(Component)]
+pub struct Affliction {
+    pub affliction_type: AfflictionType,
+    pub affliction_location: AfflictionLocation,
+    pub duration: i32,
+    pub severity: i32,
+    pub worsening: bool,
+}
+
+#[derive(Component)]
+pub struct Skillset {
+    pub animal_raising: Skill,
+    pub construction: Skill,
+    pub cooking: Skill,
+    pub crafting: Skill,
+    pub doctoring: Skill,
+    pub farming: Skill,
+    pub fishing: Skill,
+    pub foraging: Skill,
+    pub hunting: Skill,
+    pub mining: Skill,
+    pub social: Skill,
+    pub woodcutting: Skill,
+}
+impl Default for Skillset {
+    fn default() -> Self {
+        Skillset {
+            animal_raising: Skill { experience: 0, exp_lost: 0 },
+            construction: Skill { experience: 0, exp_lost: 0 },
+            cooking: Skill { experience: 0, exp_lost: 0 },
+            crafting: Skill { experience: 0, exp_lost: 0 },
+            doctoring: Skill { experience: 0, exp_lost: 0 },
+            farming: Skill { experience: 0, exp_lost: 0 },
+            fishing: Skill { experience: 0, exp_lost: 0 },
+            foraging: Skill { experience: 0, exp_lost: 0 },
+            hunting: Skill { experience: 0, exp_lost: 0 },
+            mining: Skill { experience: 0, exp_lost: 0 },
+            social: Skill { experience: 0, exp_lost: 0 },
+            woodcutting: Skill { experience: 0, exp_lost: 0 },
+        }
+    }
+}
+
 pub trait InfoPanel {
     fn info_panel(&self) -> Vec<String>;
 }
 
 #[derive(Component)]
-pub struct Status {
+pub struct PhysicalBody {
     pub needs_food: Option<NeedsFood>,
     pub needs_entertainment: Option<NeedsEntertainment>,
     pub needs_sleep: Option<NeedsSleep>,
     pub index: usize,
     pub crisis: Option<String>,
     pub danger: Option<String>,
-    pub injured: bool
+    pub injured: bool,
+    pub afflictions: Vec<Affliction>,
+    pub skillset: Skillset,
+    pub attributes: Attributeset,
 }
-impl InfoPanel for Status {
+impl InfoPanel for PhysicalBody {
     fn info_panel(&self) -> Vec<String> {
         let mut info_lines = Vec::new();
         if let Some(needs_food) = &self.needs_food {
@@ -325,14 +471,18 @@ pub enum ItemType {
 }
 
 impl ItemType {
-    pub fn sprite_index(&self) -> usize {
+    pub fn sprite_row_and_col(&self) -> (usize, usize) {
         match self {
-            ItemType::Cabbage => 94*64+33,
-            ItemType::Carrot => 94*64+24,
-            ItemType::CedarLog => 94*64+30,
-            ItemType::PineLog => 94*64+30,
-            ItemType::OakLog => 94*64+30,
+            ItemType::Cabbage => (94, 33),
+            ItemType::Carrot => (94, 24),
+            ItemType::CedarLog => (94, 30),
+            ItemType::PineLog => (94, 30),
+            ItemType::OakLog => (94, 30),
         }
+    }
+    pub fn sprite_index(&self) -> usize {
+        let (row, col) = self.sprite_row_and_col();
+        row * 64 + col
     }
     pub fn nutrition(&self) -> f32 {
         match self {

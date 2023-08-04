@@ -9,6 +9,7 @@ use crate::task_system::{HALF_SECOND, TWO_SECOND};
 #[mod_use(
     biome,
     button_system,
+    combat_system,
     components,
     constants,
     interface,

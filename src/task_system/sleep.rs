@@ -40,11 +40,11 @@ pub fn task_system_sleep(
 
 pub fn task_system_sleeping(
     _commands: Commands,
-    mut query: Query<(&mut Brain, &mut Status)>
+    mut query: Query<(&mut Brain, &mut PhysicalBody)>
 ) {
-    for (mut brain, mut status) in query.iter_mut() {
+    for (mut brain, mut physical_body) in query.iter_mut() {
         if brain.task != Some(Task::Sleeping) { continue; }
-        if let Some(n) = &mut status.needs_sleep {
+        if let Some(n) = &mut physical_body.needs_sleep {
             n.current += 10.0;
             if n.current >= n.max {
                 brain.motivation = None;

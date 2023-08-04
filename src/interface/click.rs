@@ -173,21 +173,21 @@ pub fn mouse_move_system(
 pub fn object_finder_system(
     mut commands: Commands,
     mut event: EventReader<ObjectFinderEvent>,
-    mut people: Query<(Entity, &Position, &mut Brain, Option<&Status>, Option<&ClickedOn>)>,
+    mut people: Query<(Entity, &Position, &mut Brain, Option<&PhysicalBody>, Option<&ClickedOn>)>,
     mut info_panel: ResMut<InfoPanelInformation>,
 ) {
     for event in event.iter() {
-        for (entity, position, _brain, status, clickedon) in people.iter_mut() {
+        for (entity, position, _brain, physical_body, clickedon) in people.iter_mut() {
             if clickedon.is_some() {
                 commands.entity(entity).remove::<ClickedOn>();
                 continue;
             }
             if position == &event.position {
-                if let Some(status) = status {
+                if let Some(physical_body) = physical_body {
                     commands.entity(entity).insert(ClickedOn);
                     info_panel.info = vec![];
                     info_panel.info.push(format!("Position: {}, {}", position.x, position.y));
-                    info_panel.info.extend_from_slice(&status.info_panel());
+                    info_panel.info.extend_from_slice(&physical_body.info_panel());
                 }
             }
         }

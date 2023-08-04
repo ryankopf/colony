@@ -21,9 +21,9 @@ impl Plugin for ThinkingPlugin {
 
 pub fn thinking_system(
     _commands: Commands,
-    mut query: Query<(Entity, &mut Brain, &mut Status)>,
+    mut query: Query<(Entity, &mut Brain, &mut PhysicalBody)>,
 ) {
-    for (_entity, mut brain, status) in query.iter_mut() {
+    for (_entity, mut brain, physical_body) in query.iter_mut() {
         // if does_thinking.thinking {
         //     continue;
         // }
@@ -47,10 +47,10 @@ pub fn thinking_system(
         }
         if brain.motivation.is_none() {
             // SET MOTIVATION
-            if let Some(_crisis) = &status.crisis {
+            if let Some(_crisis) = &physical_body.crisis {
                 brain.motivation = Some(Motivation::Crisis);
             // Process dangers.
-            } else if let Some(_danger) = &status.danger {
+            } else if let Some(_danger) = &physical_body.danger {
                 if let Some(_order) = &brain.order {
                     brain.motivation = Some(Motivation::Order);
                 } else {
@@ -60,7 +60,7 @@ pub fn thinking_system(
             }
             // FOOD
             if brain.motivation.is_none() {
-                if let Some(n) = &status.needs_food {
+                if let Some(n) = &physical_body.needs_food {
                     if n.current < 5.0 {
                         if let Some(order) = &brain.order {
                             if order == "Eat" {
@@ -75,7 +75,7 @@ pub fn thinking_system(
                 }
             }
             // HOSPITAL
-            if brain.motivation.is_none() && status.injured {
+            if brain.motivation.is_none() && physical_body.injured {
                 if let Some(order) = &brain.order {
                     if order == "Hospital" {
                         brain.motivation = Some(Motivation::Order);
@@ -88,7 +88,7 @@ pub fn thinking_system(
             }
             // SLEEP
             if brain.motivation.is_none() {
-                if let Some(n) = &status.needs_sleep {
+                if let Some(n) = &physical_body.needs_sleep {
                     if n.current < 5.0 {
                         if let Some(order) = &brain.order {
                             if order == "Sleep" {
@@ -104,7 +104,7 @@ pub fn thinking_system(
             }
             // ENTERTAINMENT
             if brain.motivation.is_none() {
-                if let Some(n) = &status.needs_entertainment {
+                if let Some(n) = &physical_body.needs_entertainment {
                     if n.current < 5.0 {
                         if let Some(order) = &brain.order {
                             if order == "Entertainment" {
@@ -135,7 +135,7 @@ pub fn thinking_system(
         // SET TASK
         if let Some(m) = brain.motivation {
             if m == Motivation::Crisis {
-                if let Some(_crisis) = &status.crisis {
+                if let Some(_crisis) = &physical_body.crisis {
                     // TO DO: Assign task based on crisis.
                     // if let Some(task) = &crisis.task {
                     //     brain.task = Some(task.to_string());
@@ -146,7 +146,7 @@ pub fn thinking_system(
                     brain.task = Some(Task::Order);
                 }
             } else if m == Motivation::Danger {
-                if let Some(_danger) = &status.danger {
+                if let Some(_danger) = &physical_body.danger {
                     brain.task = Some(Task::Flee);
                     // TO DO: Assign FLEE or FIGHT task.
                 }

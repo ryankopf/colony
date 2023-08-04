@@ -33,14 +33,17 @@ pub fn spawn_unit(
         .insert(position.to_transform_layer(1.0))
         .insert(Attackable)
         .insert( GiveMeAName )
-        .insert( Status {
+        .insert( PhysicalBody {
             needs_food: Some(NeedsFood { current: food_need, max: 100.0, rate: 0.1 }),
             needs_entertainment: Some(NeedsEntertainment { current: entertainment_need, max: 100.0, rate: 0.1 }),
             needs_sleep: Some(NeedsSleep { current: sleep_need, max: 100.0, rate: 0.1 }),
             index: 0,
             crisis: None,
             danger: None,
-            injured: false
+            injured: false,
+            afflictions: Vec::new(),
+            skillset: Skillset::default(),
+            attributes: Attributeset::default(),
         } )
         .insert( Brain { ..Default::default() } )
         ;

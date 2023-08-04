@@ -2,30 +2,30 @@ use crate::prelude::*;
 
 pub fn status_display_system (
     mut commands: Commands,
-    mut query: Query<(Entity, &HasName, &mut Status, &Brain, &Children)>,
+    mut query: Query<(Entity, &HasName, &mut PhysicalBody, &Brain, &Children)>,
     mut q_children: Query<(Entity, &Parent), With<TextName>>,
     asset_server: Res<AssetServer>
 ) {
     for (child, _) in q_children.iter_mut() {
         commands.entity(child).despawn();
     }
-    for (entity, has_name, mut status, brain, _children) in query.iter_mut() {
+    for (entity, has_name, mut physical_body, brain, _children) in query.iter_mut() {
         // Pick the text value to show.
         //let y = commands.entity(entity).log_components();//::<HasName>();
         //let mut text_value = "FIRE".to_string();
         let mut vec_statuses: Vec<String> = vec![];
         vec_statuses.push(has_name.name.clone());
-        if let Some(n) = &status.needs_food {
+        if let Some(n) = &physical_body.needs_food {
             if n.current < 5.0 {
                 vec_statuses.push("HUNGRY".to_string());
             }
         }
-        if let Some(n) = &status.needs_entertainment {
+        if let Some(n) = &physical_body.needs_entertainment {
             if n.current < 5.0 {
                 vec_statuses.push("BORED".to_string());
             }
         }
-        if let Some(n) = &status.needs_sleep {
+        if let Some(n) = &physical_body.needs_sleep {
             if n.current < 5.0 {
                 vec_statuses.push("TIRED".to_string());
             }
@@ -37,11 +37,11 @@ pub fn status_display_system (
         //     commands.entity(entity).remove_children(&[*child]);
         //     commands.entity(*child).despawn();
         // }
-        if status.index >= vec_statuses.len() {
-            status.index = 0;
+        if physical_body.index >= vec_statuses.len() {
+            physical_body.index = 0;
         }
-        let chosen_text = vec_statuses[status.index].clone();
-        status.index += 1;
+        let chosen_text = vec_statuses[physical_body.index].clone();
+        physical_body.index += 1;
         
         // NOW SHOW THE TEXT
         let font = asset_server.load("fonts/FiraSans-Medium.ttf");

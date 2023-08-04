@@ -2,12 +2,12 @@ use crate::prelude::*;
 
 pub fn task_system_eat(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>, Option<&mut Status>), Without<Pathing>>,
+    mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>, Option<&mut PhysicalBody>), Without<Pathing>>,
     query_food: Query<(Entity, &Position, &Food)>,
 ) {
     // Set list of entities that are already being targetted.
     let mut already_targeted = query.iter().filter(|(_, _, _, targeting, _)| targeting.is_some()).map(|(_, _, _, targeting, _)| targeting.unwrap().target).collect::<Vec<Entity>>();
-    for (entity, mut brain, position, targeting, mut status) in query.iter_mut() {
+    for (entity, mut brain, position, targeting, mut physical_body) in query.iter_mut() {
         if brain.task != Some(Task::Eat) { continue; }
         // Get nearest food.
         // Set that as your target.
@@ -22,7 +22,7 @@ pub fn task_system_eat(
             if distance <= 1 && targeting.is_some() && targeting.unwrap().target == food_entity {
                 // Eat it now.
                 // Heal your status.
-                if let Some(s) = status.as_mut() {
+                if let Some(s) = physical_body.as_mut() {
                     if let Some(n) = s.needs_food.as_mut() {
                         n.current = n.max;
                     }
