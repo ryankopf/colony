@@ -1,9 +1,9 @@
 pub use super::components::{
-    ActorType, Attackable, Attributeset, Bed, Brain, Choppable, ClickedOn, Food, Foragable, ForageType, GameState, GeneratedBy,
+    ActorType, Attackable, Attributeset, Bed, Brain, Choppable, ClickedOn, Danger, Food, Foragable, ForageType, GameState, GeneratedBy,
     GiveMeAName, HasName, HasNameShown, HighlightBox, Highlighted, HoverNote, InfoPanel, InGameButton, IsName, ItemType,
     Logs, MainMenuOverlay, MapTile, MenuStates, MonsterGenerator, Motivation, MoveRandom,
     MoveTowardsNearestAttackable, MoveTowardsTarget, NearestEntity, NeedsEntertainment, NeedsFood,
-    NeedsSleep, Pathing, PauseOverlay, PhysicalBody, Plant, PlantType, Position, Skillset, Skill, SelectableType, SizeXYZ,
+    NeedsSleep, Order, Pathing, PauseOverlay, PhysicalBody, Plant, PlantType, Position, Skillset, Skill, SelectableType, SizeXYZ,
     Targeting, Task, TextName, TileType, WorkMarker, WorkTarget, Zone, ZoneMarker, ZoneType,
 };
 pub use crate::constants::*;

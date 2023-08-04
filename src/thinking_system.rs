@@ -63,7 +63,7 @@ pub fn thinking_system(
                 if let Some(n) = &physical_body.needs_food {
                     if n.current < 5.0 {
                         if let Some(order) = &brain.order {
-                            if order == "Eat" {
+                            if *order == Order::Eat {
                                 brain.motivation = Some(Motivation::Order);
                             } else {
                                 brain.motivation = Some(Motivation::Hunger);
@@ -77,7 +77,7 @@ pub fn thinking_system(
             // HOSPITAL
             if brain.motivation.is_none() && physical_body.injured {
                 if let Some(order) = &brain.order {
-                    if order == "Hospital" {
+                    if *order == Order::Hospital {
                         brain.motivation = Some(Motivation::Order);
                     } else {
                         brain.motivation = Some(Motivation::Injured);
@@ -91,7 +91,7 @@ pub fn thinking_system(
                 if let Some(n) = &physical_body.needs_sleep {
                     if n.current < 5.0 {
                         if let Some(order) = &brain.order {
-                            if order == "Sleep" {
+                            if *order == Order::Sleep {
                                 brain.motivation = Some(Motivation::Order);
                             } else {
                                 brain.motivation = Some(Motivation::Tired);
@@ -107,7 +107,7 @@ pub fn thinking_system(
                 if let Some(n) = &physical_body.needs_entertainment {
                     if n.current < 5.0 {
                         if let Some(order) = &brain.order {
-                            if order == "Entertainment" {
+                            if *order == Order::Play {
                                 brain.motivation = Some(Motivation::Order);
                             } else {
                                 brain.motivation = Some(Motivation::Bored);
@@ -146,9 +146,18 @@ pub fn thinking_system(
                     brain.task = Some(Task::Order);
                 }
             } else if m == Motivation::Danger {
-                if let Some(_danger) = &physical_body.danger {
-                    brain.task = Some(Task::Flee);
-                    // TO DO: Assign FLEE or FIGHT task.
+                if let Some(danger) = &physical_body.danger {
+                    match danger {
+                        Danger::Attacked => {
+                            brain.task = Some(Task::Fight);
+                        },
+                        Danger::Fire => {
+                            brain.task = Some(Task::Flee);
+                        },
+                        _ => {
+                            brain.task = Some(Task::Flee);
+                        },
+                    }
                 }
             } else if m == Motivation::Hunger {
                 brain.task = Some(Task::Eat);

@@ -191,6 +191,11 @@ pub struct ClickedOn;
 #[derive(Component)]
 pub struct InGameButton;
 
+// #[derive(Component)]
+// pub struct CombatTarget {
+//     pub target: Entity,
+// }
+
 #[derive(Component)]
 pub struct Skill {
     pub experience: i32,
@@ -199,6 +204,7 @@ pub struct Skill {
 
 #[derive(Component)]
 pub struct Attributeset {
+    pub health: i32,
     pub strength: i32,
     pub dexterity: i32,
     pub constitution: i32,
@@ -209,6 +215,7 @@ pub struct Attributeset {
 impl Default for Attributeset {
     fn default() -> Self {
         Attributeset {
+            health: 100,
             strength: 10,
             dexterity: 10,
             constitution: 10,
@@ -333,6 +340,12 @@ impl Default for Skillset {
         }
     }
 }
+pub enum Danger {
+    Attacked,
+    Fire,
+    Freezing,
+    Overheating,
+}
 
 pub trait InfoPanel {
     fn info_panel(&self) -> Vec<String>;
@@ -345,7 +358,7 @@ pub struct PhysicalBody {
     pub needs_sleep: Option<NeedsSleep>,
     pub index: usize,
     pub crisis: Option<String>,
-    pub danger: Option<String>,
+    pub danger: Option<Danger>,
     pub injured: bool,
     pub afflictions: Vec<Affliction>,
     pub skillset: Skillset,
@@ -367,12 +380,45 @@ impl InfoPanel for PhysicalBody {
     }
 }
 
+#[derive(PartialEq)]
+pub enum Order {
+    Eat,
+    Hospital,
+    Follow,
+    Stay,
+    Guard,
+    Patrol,
+    Wander,
+    Work,
+    Sleep,
+    Drink,
+    Play,
+    Party,
+    Socialize,
+    Fight,
+    Flee,
+    Doctor,
+    Forage,
+    Plant,
+    Harvest,
+    Mine,
+    Chop,
+    Construct,
+    Hunt,
+    Milk,
+    Cook,
+    Fish,
+    Craft,
+    Clean,
+    Haul,
+    None,
+}
 
 #[derive(Component, Default)]
 pub struct Brain {
     pub motivation: Option<Motivation>,
     pub task: Option<Task>,
-    pub order: Option<String>,
+    pub order: Option<Order>,
     pub personality: Vec<PersonalityTrait>,
 }
 impl Brain {

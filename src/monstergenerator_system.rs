@@ -47,7 +47,7 @@ pub fn monster_generator(
         if !can_generate {
             return;
         }
-        let sprite =  TextureAtlasSprite::new(ActorType::Rat.sprite_index()); // TO DO
+        let sprite =  TextureAtlasSprite::new(ActorType::Rat.sprite_index());
         commands
             .spawn(SpriteSheetBundle {
                 sprite,
