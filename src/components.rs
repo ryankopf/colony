@@ -55,14 +55,30 @@ impl MenuStates {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ActorType { // Entity? Character? Creature? Actor? Avatar? Unit? Agent?
-    Human,
+    Dwarf,
+    ManCrazy,
+    Elf,
+    Teen,
+    Ranger,
+    Woman,
+    Man,
+    Man2,
+    ManCave,
     Pig,
     Rat,
 }
 impl ActorType {
     pub fn sprite_row_and_col(&self) -> (usize, usize) {
         match self {
-            ActorType::Human => (66, 46),
+            ActorType::Dwarf => (59 ,13),
+            ActorType::ManCrazy => (59, 15),
+            ActorType::Elf => (59, 18),
+            ActorType::Teen => (60, 11),
+            ActorType::Ranger => (59, 22),
+            ActorType::Woman => (60, 48),
+            ActorType::Man => (66, 46),
+            ActorType::Man2 => (60, 21),
+            ActorType::ManCave => (60, 25),
             ActorType::Pig => (64, 0),
             ActorType::Rat => (64, 19),
         }

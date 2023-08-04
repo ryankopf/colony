@@ -24,8 +24,13 @@ pub fn startup(
     // GENERATE UNITS
     for i in 1..6 {
         let position = Position { x: 3, y: 3*i, z: 0 };
-        let sprite =  TextureAtlasSprite::new(ActorType::Human.sprite_index()); // TO DO
-        
+        let actor_type = match i {
+            1 => ActorType::Man2,
+            2 => ActorType::Dwarf,
+            _ => ActorType::Man
+        };
+        let sprite = TextureAtlasSprite::new(actor_type.sprite_index());
+    
         commands.spawn(SpriteSheetBundle {
             sprite,
             texture_atlas: sprite_sheet.0.clone(),
