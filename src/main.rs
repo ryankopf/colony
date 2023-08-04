@@ -31,6 +31,7 @@ use crate::task_system::{HALF_SECOND, TWO_SECOND};
     task_system,
     text_system,
     thinking_system,
+    unitgenerator_system,
     window_system
 )]
 

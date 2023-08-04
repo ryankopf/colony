@@ -13,6 +13,8 @@ What are the various systems?
 * You can give Orders > Chop to chop down trees
 * Units automatically sleep when they're tired.
 
+![Screenshot](./assets/screenshot.png)
+
 ## Next Steps
 
 1. Some kind of UI box should show up when you click one of your units, displaying their health/hunger/sleepiness/stats/etc

@@ -222,12 +222,12 @@ impl InfoPanel for Status {
 }
 
 
-#[derive(Component, PartialEq)]
-#[derive(Default)]
+#[derive(Component, Default)]
 pub struct Brain {
     pub motivation: Option<Motivation>,
     pub task: Option<Task>,
     pub order: Option<String>,
+    pub personality: Vec<PersonalityTrait>,
 }
 impl Brain {
     pub fn remotivate(&mut self) {
@@ -235,8 +235,19 @@ impl Brain {
         self.task = None;
         self.order = None;
     }
+    pub fn add_personality_trait(&mut self, trait_: PersonalityTrait) {
+        self.personality.push(trait_);
+    }
 }
 
+#[derive(Component)]
+pub enum PersonalityTrait {
+    Adventurous, Ambitious, Analytical, Airheaded, Artistic, Brave, Calm, Charismatic, Confident, Cowardly,
+    Creative, Curious, Charitable, Cynical, Dumb, Eccentric, Energetic, Empath, Empathetic, Enthusiastic,
+    Fearless, Friendly, Greedy, Impulsive, Jinxed, Loyal, Logical, Lucky, Mean, Mischievous,
+    Nice, Optimistic, Patient, Pessimistic, Rebellious, Reliable, Sensitive, Shy, Smart, Stupid,
+    Technophile, Timid, Tolerant, Trusting, Violent, Weak, Workaholic, Witty, Outgoing,
+}
 
 #[derive(Component)]
 pub struct Foragable;
