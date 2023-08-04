@@ -22,7 +22,7 @@ What are the various systems?
 
 ## Getting Started
 
-Generally ```cargo build``` and then ```cargo run``` works fine on Windows 11.
+Generally ```cargo build``` and then ```cargo run``` works fine on Windows 11 and Ubuntu.
 
 ## Contributing
 
