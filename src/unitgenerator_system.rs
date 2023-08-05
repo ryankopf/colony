@@ -156,7 +156,7 @@ impl UnitTemplate {
                 AfflictionType::Infection
             ];
             let mut rng = rand::thread_rng();
-            let i1 = rng.gen_range(0..affliction_locations.len());
+            let i1 = rng.gen_range(0..affliction_types.len());
             let i2 = rng.gen_range(0..affliction_locations.len());
             (affliction_types[i1], affliction_locations[i2])
         };
@@ -180,7 +180,7 @@ impl UnitTemplate {
                 AfflictionType::Wound,
             ];
             let mut rng = rand::thread_rng();
-            let i1 = rng.gen_range(0..affliction_locations.len());
+            let i1 = rng.gen_range(0..affliction_types.len());
             let i2 = rng.gen_range(0..affliction_locations.len());
             (affliction_types[i1], affliction_locations[i2])
         };
@@ -243,6 +243,14 @@ impl UnitTemplate {
     }
     
     pub fn random_attributeset_humanoid() -> Attributeset {
-
+        Attributeset {
+            health: 100,
+            strength: 3,
+            dexterity: 3,
+            constitution: 3,
+            intelligence: 3,
+            wisdom: 3,
+            charisma: 4,
+        }
     }
 }
