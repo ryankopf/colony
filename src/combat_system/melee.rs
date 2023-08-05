@@ -74,7 +74,7 @@ fn do_melee_damage(
     body2.attributes.health -= 50;
     println!("Health: {}", body2.attributes.health);
     if body2.attributes.health <= 0 {
-        //CRASHES: commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn_recursive();
     }
 }
 pub fn attacked_entities_system(

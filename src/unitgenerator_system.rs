@@ -13,41 +13,41 @@ impl Plugin for UnitGeneratorPlugin {
     }
 }
 
-pub fn spawn_unit(
-    commands: &mut Commands,
-    position: Position,
-    sprite_sheet: &Res<SpriteSheet>,
-    actor_type: ActorType,
-    food_need: f32,
-    entertainment_need: f32,
-    sleep_need: f32,
-) {
-    let sprite =  TextureAtlasSprite::new(actor_type.sprite_index());
-    commands
-        .spawn(SpriteSheetBundle {
-            sprite,
-            texture_atlas: sprite_sheet.0.clone(),
-            ..default()
-        })
-        .insert(position)
-        .insert(position.to_transform_layer(1.0))
-        .insert(Attackable)
-        .insert( GiveMeAName )
-        .insert( PhysicalBody {
-            needs_food: Some(Need { current: food_need, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0 }),
-            needs_entertainment: Some(Need { current: entertainment_need, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0 }),
-            needs_sleep: Some(Need { current: sleep_need, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0 }),
-            index: 0,
-            crisis: None,
-            danger: None,
-            injured: false,
-            afflictions: Vec::new(),
-            skillset: Skillset::default(),
-            attributes: Attributeset::default(),
-        } )
-        .insert( Brain { ..default() } )
-        ;
-}
+// pub fn spawn_unit(
+//     commands: &mut Commands,
+//     position: Position,
+//     sprite_sheet: &Res<SpriteSheet>,
+//     actor_type: ActorType,
+//     food_need: f32,
+//     entertainment_need: f32,
+//     sleep_need: f32,
+// ) {
+//     let sprite =  TextureAtlasSprite::new(actor_type.sprite_index());
+//     commands
+//         .spawn(SpriteSheetBundle {
+//             sprite,
+//             texture_atlas: sprite_sheet.0.clone(),
+//             ..default()
+//         })
+//         .insert(position)
+//         .insert(position.to_transform_layer(1.0))
+//         .insert(Attackable)
+//         .insert( GiveMeAName )
+//         .insert( PhysicalBody {
+//             needs_food: Some(Need { current: food_need, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0 }),
+//             needs_entertainment: Some(Need { current: entertainment_need, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0 }),
+//             needs_sleep: Some(Need { current: sleep_need, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0 }),
+//             index: 0,
+//             crisis: None,
+//             danger: None,
+//             injured: false,
+//             afflictions: Vec::new(),
+//             skillset: Skillset::default(),
+//             attributes: Attributeset::default(),
+//         } )
+//         .insert( Brain { ..default() } )
+//         ;
+// }
 
 pub fn spawn_unit_from_template(
     commands: &mut Commands,
@@ -75,8 +75,8 @@ pub fn spawn_unit_from_template(
             danger: None,
             injured: false,
             afflictions: template.afflictions.clone(),//Vec::new(),
-            skillset: Skillset::default(),
-            attributes: Attributeset::default(),
+            skillset: template.skillset.clone(),
+            attributes: template.attributes.clone(),
         } )
         .insert( Brain { ..default() } )
         ;
@@ -88,6 +88,8 @@ pub struct UnitTemplate {
     pub entertainment_need: NeedExample,
     pub sleep_need: NeedExample,
     pub afflictions: Vec<Affliction>,
+    pub skillset: Skillset,
+    pub attributes: Attributeset,
 }
 #[derive(Copy, Clone)]
 pub struct NeedExample {
@@ -134,6 +136,8 @@ impl UnitTemplate {
             entertainment_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
             sleep_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
             afflictions: random_afflictions.to_vec(),
+            skillset: Self::random_skillset_humanoid(),
+            attributes: Self::random_attributeset_humanoid(),
         }
     }
     pub fn random_afflictions_humanoid() -> Vec<Affliction> {

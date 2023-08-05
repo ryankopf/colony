@@ -67,13 +67,5 @@ pub fn status_display_system (
         .id()
         ;
         commands.entity(entity).push_children(&[child]);
-
-
-        // let e = parent.get();
-        //commands.entity(nametext).insert(Transform::from_xyz(300.0, 0.0, 100.0));
-        // println!("{:?}", text.sections);
-        // text.sections[0].value = "FIRE".to_string();
-        // text.set_changed();
-        //println!("{}", text.sections[0].value);
     }
 }
