@@ -226,7 +226,7 @@ impl Default for Attributeset {
     }
 }
 
-#[derive(Component)]
+#[derive(Clone, Copy, Component)]
 pub enum AfflictionType {
     Bleeding,
     BrokenBone,
@@ -260,7 +260,7 @@ pub enum AfflictionType {
     WoundSwelling,
     WoundTrauma,
 }
-#[derive(Component)]
+#[derive(Clone, Copy, Component)]
 pub enum AfflictionLocation {
     Head,
     Torso,
@@ -298,7 +298,7 @@ pub enum AfflictionLocation {
     Trunk,
 }
 
-#[derive(Component)]
+#[derive(Component, Clone, Copy)]
 pub struct Affliction {
     pub affliction_type: AfflictionType,
     pub affliction_location: AfflictionLocation,
@@ -353,9 +353,9 @@ pub trait InfoPanel {
 
 #[derive(Component)]
 pub struct PhysicalBody {
-    pub needs_food: Option<NeedsFood>,
-    pub needs_entertainment: Option<NeedsEntertainment>,
-    pub needs_sleep: Option<NeedsSleep>,
+    pub needs_food: Option<Need>,
+    pub needs_entertainment: Option<Need>,
+    pub needs_sleep: Option<Need>,
     pub index: usize,
     pub crisis: Option<String>,
     pub danger: Option<Danger>,
@@ -431,14 +431,29 @@ impl Brain {
         self.personality.push(trait_);
     }
 }
+impl InfoPanel for Brain {
+    fn info_panel(&self) -> Vec<String> {
+        let mut info_lines = Vec::new();
+        if let Some(motivation) = &self.motivation {
+            info_lines.push(format!("Motivation: {:?}", motivation));
+        }
+        if let Some(task) = &self.task {
+            info_lines.push(format!("Task: {:?}", task));
+        }
+        info_lines
+    }
+}
 
-#[derive(Component)]
+#[derive(Component, PartialEq)]
 pub enum PersonalityTrait {
+    // Traits for People
     Adventurous, Ambitious, Analytical, Airheaded, Artistic, Brave, Calm, Charismatic, Confident, Cowardly,
     Creative, Curious, Charitable, Cynical, Dumb, Eccentric, Energetic, Empath, Empathetic, Enthusiastic,
     Fearless, Friendly, Greedy, Impulsive, Jinxed, Loyal, Logical, Lucky, Mean, Mischievous,
     Nice, Optimistic, Patient, Pessimistic, Rebellious, Reliable, Sensitive, Shy, Smart, Stupid,
     Technophile, Timid, Tolerant, Trusting, Violent, Weak, Workaholic, Witty, Outgoing,
+    // Traits for Creatures
+    Creature, Social, Vicious, Territorial, Docile, 
 }
 
 #[derive(Component)]
@@ -739,22 +754,13 @@ impl SizeXYZ {
 // NEEDS
 
 #[derive(Component)]
-pub struct NeedsFood {
+pub struct Need {
     pub current: f32,
     pub max: f32,
     pub rate: f32,
-}
-#[derive(Component)]
-pub struct NeedsEntertainment {
-    pub current: f32,
-    pub max: f32,
-    pub rate: f32,
-}
-#[derive(Component)]
-pub struct NeedsSleep {
-    pub current: f32,
-    pub max: f32,
-    pub rate: f32,
+    pub low: f32,
+    pub normal: f32,
+    pub high: f32,
 }
 
 #[derive(Component)]

@@ -2,6 +2,8 @@ use bevy::prelude::*;
 use super::components::{Position, SizeXYZ};
 use super::prelude::*;
 use crate::spawn_unit;
+use crate::spawn_unit_from_template;
+use crate::UnitTemplate;
 
 // Make Startup Plugin
 pub struct StartupPlugin;
@@ -18,47 +20,19 @@ impl Plugin for StartupPlugin {
 pub fn startup(
     mut commands: Commands,
     sprite_sheet: Res<SpriteSheet>,
-    _asset_server: Res<AssetServer>,
     biome: Res<Biome>,
 ) {
-    
     // GENERATE UNITS
     for i in 1..6 {
         let position = Position { x: 3, y: 3*i, z: 0 };
-        let actor_type = match i {
-            1 => ActorType::Man2,
-            2 => ActorType::Dwarf,
-            _ => ActorType::Man
-        };
+        // let actor_type = match i {
+        //     1 => ActorType::Man2,
+        //     2 => ActorType::Dwarf,
+        //     _ => ActorType::Man
+        // };
         // let sprite = TextureAtlasSprite::new(actor_type.sprite_index());
-        spawn_unit(&mut commands, position, &sprite_sheet, actor_type, 21.0, 21.0, 21.0);
-    
-        // commands.spawn(SpriteSheetBundle {
-        //     sprite,
-        //     texture_atlas: sprite_sheet.0.clone(),
-        //     transform: Transform::from_xyz(
-        //         position.x as f32 * TILE_SIZE,
-        //         position.y as f32 * TILE_SIZE,
-        //         position.z as f32 * TILE_SIZE,
-        //     ),
-        //     ..default()
-        // })
-        // .insert(position)
-        // .insert(position.to_transform_layer(1.0))
-        // .insert(Attackable)
-        // // .insert(NeedsFood { current: 100.0, max: 100.0, rate: 0.1 })
-        // .insert( GiveMeAName )
-        // .insert( Status {
-        //     needs_food: Some(NeedsFood { current: 25.1, max: 100.0, rate: 0.1 }),
-        //     needs_entertainment: Some(NeedsEntertainment { current: 100.0, max: 100.0, rate: 0.1 }),
-        //     needs_sleep: Some(NeedsSleep { current: 15.2, max: 100.0, rate: 0.1 }),
-        //     index: 0,
-        //     crisis: None,
-        //     danger: None,
-        //     injured: false
-        // } )
-        // .insert( Brain { ..Default::default() } )
-        // ;
+        // spawn_unit(&mut commands, position, &sprite_sheet, actor_type, 21.0, 21.0, 21.0);
+        spawn_unit_from_template(&mut commands, position, &sprite_sheet, &UnitTemplate::human());
     }
 
     let position = Position { x: 10, y: 10, z: 0 };

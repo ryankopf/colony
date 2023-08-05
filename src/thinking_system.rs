@@ -46,7 +46,7 @@ pub fn thinking_system(
             continue; // Already has a task.
         }
         if brain.motivation.is_none() {
-            // SET MOTIVATION
+            // #1 - Check for crisis and dangers.
             if let Some(_crisis) = &physical_body.crisis {
                 brain.motivation = Some(Motivation::Crisis);
             // Process dangers.
@@ -61,7 +61,7 @@ pub fn thinking_system(
             // FOOD
             if brain.motivation.is_none() {
                 if let Some(n) = &physical_body.needs_food {
-                    if n.current < 5.0 {
+                    if n.current < n.low {
                         if let Some(order) = &brain.order {
                             if *order == Order::Eat {
                                 brain.motivation = Some(Motivation::Order);
@@ -89,7 +89,7 @@ pub fn thinking_system(
             // SLEEP
             if brain.motivation.is_none() {
                 if let Some(n) = &physical_body.needs_sleep {
-                    if n.current < 5.0 {
+                    if n.current < n.low {
                         if let Some(order) = &brain.order {
                             if *order == Order::Sleep {
                                 brain.motivation = Some(Motivation::Order);
@@ -105,7 +105,7 @@ pub fn thinking_system(
             // ENTERTAINMENT
             if brain.motivation.is_none() {
                 if let Some(n) = &physical_body.needs_entertainment {
-                    if n.current < 5.0 {
+                    if n.current < n.low {
                         if let Some(order) = &brain.order {
                             if *order == Order::Play {
                                 brain.motivation = Some(Motivation::Order);
@@ -124,15 +124,22 @@ pub fn thinking_system(
                     brain.motivation = Some(Motivation::Order);
                 }
             }
-            // MEANINGFUL WORK
+            // Now decide what the unit should be doing based on its personality.
             if brain.motivation.is_none() {
-                brain.motivation = Some(Motivation::Work);
+                if brain.personality.contains(&PersonalityTrait::Vicious) {
+                    brain.motivation = Some(Motivation::Danger);
+                }
+                if !brain.personality.contains(&PersonalityTrait::Creature) {
+                    brain.motivation = Some(Motivation::Work);
+                }
             }
         }
         if brain.motivation.is_none() {
             brain.motivation = Some(Motivation::Meander);
         }
-        // SET TASK
+        // ****************************************** //
+        // ****************************************** //
+        // NOW SET THE TASK RELATED TO THE MOTIVATION //
         if let Some(m) = brain.motivation {
             if m == Motivation::Crisis {
                 if let Some(_crisis) = &physical_body.crisis {

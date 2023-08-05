@@ -1,4 +1,4 @@
-use crate::{prelude::*, components::Attributeset};
+use crate::{prelude::*, components::{Attributeset, PersonalityTrait}};
 
 // Make plugin
 pub struct MonsterGeneratorPlugin;
@@ -58,7 +58,7 @@ pub fn monster_generator(
             .insert(SizeXYZ::cube(1.1))
             .insert(new_position.to_transform_layer(1.0))
             .insert(GeneratedBy { entity })
-            .insert(MoveTowardsNearestAttackable)
+            // .insert(MoveTowardsNearestAttackable)
             .insert( PhysicalBody {
                 needs_food: None,//Some(NeedsFood { current: 25.1, max: 100.0, rate: 0.1 }),
                 needs_entertainment: None,//Some(NeedsEntertainment { current: 100.0, max: 100.0, rate: 0.1 }),
@@ -70,6 +70,12 @@ pub fn monster_generator(
                 afflictions: Vec::new(),
                 skillset: Skillset::default(),
                 attributes: Attributeset::default(),
+            } )
+            .insert( Brain {
+                motivation: None,
+                task: None,
+                order: None,
+                personality: vec![PersonalityTrait::Creature, PersonalityTrait::Vicious],
             } )
             //.insert( HasName { name: "Wolf".to_string() } )
             ;

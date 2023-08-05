@@ -12,11 +12,9 @@ pub fn combat_system_melee(
             for (entity, position2, mut physical_body2) in positions.iter_mut() {
                 if entity == targeting.target {
                     if position.distance(position2) <= 1 {
-                        // Attack!
                         println!("Attack!");
                         entity_found = true;
                         do_melee_damage(&mut commands, entity, physical_body, &mut physical_body2);
-                        //commands.entity(targeting.target);
                     } else {
                         // Try to follow/hunt the entity.
                     }
@@ -37,6 +35,7 @@ fn do_melee_damage(
     body2: &mut PhysicalBody,
 ) {
     body2.attributes.health -= 10;
+    body2.danger = Some(Danger::Attacked);
     if body2.attributes.health <= 0 {
         commands.entity(entity).despawn_recursive();
     }

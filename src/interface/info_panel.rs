@@ -65,19 +65,20 @@ pub fn show_info_panel(
 
 pub fn info_system(
     mut commands: Commands,
-    mut people: Query<(Entity, &Position, &PhysicalBody, &ClickedOn, Option<&HasName>)>,
+    mut people: Query<(Entity, &Position, &Brain, &PhysicalBody, &ClickedOn, Option<&HasName>)>,
     mut info_panel: ResMut<InfoPanelInformation>,
 ) {
-    if let Some((_, position, physical_body, _clickedon, has_name)) = people.iter_mut().last() {
+    if let Some((_, position, brain, physical_body, _clickedon, has_name)) = people.iter_mut().last() {
         if let Some(has_name) = has_name {
             info_panel.name = has_name.name.clone();
         }
         info_panel.info = vec![];
         info_panel.info.push(format!("Position: {}, {}", position.x, position.y));
         info_panel.info.extend_from_slice(&physical_body.info_panel());
+        info_panel.info.extend_from_slice(&brain.info_panel());
     }
     let count = people.iter().count();
-    for (index, (entity, _, _, _, _)) in people.iter_mut().enumerate() {
+    for (index, (entity, _, _, _, _, _)) in people.iter_mut().enumerate() {
         if index < count - 1 {
             commands.entity(entity).remove::<ClickedOn>();
         }
