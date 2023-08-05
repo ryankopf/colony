@@ -2,13 +2,14 @@ use crate::prelude::*;
 
 pub fn task_system_chop(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>), Without<Pathing>>,
+    mut entities_that_might_chop: Query<(Entity, &mut Brain, &Position, Option<&Pathing>, Option<&Targeting>)>,
     mut targets: Query<(Entity, &Position, &Choppable, &mut Plant), With<WorkTarget>>,
     workmarkers: Query<(Entity, &Parent), With<WorkMarker>>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
-    let mut already_targeted = crate::set_already_targetted(&query);
-    'outer: for (entity, mut brain, position, targeting) in query.iter_mut() {
+    let mut already_targeted = crate::set_already_targetted(&entities_that_might_chop);
+    'outer: for (entity, mut brain, position, pathing,  targeting) in entities_that_might_chop.iter_mut() {
+        if pathing.is_some() { continue; }
         if brain.task != Some(Task::Chop) { continue; }
         let mut shortest_distance = -1;
         let mut closest_entity = None;

@@ -2,12 +2,13 @@ use crate::prelude::*;
 
 pub fn task_system_forage(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>), Without<Pathing>>,
+    mut entities_that_might_forage: Query<(Entity, &mut Brain, &Position, Option<&Pathing>, Option<&Targeting>)>,
     mut foragables: Query<(Entity, &Position, &Foragable, &mut Plant)>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
-    let mut already_targeted = crate::set_already_targetted(&query);
-    for (entity, mut brain, position, targeting) in query.iter_mut() {
+    let mut already_targeted = crate::set_already_targetted(&entities_that_might_forage);
+    for (entity, mut brain, position, pathing, targeting) in entities_that_might_forage.iter_mut() {
+        if pathing.is_some() { continue; }
         if brain.task != Some(Task::Forage) { continue; }
         let mut did_foraging = false;
         let mut nearest_entity: Option<NearestEntity> = None;

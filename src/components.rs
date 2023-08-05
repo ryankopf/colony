@@ -51,7 +51,21 @@ impl MenuStates {
         }
     }
 }
-
+#[derive(Component, PartialEq, Copy, Clone, Debug)]
+pub enum StrikeType {
+    Hit
+}
+impl StrikeType {
+    pub fn sprite_row_and_col(&self) -> (usize, usize) {
+        match self {
+            StrikeType::Hit => (26, 9),
+        }
+    }
+    pub fn sprite_index(&self) -> usize {
+        let (row, col) = self.sprite_row_and_col();
+        row * 64 + col
+    }
+}
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ActorType { // Entity? Character? Creature? Actor? Avatar? Unit? Agent?
@@ -379,6 +393,10 @@ impl InfoPanel for PhysicalBody {
         info_lines
     }
 }
+#[derive(Component)]
+pub struct Attacked {
+    pub attacker: Entity,
+}
 
 #[derive(PartialEq)]
 pub enum Order {
@@ -519,7 +537,7 @@ pub enum Task { // Sorted in order of prioritization.
 }
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Motivation { // Sorted in order of prioritization.
-    Crisis, Order, Danger, Hunger, Thirst, Tired, Bored, Injured, Sick, Happy, Sad, Angry, Lonely, Love, Fear, Hate, Work, Meander, Idle
+    Crisis, Rage, Order, Danger, Hunger, Thirst, Tired, Injured, Sick, Bored, Happy, Sad, Angry, Lonely, Love, Fear, Hate, Work, Meander, Idle
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]

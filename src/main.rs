@@ -80,6 +80,7 @@ fn main() {
         .add_plugin(InfoPanelPlugin)
         .add_plugin(ThinkingPlugin)
         .add_plugin(TaskPlugin)
+        .add_plugin(CombatPlugin)
         .add_plugin(SpoilagePlugin)
         .add_system(remove_bad_positions)
         .add_system(namegiving_system)

@@ -127,7 +127,7 @@ pub fn thinking_system(
             // Now decide what the unit should be doing based on its personality.
             if brain.motivation.is_none() {
                 if brain.personality.contains(&PersonalityTrait::Vicious) {
-                    brain.motivation = Some(Motivation::Danger);
+                    brain.motivation = Some(Motivation::Rage);
                 }
                 if !brain.personality.contains(&PersonalityTrait::Creature) {
                     brain.motivation = Some(Motivation::Work);
@@ -152,6 +152,8 @@ pub fn thinking_system(
                 if let Some(_order) = &brain.order {
                     brain.task = Some(Task::Order);
                 }
+            } else if m == Motivation::Rage {
+                brain.task = Some(Task::Fight);
             } else if m == Motivation::Danger {
                 if let Some(danger) = &physical_body.danger {
                     match danger {

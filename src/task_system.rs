@@ -65,12 +65,12 @@ impl Plugin for TaskPlugin {
 }
 
 pub fn set_already_targetted(
-    query: &Query<(Entity, &mut Brain, &Position, Option<&Targeting>), Without<Pathing>>,
+    entities_that_might_target_things: &Query<(Entity, &mut Brain, &Position, Option<&Pathing>, Option<&Targeting>)>
 ) -> Vec<Entity> {
-    query
+    entities_that_might_target_things
         .iter()
-        .filter(|(_, _, _, targeting)| targeting.is_some())
-        .map(|(_, _, _, targeting)| targeting.unwrap().target)
+        .filter(|(_, _, _, _, targeting)| targeting.is_some())
+        .map(|(_, _, _, _, targeting)| targeting.unwrap().target)
         .collect::<Vec<Entity>>()
 }
 

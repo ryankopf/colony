@@ -2,14 +2,15 @@ use crate::prelude::*;
 
 pub fn task_system_plant(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>), Without<Pathing>>,
+    mut entities_that_might_plant: Query<(Entity, &mut Brain, &Position, Option<&Pathing>, Option<&Targeting>)>,
     targetables: Query<(Entity, &Position, &Zone)>,
     // obstacles: Query<&Position, (Without<Brain>, Without<MapTile>)>, // This seems to be an "AND"
     obstacles: Query<(Entity, &Position), Without<MapTile>>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
-    let mut already_targeted = crate::set_already_targetted(&query);
-    'brains: for (entity, mut brain, position, targeting) in query.iter_mut() {
+    let mut already_targeted = crate::set_already_targetted(&entities_that_might_plant);
+    'brains: for (entity, mut brain, position, pathing, targeting) in entities_that_might_plant.iter_mut() {
+        if pathing.is_some() { continue; }
         if brain.task != Some(Task::Plant) { continue; }
         let mut nearest_entity: Option<NearestEntity> = None;
         'targets: for (targetable_entity, targetable_position, zone) in targetables.iter() {
