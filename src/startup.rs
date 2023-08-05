@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 use super::components::{Position, SizeXYZ};
 use super::prelude::*;
-use crate::spawn_unit;
 use crate::spawn_unit_from_template;
 use crate::UnitTemplate;
 
