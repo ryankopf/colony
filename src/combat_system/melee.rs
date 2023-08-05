@@ -35,7 +35,6 @@ fn do_melee_damage(
     body2: &mut PhysicalBody,
 ) {
     body2.attributes.health -= 10;
-    body2.danger = Some(Danger::Attacked);
     if body2.attributes.health <= 0 {
         commands.entity(entity).despawn_recursive();
     }
