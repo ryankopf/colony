@@ -2,18 +2,17 @@ use crate::prelude::*;
 
 pub fn combat_system_melee(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Brain, &Position, Option<&Targeting>)>,
+    mut entities_that_might_fight: Query<(Entity, &mut Brain, &Position, Option<&Pathing>, Option<&Targeting>)>,
     attackables: Query<(Entity, &Position), With<Attackable>>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
-    for (e, mut brain, position, targeting) in query.iter_mut() {
+    for (e, mut brain, position, pathing, targeting) in entities_that_might_fight.iter_mut() {
         if brain.task != Some(Task::Fight) { continue; }
         if let Some(targeting) = targeting {
             let mut entity_found = false;
-            for (entity, position2) in attackables.iter() {
+            for (entity, target_position) in attackables.iter() {
                 if entity == targeting.target {
-                    if position.distance(position2) <= 1 {
-                        println!("Attack!");
+                    if position.distance(target_position) <= 1 {
                         entity_found = true;
                         let sprite =  TextureAtlasSprite::new(StrikeType::Hit.sprite_index());
                         commands
@@ -22,17 +21,22 @@ pub fn combat_system_melee(
                                 texture_atlas: sprite_sheet.0.clone(),
                                 ..default()
                             })
-                            .insert(position2.clone());
-                        //commands.entity(entity).insert(Attacked { attacker: e });
+                            .insert(target_position.clone())
+                            .insert(target_position.to_transform_layer(1.1))
+                            ;
+                        commands.entity(entity).insert(Attacked { attacker: e });
                         //do_melee_damage(&mut commands, entity, physical_body, &mut physical_body2);
                     } else {
                         // Try to follow/hunt the entity.
+                        if pathing.is_none() {
+                            commands.entity(e).insert( Pathing { path: vec![], destination: *target_position, ..default() });
+                        }
                     }
                 }
             }
             if !entity_found {
-                brain.motivation = None;
-                brain.task = None;
+                commands.entity(e).remove::<Targeting>();
+                brain.remotivate();
             }
         } else {
             // Find a target.
@@ -67,8 +71,35 @@ fn do_melee_damage(
     body1: &PhysicalBody,
     body2: &mut PhysicalBody,
 ) {
-    body2.attributes.health -= 10;
+    body2.attributes.health -= 50;
+    println!("Health: {}", body2.attributes.health);
     if body2.attributes.health <= 0 {
-        commands.entity(entity).despawn_recursive();
+        //CRASHES: commands.entity(entity).despawn_recursive();
+    }
+}
+pub fn attacked_entities_system(
+    mut commands: Commands,
+    attacked_query: Query<(Entity, &Attacked), With<Attacked>>,
+    mut physical_bodies: Query<(Entity, &mut PhysicalBody)>,
+) {
+    for (attacked_entity, attack_info) in attacked_query.iter() {
+        println!("Attacked");
+        commands.entity(attacked_entity).remove::<Attacked>();
+        let mut attacker_physical_body: Option<PhysicalBody> = None;
+        // Get the stats of the attacker.
+        for (entity, physical_body) in physical_bodies.iter_mut() {
+            if entity == attack_info.attacker {
+                attacker_physical_body = Some(physical_body.clone());
+            }
+        }
+        if attacker_physical_body.is_none() { continue; }
+        let attacker_physical_body = attacker_physical_body.unwrap();
+        // Now do the damage to the attacked body.
+        for (entity, mut physical_body) in physical_bodies.iter_mut() {
+            if entity == attacked_entity {
+                println!("Damage");
+                do_melee_damage(&mut commands, attacked_entity, &attacker_physical_body, &mut physical_body);
+            }
+        }
     }
 }

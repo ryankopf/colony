@@ -20,6 +20,11 @@ impl Plugin for CombatPlugin {
                 0,
                 ranged::combat_system_ranged.run_in_bevy_state(GameState::InGame),
             )
+            .add_system(
+                melee::attacked_entities_system
+                .run_in_bevy_state(GameState::InGame)
+                
+            )
             ;
     }
 }

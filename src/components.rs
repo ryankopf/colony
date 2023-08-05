@@ -210,13 +210,13 @@ pub struct InGameButton;
 //     pub target: Entity,
 // }
 
-#[derive(Component)]
+#[derive(Component, Clone, Copy)]
 pub struct Skill {
     pub experience: i32,
     pub exp_lost: i32, // Forgetting/atrophied skills. Easier to regain.
 }
 
-#[derive(Component)]
+#[derive(Component, Clone, Copy)]
 pub struct Attributeset {
     pub health: i32,
     pub strength: i32,
@@ -321,7 +321,7 @@ pub struct Affliction {
     pub worsening: bool,
 }
 
-#[derive(Component)]
+#[derive(Component, Clone, Copy)]
 pub struct Skillset {
     pub animal_raising: Skill,
     pub construction: Skill,
@@ -354,6 +354,8 @@ impl Default for Skillset {
         }
     }
 }
+
+#[derive(Clone, Copy)]
 pub enum Danger {
     Attacked,
     Fire,
@@ -365,7 +367,7 @@ pub trait InfoPanel {
     fn info_panel(&self) -> Vec<String>;
 }
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct PhysicalBody {
     pub needs_food: Option<Need>,
     pub needs_entertainment: Option<Need>,
@@ -771,7 +773,7 @@ impl SizeXYZ {
 
 // NEEDS
 
-#[derive(Component)]
+#[derive(Component, Clone, Copy)]
 pub struct Need {
     pub current: f32,
     pub max: f32,
