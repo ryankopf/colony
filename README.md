@@ -17,9 +17,11 @@ What are the various systems?
 
 ## Next Steps
 
-1. Some kind of UI box should show up when you click one of your units, displaying their health/hunger/sleepiness/stats/etc
-2. Implementing more variety in foods, trees, etc, would be a good place to start
-3. (Harder) Implement building things like walls, beds, etc.
+1. Complete upgrading to Bevy 0.11 by clearing all deprecation notices
+2. Finish basic combat, giving your characters a way to fight back against monsters
+3. Improve the UI box when you click one of your units, displaying their personality, attributes, and health
+4. Implementing more variety in foods, trees, etc, would be a good place to start
+5. (Harder) Implement building things like walls, beds, etc.
 
 
 ## Getting Started
