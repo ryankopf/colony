@@ -56,8 +56,9 @@ pub fn mouse_click_input(
         let mut position = None;
         let wc = window.cursor_position();
         if let Some(wc) = wc {
+            let y = window.height() - wc.y;
             // ?, Chop, Wand, Arrow, Leaf, Legs
-            if wc.y < 32.0 {
+            if y < 32.0 {
                 if (0..32).contains(&(wc.x as i32)) {
                     dragging.looking_for = SelectableType::Foragable;
                 }
@@ -81,7 +82,7 @@ pub fn mouse_click_input(
                 }
                 return;
             }
-            if wc.y < 164.0 { return; }
+            if y < 164.0 { return; }
         }
         if let Some(screen_pos) = window.cursor_position() {
             position = Some(mouse_to_position(camera, camera_transform, window, screen_pos));
@@ -223,6 +224,9 @@ fn mouse_to_position(
 ) -> Position {
     // get the size of the window
     let window_size = Vec2::new(window.width(), window.height());
+
+    // Invert the Y-axis by subtracting the screen_pos.y from the window height
+    let screen_pos = Vec2::new(screen_pos.x, window_size.y - screen_pos.y);
     
     // convert screen position [0..resolution] to ndc [-1..1] (gpu coordinates)
     let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE;

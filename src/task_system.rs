@@ -8,9 +8,6 @@ mod play;
 mod sleep;
 mod work;
 
-pub const HALF_SECOND: &str = "half_second";
-pub const TWO_SECOND: &str = "two_second";
-
 // Make Plugin
 pub struct TaskPlugin;
 

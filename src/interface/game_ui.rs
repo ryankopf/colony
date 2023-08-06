@@ -160,8 +160,10 @@ pub fn game_ui_click(
         let window = windows.single_mut();
         let wc = window.cursor_position();
         if let Some(wc) = wc {
-            if wc.y > 30.0 && wc.y < 92.0 {
+            let y = window.height() - wc.y;
+            if y > 30.0 && y < 92.0 {
                 let button_index = (wc.x as i32 - 100) / 100;
+                println!("BUTTON: {}", button_index);
                 match menu_state.state {
                     MenuStates::Home => {
                         match button_index {

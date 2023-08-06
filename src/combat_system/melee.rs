@@ -43,7 +43,6 @@ pub fn combat_system_melee(
             // Humans might find a target based on if they're hunting or defending.
             // Animals might find a target based on if they're hungry or defending.
             // For now just find the nearest physical body and make that the target.
-            println!("Find a target.");
             let mut closest_distance = 9999;
             let mut closest_target = None;
             for (attackable, attackable_position) in attackables.iter() {

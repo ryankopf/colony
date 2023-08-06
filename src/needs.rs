@@ -1,4 +1,3 @@
-use crate::task_system::TWO_SECOND;
 use super::prelude::*;
 
 // Make plugin.
@@ -8,7 +7,7 @@ impl Plugin for NeedsPlugin {
     fn build(&self, app: &mut App) {
         app.add_system(
             needs_status_system
-            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.5)))
+            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
             .run_if(in_state(GameState::InGame))
         );
         // .add_fixed_timestep_system(

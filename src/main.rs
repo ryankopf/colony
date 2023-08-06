@@ -4,7 +4,6 @@ pub use crate::prelude::*;
 
 use retrieve::mod_use;
 use std::time::Duration;
-use crate::task_system::{HALF_SECOND, TWO_SECOND};
 
 // #[mod_use(
 //     biome,
@@ -111,13 +110,16 @@ fn main() {
         .insert_resource(MenuState {
             state: MenuStates::Home,
         })
-        .add_startup_system(generate_map)
+        .add_systems(
+            Startup, (generate_map, setup_camera, text_test, set_window_icon, set_window_maximized)
+        )
+        // .add_startup_system(generate_map)
         .add_plugin(StartupPlugin)
-        .add_startup_system(setup_camera)
+        // .add_startup_system(setup_camera)
         .add_system(text_system)
-        .add_startup_system(text_test)
-        .add_startup_system(set_window_icon)
-        .add_startup_system(set_window_maximized)
+        // .add_startup_system(text_test)
+        // .add_startup_system(set_window_icon)
+        // .add_startup_system(set_window_maximized)
         .add_plugin(MainMenusPlugin)
         .add_state::<GameState>()
         //.add_state(GameState::InGame)

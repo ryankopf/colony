@@ -9,32 +9,26 @@ impl Plugin for SelectionPlugin {
         .add_event::<SelectionEvent>()
         .add_system(
             select_unselecting
-            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
             .run_if(in_state(GameState::InGame))
         )
         .add_system(
             select_foragables
-            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
             .run_if(in_state(GameState::InGame))
         )
         .add_system(
             select_choppables
-            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
             .run_if(in_state(GameState::InGame))
         )
         .add_system(
             select_zoning
-            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
             .run_if(in_state(GameState::InGame))
         )
         .add_system(
             select_unzoning
-            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
             .run_if(in_state(GameState::InGame))
         )
         .add_system(
             select_nothing
-            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
             .run_if(in_state(GameState::InGame))
         )
         // .add_system_set(
@@ -140,6 +134,7 @@ pub fn select_zoning(
                 ..default()
             }, ZoneMarker))
             .id();
+            println!("Zonemarker");
             commands.entity(entity).push_children(&[zonemarker]);
         }
     }
