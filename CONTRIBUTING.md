@@ -2,7 +2,7 @@
 
 Thank you for considering contributing to COLONY! We welcome contributions from everyone.
 
-By contributing to this project, you agree to license your contributions under the terms of the MIT License. Additionally, you grant the project owner, Ryan Kopf, a license to use your contributions for any purpose without any additional restrictions or obligations.
+By contributing to this project, you agree to license your contributions under the terms of the MIT License and the Apache 2.0 license. Additionally, you grant the project owner, Ryan Kopf, a license to use your contributions for any purpose without any additional restrictions or obligations.
 
 
 ## How to Contribute
