@@ -14,14 +14,10 @@ pub fn names_system(
             font_size: 18.0,
             color: Color::WHITE,
         };
-        let text_alignment_center = TextAlignment {
-            vertical: VerticalAlign::Center,
-            horizontal: HorizontalAlign::Center,
-        };
         let child = commands.spawn((
             Text2dBundle {
                 text: Text::from_section(has_name.name.clone(), text_style.clone())
-                    .with_alignment(text_alignment_center),
+                    .with_alignment(TextAlignment::Center),
                 ..default()
             },
             TextName

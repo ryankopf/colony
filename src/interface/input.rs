@@ -6,15 +6,16 @@ pub fn keyboard_input(
     input: Res<Input<KeyCode>>,
     mut camera: Query<&mut Transform, With<Camera>>,
     mut gamestate: ResMut<State<GameState>>,
+    mut nextstate: ResMut<bevy::ecs::schedule::NextState<GameState>>,
 ) {
     if input.just_pressed(KeyCode::Space) {
         // Pause or Unpause.
-        match gamestate.current() {
+        match gamestate.get() {
             GameState::InGame => {
-                gamestate.set(GameState::Paused).ok();
+                nextstate.set(GameState::Paused);
             }
             GameState::Paused => {
-                gamestate.set(GameState::InGame).ok();
+                nextstate.set(GameState::InGame);
             }
             _ => {}
         }

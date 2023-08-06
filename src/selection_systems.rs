@@ -7,34 +7,65 @@ impl Plugin for SelectionPlugin {
     fn build(&self, app: &mut App) {
         app
         .add_event::<SelectionEvent>()
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_unselecting),
+        .add_system(
+            select_unselecting
+            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
+            .run_if(in_state(GameState::InGame))
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_foragables),
+        .add_system(
+            select_foragables
+            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
+            .run_if(in_state(GameState::InGame))
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_choppables),
+        .add_system(
+            select_choppables
+            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
+            .run_if(in_state(GameState::InGame))
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_zoning),
+        .add_system(
+            select_zoning
+            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
+            .run_if(in_state(GameState::InGame))
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_unzoning),
+        .add_system(
+            select_unzoning
+            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
+            .run_if(in_state(GameState::InGame))
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-            .with_system(select_nothing),
+        .add_system(
+            select_nothing
+            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
+            .run_if(in_state(GameState::InGame))
         )
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::InGame)
+        //     .with_system(select_unselecting),
+        // )
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::InGame)
+        //     .with_system(select_foragables),
+        // )
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::InGame)
+        //     .with_system(select_choppables),
+        // )
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::InGame)
+        //     .with_system(select_zoning),
+        // )
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::InGame)
+        //     .with_system(select_unzoning),
+        // )
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::InGame)
+        //     .with_system(select_nothing),
+        // )
         ;
     }
 }
 
+#[derive(Event)]
 pub struct SelectionEvent;
 
 pub fn select_foragables(
@@ -72,7 +103,7 @@ pub fn select_choppables(
             let child = commands.spawn((
                 Text2dBundle {
                     text: Text::from_section("X", TextStyle { font: font.0.clone(), ..default() })
-                        .with_alignment(TextAlignment::CENTER),
+                        .with_alignment(TextAlignment::Center),
                     ..default()
                 },
                 WorkMarker

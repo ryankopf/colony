@@ -1,12 +1,13 @@
 use super::prelude::*;
-use bevy::window::WindowId;
+use bevy::window::PrimaryWindow;
 use bevy::winit::WinitWindows;
 
 pub fn set_window_icon(
     // we have to use `NonSend` here
-    windows: NonSend<WinitWindows>,
+    // windows: NonSend<WinitWindows>,
+    mut windows: Query<&mut Window, With<PrimaryWindow>>,
 ) {
-    let primary = windows.get_window(WindowId::primary()).unwrap();
+    let mut primary = windows.single_mut();//.get_window(WindowId::primary()).unwrap();
 
     // here we use the `image` crate to load our icon data from a png file
     // this is not a very bevy-native solution, but it will do
@@ -20,15 +21,15 @@ pub fn set_window_icon(
     };
 
     let icon = winit::window::Icon::from_rgba(icon_rgba, icon_width, icon_height).unwrap();
-    
-    primary.set_title("Orc Fortress");
-    primary.set_window_icon(Some(icon));
+    primary.title = "Colony".to_string();
+    // primary.set_title("Colony");
+    // primary.set_window_icon(Some(icon));
 }
 
 pub fn set_window_maximized(
     // we have to use `NonSend` here
     windows: NonSend<WinitWindows>,
 ) {
-    let primary = windows.get_window(WindowId::primary()).unwrap();
-    primary.set_maximized(true);
+    // let primary = windows.get_window(WindowId::primary()).unwrap();
+    // primary.set_maximized(true);
 }

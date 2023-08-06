@@ -8,19 +8,35 @@ impl Plugin for ClickPlugin {
     fn build(&self, app: &mut App) {
         app
         .add_event::<ObjectFinderEvent>()
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_system(mouse_click_input),
+        .add_system(
+            mouse_click_input
+            .run_if(in_state(GameState::InGame))
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_system(mouse_drag_system),
+        .add_system(
+            mouse_drag_system
+            .run_if(in_state(GameState::InGame))
         )
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_system(object_finder_system),
+        .add_system(
+            object_finder_system
+            .run_if(in_state(GameState::InGame))
         )
-        .add_system(mouse_move_system)
+        .add_system(
+            mouse_move_system
+            .run_if(in_state(GameState::InGame))
+        )
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::InGame)
+        //         .with_system(mouse_click_input),
+        // )
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::InGame)
+        //         .with_system(mouse_drag_system),
+        // )
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::InGame)
+        //         .with_system(object_finder_system),
+        // )
+        // .add_system(mouse_move_system)
         .insert_resource(Dragging { ..default() })
         ;
     }
@@ -28,7 +44,7 @@ impl Plugin for ClickPlugin {
 
 pub fn mouse_click_input(
     mouse_button_input: Res<Input<MouseButton>>,
-    windows: Res<Windows>,
+    windows: Query<&mut Window>,
     q_camera: Query<(&Camera, &GlobalTransform)>,
     mut event: EventWriter<ObjectFinderEvent>,
     mut dragging: ResMut<Dragging>,
@@ -36,7 +52,7 @@ pub fn mouse_click_input(
 ) {
     if mouse_button_input.just_pressed(MouseButton::Left) {
         let (camera, camera_transform) = q_camera.single();
-        let window = windows.get_primary().unwrap();
+        let window = windows.single();
         let mut position = None;
         let wc = window.cursor_position();
         if let Some(wc) = wc {
@@ -85,7 +101,7 @@ pub fn mouse_click_input(
 
 pub fn mouse_drag_system(
     mut commands: Commands,
-    windows: Res<Windows>,
+    windows: Query<&mut Window>,
     q_camera: Query<(&Camera, &GlobalTransform)>,
     dragging: Res<Dragging>,
     positions: Query<(Entity, &Position, Option<&Highlighted>)>,
@@ -98,7 +114,7 @@ pub fn mouse_drag_system(
     if dragging.start_position.is_none() { return; }
     let start_position = dragging.start_position.unwrap();
     let (camera, camera_transform) = q_camera.single();
-    let window = windows.get_primary().unwrap();
+    let window = windows.single();
     let mut end_position = None;
     if let Some(screen_pos) = window.cursor_position() {
         end_position = Some(mouse_to_position(camera, camera_transform, window, screen_pos));
@@ -134,14 +150,14 @@ pub fn mouse_drag_system(
 }
 
 pub fn mouse_move_system(
-    windows: Res<Windows>,
+    mut windows: Query<&mut Window>,
     q_camera: Query<(&Camera, &GlobalTransform)>,
     // dragging: Res<Dragging>, Use to only highlight a specific type in the future??
     positions: Query<(Entity, &Position, Option<&Brain>, Option<&Food>, Option<&Plant>)>,
     mut object_info: ResMut<SelectedObjectInformation>,
 ) {
     let (camera, camera_transform) = q_camera.single();
-    let window = windows.get_primary().unwrap();
+    let window = windows.single();
     let mut pos = None;
     if let Some(screen_pos) = window.cursor_position() {
         pos = Some(mouse_to_position(camera, camera_transform, window, screen_pos));
@@ -194,6 +210,7 @@ pub fn object_finder_system(
     }
 }
 
+#[derive(Event)]
 pub struct ObjectFinderEvent {
     pub position: Position
 }

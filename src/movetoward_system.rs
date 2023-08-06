@@ -10,10 +10,15 @@ impl Plugin for MovementPlugin {
         app
         .add_system(movement_path_generating)
         .add_system(clear_unreachable_paths)
-        .add_fixed_timestep_system(
-            HALF_SECOND, 0,
-            movement_along_path.run_in_bevy_state(GameState::InGame),
-        )
+        .add_system(
+            movement_along_path
+            .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.5)))
+            .run_if(in_state(GameState::InGame))
+        );
+        // .add_fixed_timestep_system(
+        //     HALF_SECOND, 0,
+        //     movement_along_path.run_in_bevy_state(GameState::InGame),
+        // )
         ;
     }
 }

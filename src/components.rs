@@ -27,8 +27,9 @@ impl Position {
     }
 }
 
-#[derive(Clone, Copy, Eq, PartialEq, Debug, Hash)]
+#[derive(States, Clone, Copy, Eq, PartialEq, Debug, Hash, Default)]
 pub enum GameState {
+    #[default]
     InGame,
     MainMenu,
     Paused,

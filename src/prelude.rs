@@ -12,7 +12,7 @@ pub use crate::constants::*;
 pub use crate::resources::*;
 pub use bevy::input::mouse::MouseWheel;
 pub use bevy::prelude::*;
-pub use bevy::time::FixedTimestep;
+// pub use bevy::time::FixedTimestep;
 pub use iyes_loopless::prelude::*;
 pub use rand::prelude::random;
 pub use rand::seq::SliceRandom;

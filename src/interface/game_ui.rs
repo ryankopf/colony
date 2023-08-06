@@ -7,15 +7,23 @@ impl Plugin for GameUiPlugin {
     fn build(&self, app: &mut App) {
         app
         .add_startup_system(initialize_game_ui)
-        .add_system_set(
-            SystemSet::on_enter(GameState::InGame)
-                .with_system(start_game_ui),
+        .add_systems(
+            OnEnter(GameState::InGame),
+            start_game_ui
         )
-        // .add_startup_system(start_game_ui)
-        .add_system_set(
-            SystemSet::on_update(GameState::InGame)
-                .with_system(game_ui_click),
+        .add_system(
+            game_ui_click
+            .run_if(in_state(GameState::InGame))
         )
+        // .add_system_set(
+        //     SystemSet::on_enter(GameState::InGame)
+        //         .with_system(start_game_ui),
+        // )
+        // // .add_startup_system(start_game_ui)
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::InGame)
+        //         .with_system(game_ui_click),
+        // )
         ;
     }
 }
@@ -28,14 +36,12 @@ pub fn initialize_game_ui(
     commands.spawn(NodeBundle {
         style: Style {
             position_type: PositionType::Absolute,
-            position: UiRect {
-                left: Val::Px(0.0),
-                bottom: Val::Px(0.0),
-                ..Default::default()
-            },
             justify_content: JustifyContent::Center,
             align_items: AlignItems::Center,
-            size: Size::new(Val::Percent(100.0), Val::Px(32.0)),
+            left: Val::Px(0.0),
+            bottom: Val::Px(0.0),
+            width: Val::Percent(100.0),
+            height: Val::Px(32.0),
             ..Default::default()
         },
         background_color: Color::rgba(0.65, 0.65, 0.65, 0.65).into(),
@@ -47,16 +53,14 @@ pub fn initialize_game_ui(
             parent.spawn(ImageBundle {
                 style: Style {
                     position_type: PositionType::Absolute,
-                    position: UiRect {
-                        left: Val::Px(32.0 * i as f32),
-                        top: Val::Px(0.0),
-                        ..Default::default()
-                    },
-                    size: Size::new(Val::Px(32.0), Val::Px(32.0)),
-                    ..Default::default()
+                    left: Val::Px(32.0 * i as f32),
+                    top: Val::Px(0.0),
+                    width: Val::Px(32.0),
+                    height: Val::Px(32.0),
+                    ..default()
                 },
                 image: asset_server.load(format!("i-{}.png",i)).into(),
-                ..Default::default()
+                ..default()
             });
         }
     });
@@ -122,14 +126,12 @@ pub fn start_game_ui(
         commands.spawn((ButtonBundle {
             style: Style {
                 position_type: PositionType::Absolute,
-                position: UiRect {
-                    left: Val::Px(100.0 + 100.0 * i as f32),
-                    bottom: Val::Px(30.0),
-                    ..default()
-                },
+                left: Val::Px(100.0 + 100.0 * i as f32),
+                bottom: Val::Px(30.0),
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
-                size: Size::new(Val::Px(84.0), Val::Px(64.0)),
+                width: Val::Px(84.0),
+                height: Val::Px(64.0),
                 ..default()
             },
             background_color: Color::rgba(0.65, 0.65, 0.85, 0.65).into(),
@@ -137,7 +139,7 @@ pub fn start_game_ui(
         },InGameButton)).with_children(|parent| {
             parent.spawn(TextBundle {
                 text: Text::from_section(button_text.to_owned(), text_style.clone() )
-                .with_alignment(TextAlignment::CENTER),
+                .with_alignment(TextAlignment::Center),
                 ..default()
             });
         })
@@ -148,14 +150,14 @@ pub fn start_game_ui(
 pub fn game_ui_click(
     commands: Commands,
     mouse_button_input: Res<Input<MouseButton>>,
-    windows: Res<Windows>,
+    mut windows: Query<&mut Window>,
     mut menu_state: ResMut<MenuState>,
     font: Res<MyFont>,
     game_buttons: Query<Entity, With<InGameButton>>,
     mut dragging: ResMut<Dragging>,
 ) {
     if mouse_button_input.just_pressed(MouseButton::Left) {
-        let window = windows.get_primary().unwrap();
+        let window = windows.single_mut();
         let wc = window.cursor_position();
         if let Some(wc) = wc {
             if wc.y > 30.0 && wc.y < 92.0 {

@@ -7,10 +7,14 @@ pub struct ButtonPlugin;
 impl Plugin for ButtonPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_system_set(
-            SystemSet::on_update(GameState::MainMenu)
-                .with_system(button_system),
+        .add_system(
+            button_system
+            .run_if(in_state(GameState::MainMenu))
         )
+        // .add_system_set(
+        //     SystemSet::on_update(GameState::MainMenu)
+        //         .with_system(button_system),
+        // )
         ;
     }
 }
@@ -28,14 +32,15 @@ fn button_system(
     >,
     mut text_query: Query<&mut Text>,
     mut gamestate: ResMut<State<GameState>>,
+    mut nextstate: ResMut<bevy::ecs::schedule::NextState<GameState>>,
 ) {
     for (interaction, mut color, children) in &mut interaction_query {
         let mut text = text_query.get_mut(children[0]).unwrap();
         match *interaction {
-            Interaction::Clicked => {
+            Interaction::Pressed => {
                 text.sections[0].value = "Press".to_string();
                 *color = PRESSED_BUTTON.into();
-                gamestate.set(GameState::InGame).ok();
+                nextstate.set(GameState::InGame);
             }
             Interaction::Hovered => {
                 text.sections[0].value = "Hover".to_string();

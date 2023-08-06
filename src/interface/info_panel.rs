@@ -30,14 +30,11 @@ pub fn show_info_panel(
                 ..default()
             },
         ) // Set the alignment of the Text
-        .with_text_alignment(TextAlignment::TOP_LEFT)
+        .with_text_alignment(TextAlignment::Left)
         .with_style(Style {
             position_type: PositionType::Absolute,
-            position: UiRect {
-                top: Val::Px(15.0),
-                left: Val::Px(15.0),
-                ..default()
-            },
+            top: Val::Px(15.0),
+            left: Val::Px(15.0),
             ..default()
         }),
         InfoPanelText,
@@ -48,14 +45,11 @@ pub fn show_info_panel(
                 info,
                 TextStyle { font: font.0.clone(), ..default() },
             ) // Set the alignment of the Text
-            .with_text_alignment(TextAlignment::TOP_LEFT)
+            .with_text_alignment(TextAlignment::Left)
             .with_style(Style {
                 position_type: PositionType::Absolute,
-                position: UiRect {
-                    top: Val::Px(45.0 + (i as f32 * 20.0)),
-                    left: Val::Px(15.0),
-                    ..default()
-                },
+                top: Val::Px(45.0 + (i as f32 * 20.0)),
+                left: Val::Px(15.0),
                 ..default()
             }),
             InfoPanelText,

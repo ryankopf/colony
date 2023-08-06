@@ -5,13 +5,13 @@ pub struct MainMenusPlugin;
 impl Plugin for MainMenusPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_system_set(
-            SystemSet::on_enter(GameState::MainMenu)
-                .with_system(open_main_menu),
+        .add_systems(
+            OnEnter(GameState::MainMenu), 
+            open_main_menu
         )
-        .add_system_set(
-            SystemSet::on_exit(GameState::MainMenu)
-                .with_system(close_main_menu),
+        .add_systems(
+            OnExit(GameState::MainMenu), 
+            close_main_menu
         )
         ;
     }
@@ -21,11 +21,11 @@ fn open_main_menu(
     mut commands: Commands,
     _asset_server: Res<AssetServer>,
     _materials: ResMut<Assets<ColorMaterial>>,
-    mut windows: ResMut<Windows>,
+    mut windows: Query<&mut Window>,
     font: Res<MyFont>,
 ) {
     // Center window
-    let window = windows.get_primary_mut().unwrap();
+    let window = windows.single_mut();
     let width = window.width();
     let height = window.height();
     let _window_size = Vec2::new(width, height);
@@ -41,14 +41,12 @@ fn open_main_menu(
             style: Style {
                 flex_direction: FlexDirection::Column,
                 position_type: PositionType::Absolute,
-                position: UiRect {
-                    left: Val::Px(0.0),
-                    top: Val::Px(0.0),
-                    ..Default::default()
-                },
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
-                size: Size::new(Val::Percent(100.0), Val::Percent(100.0)),
+                left: Val::Px(0.0),
+                top: Val::Px(0.0),
+                width: Val::Px(width),
+                height: Val::Px(height),
                 ..Default::default()
             },
             background_color: Color::rgba(0.65, 1.0, 0.65, 0.65).into(),
@@ -57,16 +55,13 @@ fn open_main_menu(
         .with_children(|parent| {
             parent.spawn(TextBundle {
                 text: Text::from_section("WELCOME TO", text_style.clone())
-                .with_alignment(TextAlignment {
-                    vertical: VerticalAlign::Center,
-                    horizontal: HorizontalAlign::Center,
-                }),
+                .with_alignment(TextAlignment::Center),
                 ..default()
             })
             ;
             parent.spawn(TextBundle {
                 text: Text::from_section("COLONY", text_style.clone())
-                .with_alignment(TextAlignment::TOP_CENTER),
+                .with_alignment(TextAlignment::Center),
                 ..default()
             });
             parent.spawn(
@@ -79,7 +74,8 @@ fn open_main_menu(
             // Next insert a button
             parent.spawn(ButtonBundle {
                 style: Style {
-                    size: Size::new(Val::Px(100.0), Val::Px(30.0)),
+                    width: Val::Px(100.0),
+                    height: Val::Px(30.0),
                     margin: UiRect::all(Val::Px(20.0)),
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
@@ -92,7 +88,7 @@ fn open_main_menu(
                 parent.spawn(TextBundle::from_section(
                     "Start Game",
                     text_style.clone(),
-                ).with_text_alignment(TextAlignment::CENTER)
+                ).with_text_alignment(TextAlignment::Center)
                 );
             });
 
