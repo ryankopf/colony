@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 pub fn combat_system_melee(
     mut commands: Commands,
-    mut entities_that_might_fight: Query<(Entity, &mut Brain, &Position, Option<&Pathing>, Option<&Targeting>)>,
+    mut entities_that_might_fight: Query<(Entity, &mut Brain, &Position, Option<&mut Pathing>, Option<&Targeting>)>,
     attackables: Query<(Entity, &Position), With<Attackable>>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
@@ -12,8 +12,8 @@ pub fn combat_system_melee(
             let mut entity_found = false;
             for (entity, target_position) in attackables.iter() {
                 if entity == targeting.target {
+                    entity_found = true;
                     if position.distance(target_position) <= 1 {
-                        entity_found = true;
                         let sprite =  TextureAtlasSprite::new(StrikeType::Hit.sprite_index());
                         commands
                             .spawn(SpriteSheetBundle {
@@ -25,16 +25,23 @@ pub fn combat_system_melee(
                             .insert(target_position.to_transform_layer(1.1))
                             ;
                         commands.entity(entity).insert(Attacked { attacker: e });
-                        //do_melee_damage(&mut commands, entity, physical_body, &mut physical_body2);
+                        if pathing.is_some() { commands.entity(e).remove::<Pathing>(); }
                     } else {
                         // Try to follow/hunt the entity.
                         if pathing.is_none() {
                             commands.entity(e).insert( Pathing { path: vec![], destination: *target_position, ..default() });
+                        } else {
+                            let mut path = pathing.unwrap();
+                            // path.destination = *target_position;
+                            path.moving_target = true;
+                            //path.path = vec![];
                         }
                     }
+                    break;
                 }
             }
             if !entity_found {
+                println!("No entity found");
                 commands.entity(e).remove::<Targeting>();
                 brain.remotivate();
             }
@@ -103,7 +110,6 @@ pub fn attacked_entities_system(
         // Now do the damage to the attacked body.
         for (entity, mut physical_body) in physical_bodies.iter_mut() {
             if entity == attacked_entity {
-                println!("Damage");
                 do_melee_damage(&mut commands, attacker_entity, attacked_entity, &attacker_physical_body, &mut physical_body);
             }
         }

@@ -75,7 +75,7 @@ pub fn monster_generator(
                 order: None,
                 personality: vec![PersonalityTrait::Creature, PersonalityTrait::Vicious],
             } )
-            //.insert( HasName { name: "Wolf".to_string() } )
+            .insert( HasName { name: "Rat".to_string() } )
             ;
         //*position = new_position;
     }

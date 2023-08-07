@@ -725,7 +725,8 @@ pub struct Targeting {
 pub struct Pathing {
     pub path: Vec<Position>,
     pub destination: Position,
-    pub unreachable: bool
+    pub unreachable: bool,
+    pub moving_target: bool,
 }
 
 impl Default for Pathing {
@@ -733,7 +734,8 @@ impl Default for Pathing {
         Pathing {
             path: Vec::new(),
             destination: Position { x: 0, y: 0, z: 0 },
-            unreachable: false
+            unreachable: false,
+            moving_target: false,
         }
     }
 }
