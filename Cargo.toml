@@ -13,7 +13,6 @@ bevy = "*"
 rand = "*"
 winit = "0.27.5"
 image = "*"
-retrieve = "*"
 iyes_loopless = "*"
 
 [target.wasm32-unknown-unknown]

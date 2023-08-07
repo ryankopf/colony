@@ -1423,7 +1423,6 @@ dependencies = [
  "image",
  "iyes_loopless",
  "rand",
- "retrieve",
  "winit 0.27.5",
 ]
 
@@ -3444,16 +3443,6 @@ name = "renderdoc-sys"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "216080ab382b992234dda86873c18d4c48358f5cfcb70fd693d7f6f2131b628b"
-
-[[package]]
-name = "retrieve"
-version = "1.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4670e37249fe59a5fd670a4068b3091f9a069b4bddae7279cc3588c3b63ea7b1"
-dependencies = [
- "quote",
- "syn 1.0.109",
-]
 
 [[package]]
 name = "rodio"

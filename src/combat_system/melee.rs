@@ -71,7 +71,7 @@ fn do_melee_damage(
     body1: &PhysicalBody,
     body2: &mut PhysicalBody,
 ) {
-    body2.attributes.health -= 10;
+    body2.attributes.health -= 1 + body1.attributes.strength;
     println!("Health: {}", body2.attributes.health);
     if body2.attributes.health <= 0 {
         commands.entity(attacked_entity).despawn_recursive();
