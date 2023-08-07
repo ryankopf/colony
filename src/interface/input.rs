@@ -5,7 +5,7 @@ pub fn keyboard_input(
     _commands: Commands,
     input: Res<Input<KeyCode>>,
     mut camera: Query<&mut Transform, With<Camera>>,
-    mut gamestate: ResMut<State<GameState>>,
+    gamestate: ResMut<State<GameState>>,
     mut nextstate: ResMut<bevy::ecs::schedule::NextState<GameState>>,
 ) {
     if input.just_pressed(KeyCode::Space) {

@@ -4,50 +4,10 @@ use crate::prelude::*;
 pub struct UnitGeneratorPlugin;
 
 impl Plugin for UnitGeneratorPlugin {
-    fn build(&self, app: &mut App) {
-        // app.add_system_set(
-        //     SystemSet::new()
-        //         .with_run_criteria(FixedTimestep::step(1.0))
-        //         .with_system(unit_generator),
-        // );
+    fn build(&self, _app: &mut App) {
+        
     }
 }
-
-// pub fn spawn_unit(
-//     commands: &mut Commands,
-//     position: Position,
-//     sprite_sheet: &Res<SpriteSheet>,
-//     actor_type: ActorType,
-//     food_need: f32,
-//     entertainment_need: f32,
-//     sleep_need: f32,
-// ) {
-//     let sprite =  TextureAtlasSprite::new(actor_type.sprite_index());
-//     commands
-//         .spawn(SpriteSheetBundle {
-//             sprite,
-//             texture_atlas: sprite_sheet.0.clone(),
-//             ..default()
-//         })
-//         .insert(position)
-//         .insert(position.to_transform_layer(1.0))
-//         .insert(Attackable)
-//         .insert( GiveMeAName )
-//         .insert( PhysicalBody {
-//             needs_food: Some(Need { current: food_need, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0 }),
-//             needs_entertainment: Some(Need { current: entertainment_need, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0 }),
-//             needs_sleep: Some(Need { current: sleep_need, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0 }),
-//             index: 0,
-//             crisis: None,
-//             danger: None,
-//             injured: false,
-//             afflictions: Vec::new(),
-//             skillset: Skillset::default(),
-//             attributes: Attributeset::default(),
-//         } )
-//         .insert( Brain { ..default() } )
-//         ;
-// }
 
 pub fn spawn_unit_from_template(
     commands: &mut Commands,

@@ -6,16 +6,13 @@ pub struct SeasonsPlugin;
 impl Plugin for SeasonsPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_system(
+        .add_systems(
+            Update,
             seasons_system
             .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
             .run_if(in_state(GameState::InGame))
-        );
-        // .add_fixed_timestep_system(
-        //     TWO_SECOND, 0,
-        //     seasons.run_in_bevy_state(GameState::InGame),
-        // )
-        // ;
+        )
+        ;
     }
 }
 

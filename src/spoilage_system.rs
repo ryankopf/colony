@@ -6,15 +6,12 @@ pub struct SpoilagePlugin;
 impl Plugin for SpoilagePlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_system(
+        .add_systems(
+            Update,
             spoilage_system
             .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
             .run_if(in_state(GameState::InGame))
         )
-        // .add_fixed_timestep_system(
-        //     HALF_SECOND, 0,
-        //     spoilage_system.run_in_bevy_state(GameState::InGame),
-        // )
         ;
     }
 }

@@ -6,8 +6,10 @@ pub struct InfoPanelPlugin;
 impl Plugin for InfoPanelPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_system(show_info_panel)
-        .add_system(info_system)
+        .add_systems(
+            Update,
+            (show_info_panel, info_system)
+        )
         ;
     }
 }

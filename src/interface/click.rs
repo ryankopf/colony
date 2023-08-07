@@ -8,22 +8,29 @@ impl Plugin for ClickPlugin {
     fn build(&self, app: &mut App) {
         app
         .add_event::<ObjectFinderEvent>()
-        .add_system(
-            mouse_click_input
-            .run_if(in_state(GameState::InGame))
+        .add_systems(
+            Update,
+            ( mouse_click_input.run_if(in_state(GameState::InGame)),
+            mouse_drag_system.run_if(in_state(GameState::InGame)),
+            object_finder_system.run_if(in_state(GameState::InGame)),
+            mouse_move_system.run_if(in_state(GameState::InGame)) )
         )
-        .add_system(
-            mouse_drag_system
-            .run_if(in_state(GameState::InGame))
-        )
-        .add_system(
-            object_finder_system
-            .run_if(in_state(GameState::InGame))
-        )
-        .add_system(
-            mouse_move_system
-            .run_if(in_state(GameState::InGame))
-        )
+        // .add_system(
+        //     mouse_click_input
+        //     .run_if(in_state(GameState::InGame))
+        // )
+        // .add_system(
+        //     mouse_drag_system
+        //     .run_if(in_state(GameState::InGame))
+        // )
+        // .add_system(
+        //     object_finder_system
+        //     .run_if(in_state(GameState::InGame))
+        // )
+        // .add_system(
+        //     mouse_move_system
+        //     .run_if(in_state(GameState::InGame))
+        // )
         // .add_system_set(
         //     SystemSet::on_update(GameState::InGame)
         //         .with_system(mouse_click_input),
@@ -151,7 +158,7 @@ pub fn mouse_drag_system(
 }
 
 pub fn mouse_move_system(
-    mut windows: Query<&mut Window>,
+    windows: Query<&mut Window>,
     q_camera: Query<(&Camera, &GlobalTransform)>,
     // dragging: Res<Dragging>, Use to only highlight a specific type in the future??
     positions: Query<(Entity, &Position, Option<&Brain>, Option<&Food>, Option<&Plant>)>,

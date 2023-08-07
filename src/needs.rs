@@ -5,16 +5,13 @@ pub struct NeedsPlugin;
 
 impl Plugin for NeedsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(
+        app.add_systems(
+            Update,
             needs_status_system
             .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(2.0)))
             .run_if(in_state(GameState::InGame))
-        );
-        // .add_fixed_timestep_system(
-        //     TWO_SECOND, 0,
-        //     needs_status_system.run_in_bevy_state(GameState::InGame),
-        // )
-        // ;
+        )
+        ;
     }
 }
 

@@ -10,7 +10,7 @@ pub struct StartupPlugin;
 impl Plugin for StartupPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_startup_system(startup)
+        .add_systems(Startup, startup)
         .insert_resource(MyFont(Handle::<Font>::default()))
         ;
     }

@@ -7,54 +7,28 @@ impl Plugin for SelectionPlugin {
     fn build(&self, app: &mut App) {
         app
         .add_event::<SelectionEvent>()
-        .add_system(
-            select_unselecting
-            .run_if(in_state(GameState::InGame))
+        .add_systems(
+            Update,
+            (
+                select_unselecting
+                .run_if(in_state(GameState::InGame))
+            ,
+                select_foragables
+                .run_if(in_state(GameState::InGame))
+            ,
+                select_choppables
+                .run_if(in_state(GameState::InGame))
+            ,
+                select_zoning
+                .run_if(in_state(GameState::InGame))
+            ,
+                select_unzoning
+                .run_if(in_state(GameState::InGame))
+            ,
+                select_nothing
+                .run_if(in_state(GameState::InGame))
+            )
         )
-        .add_system(
-            select_foragables
-            .run_if(in_state(GameState::InGame))
-        )
-        .add_system(
-            select_choppables
-            .run_if(in_state(GameState::InGame))
-        )
-        .add_system(
-            select_zoning
-            .run_if(in_state(GameState::InGame))
-        )
-        .add_system(
-            select_unzoning
-            .run_if(in_state(GameState::InGame))
-        )
-        .add_system(
-            select_nothing
-            .run_if(in_state(GameState::InGame))
-        )
-        // .add_system_set(
-        //     SystemSet::on_update(GameState::InGame)
-        //     .with_system(select_unselecting),
-        // )
-        // .add_system_set(
-        //     SystemSet::on_update(GameState::InGame)
-        //     .with_system(select_foragables),
-        // )
-        // .add_system_set(
-        //     SystemSet::on_update(GameState::InGame)
-        //     .with_system(select_choppables),
-        // )
-        // .add_system_set(
-        //     SystemSet::on_update(GameState::InGame)
-        //     .with_system(select_zoning),
-        // )
-        // .add_system_set(
-        //     SystemSet::on_update(GameState::InGame)
-        //     .with_system(select_unzoning),
-        // )
-        // .add_system_set(
-        //     SystemSet::on_update(GameState::InGame)
-        //     .with_system(select_nothing),
-        // )
         ;
     }
 }

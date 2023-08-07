@@ -5,14 +5,9 @@ pub struct MonsterGeneratorPlugin;
 
 impl Plugin for MonsterGeneratorPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(
-            monster_generator.run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.5)))
+        app.add_systems(
+            Update, monster_generator.run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.5)))
         );
-        // app.add_system_set(
-        //     SystemSet::new()
-        //         .with_run_criteria(FixedTimestep::step(1.0))
-        //         .with_system(monster_generator),
-        // );
     }
 }
 

@@ -6,26 +6,18 @@ pub struct ThinkingPlugin;
 impl Plugin for ThinkingPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_system(
+        .add_systems(
+            Update,
+            (
             thinking_system
             .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.5)))
             .run_if(in_state(GameState::InGame))
-        )
-        .add_system(
+            ,
             remotivate_system
             .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.5)))
             .run_if(in_state(GameState::InGame))
+            )
         )
-        // .add_system_set(
-        //     SystemSet::new()
-        //         .with_run_criteria(FixedTimestep::step(0.5))
-        //         .with_system(thinking_system),
-        // )
-        // .add_system_set(
-        //     SystemSet::new()
-        //         .with_run_criteria(FixedTimestep::step(5.0))
-        //         .with_system(remotivate_system),
-        // )
         ;
     }
 }

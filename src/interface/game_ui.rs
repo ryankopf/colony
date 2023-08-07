@@ -6,15 +6,19 @@ pub struct GameUiPlugin;
 impl Plugin for GameUiPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_startup_system(initialize_game_ui)
+        .add_systems(
+            Startup,
+            initialize_game_ui
+        )
         .add_systems(
             OnEnter(GameState::InGame),
             start_game_ui
         )
-        .add_system(
-            game_ui_click
-            .run_if(in_state(GameState::InGame))
+        .add_systems(
+            Update,
+            game_ui_click.run_if(in_state(GameState::InGame))
         )
+        // .add_startup_system(initialize_game_ui)
         // .add_system_set(
         //     SystemSet::on_enter(GameState::InGame)
         //         .with_system(start_game_ui),

@@ -7,7 +7,8 @@ pub struct ButtonPlugin;
 impl Plugin for ButtonPlugin {
     fn build(&self, app: &mut App) {
         app
-        .add_system(
+        .add_systems(
+            Update,
             button_system
             .run_if(in_state(GameState::MainMenu))
         )
@@ -31,7 +32,6 @@ fn button_system(
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
-    mut gamestate: ResMut<State<GameState>>,
     mut nextstate: ResMut<bevy::ecs::schedule::NextState<GameState>>,
 ) {
     for (interaction, mut color, children) in &mut interaction_query {
