@@ -357,11 +357,16 @@ impl Default for Skillset {
 }
 
 #[derive(Clone, Copy)]
-pub enum Danger {
+pub enum DangerType {
     Attacked,
     Fire,
     Freezing,
     Overheating,
+}
+#[derive(Component, Clone)]
+pub struct Danger {
+    pub danger_type: DangerType,
+    pub danger_source: Option<Entity>,
 }
 
 pub trait InfoPanel {

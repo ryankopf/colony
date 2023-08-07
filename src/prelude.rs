@@ -1,6 +1,6 @@
 pub use super::components::{
     ActorType, Affliction, AfflictionType, AfflictionLocation, Attackable, Attacked, Attributeset,
-    Bed, Brain, Choppable, ClickedOn, Danger, Food, Foragable, ForageType, GameState, GeneratedBy,
+    Bed, Brain, Choppable, ClickedOn, Danger, DangerType, Food, Foragable, ForageType, GameState, GeneratedBy,
     GiveMeAName, HasName, HasNameShown, HighlightBox, Highlighted, HoverNote, InfoPanel, InGameButton, IsName, ItemType,
     Logs, MainMenuOverlay, MapTile, MenuStates, MonsterGenerator, Motivation, MoveRandom,
     MoveTowardsNearestAttackable, MoveTowardsTarget, NearestEntity, Need,

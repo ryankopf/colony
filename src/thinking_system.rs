@@ -167,11 +167,11 @@ pub fn thinking_system(
                 brain.task = Some(Task::Fight);
             } else if m == Motivation::Danger {
                 if let Some(danger) = &physical_body.danger {
-                    match danger {
-                        Danger::Attacked => {
+                    match danger.danger_type {
+                        DangerType::Attacked => {
                             brain.task = Some(Task::Fight);
                         },
-                        Danger::Fire => {
+                        DangerType::Fire => {
                             brain.task = Some(Task::Flee);
                         },
                         _ => {

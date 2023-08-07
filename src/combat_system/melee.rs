@@ -66,15 +66,20 @@ pub fn combat_system_melee(
 
 fn do_melee_damage(
     commands: &mut Commands,
-    entity: Entity,
+    attacker_entity: Option<Entity>,
+    attacked_entity: Entity,
     body1: &PhysicalBody,
     body2: &mut PhysicalBody,
 ) {
     body2.attributes.health -= 50;
     println!("Health: {}", body2.attributes.health);
     if body2.attributes.health <= 0 {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(attacked_entity).despawn_recursive();
     }
+    body2.danger = Some(Danger {
+        danger_type: DangerType::Attacked,
+        danger_source: attacker_entity,
+    });
 }
 pub fn attacked_entities_system(
     mut commands: Commands,
@@ -85,10 +90,12 @@ pub fn attacked_entities_system(
         println!("Attacked");
         commands.entity(attacked_entity).remove::<Attacked>();
         let mut attacker_physical_body: Option<PhysicalBody> = None;
+        let mut attacker_entity = None;
         // Get the stats of the attacker.
         for (entity, physical_body) in physical_bodies.iter_mut() {
             if entity == attack_info.attacker {
                 attacker_physical_body = Some(physical_body.clone());
+                attacker_entity = Some(entity);
             }
         }
         if attacker_physical_body.is_none() { continue; }
@@ -97,7 +104,7 @@ pub fn attacked_entities_system(
         for (entity, mut physical_body) in physical_bodies.iter_mut() {
             if entity == attacked_entity {
                 println!("Damage");
-                do_melee_damage(&mut commands, attacked_entity, &attacker_physical_body, &mut physical_body);
+                do_melee_damage(&mut commands, attacker_entity, attacked_entity, &attacker_physical_body, &mut physical_body);
             }
         }
     }
