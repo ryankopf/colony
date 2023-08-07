@@ -45,6 +45,21 @@ pub fn thinking_system(
         // Wants to socialize or be entertained.
         
         // THEN ASSIGN A TASK BASED ON THE MOTIVATION
+
+        // First, if there's a crisis, make sure we're doing that.
+        if let Some(_crisis) = &physical_body.crisis {
+            if brain.motivation != Some(Motivation::Crisis) {
+                brain.remotivate()
+            }
+        }
+        // Next, if there's a danger, make sure we're doing that.
+        if let Some(_danger) = &physical_body.danger {
+            if brain.motivation != Some(Motivation::Danger) {
+                brain.task = None;
+                brain.motivation = None;
+            }
+        }
+
         if let Some(_m) = &brain.task {
             continue; // Already has a task.
         }

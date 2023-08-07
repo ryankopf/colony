@@ -20,7 +20,9 @@ impl Plugin for CombatPlugin {
             .run_if(in_state(GameState::InGame))
             ,
             melee::attacked_entities_system
-            .run_if(in_state(GameState::InGame))
+            .run_if(in_state(GameState::InGame)),
+            melee::temporary_visual_elements_system
+            .run_if(in_state(GameState::InGame)),
             )
         )
         // .add_system(

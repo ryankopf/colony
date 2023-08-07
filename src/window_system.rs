@@ -27,9 +27,8 @@ pub fn set_window_icon(
 }
 
 pub fn set_window_maximized(
-    // we have to use `NonSend` here
-    windows: NonSend<WinitWindows>,
+    mut primary_windows: Query<&mut Window, With<PrimaryWindow>>,
 ) {
-    // let primary = windows.get_window(WindowId::primary()).unwrap();
-    // primary.set_maximized(true);
+    let mut p = primary_windows.single_mut();
+    p.set_maximized(true);
 }

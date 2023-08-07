@@ -6,7 +6,7 @@ pub use super::components::{
     MoveTowardsNearestAttackable, MoveTowardsTarget, NearestEntity, Need,
     Order, Pathing, PauseOverlay, PersonalityTrait, PhysicalBody, Plant, PlantType, Position,
     SelectableType, Skillset, Skill, SizeXYZ, StrikeType,
-    Targeting, Task, TextName, TileType, WorkMarker, WorkTarget, Zone, ZoneMarker, ZoneType,
+    Targeting, Task, TemporaryVisualElement, TextName, TileType, WorkMarker, WorkTarget, Zone, ZoneMarker, ZoneType,
 };
 pub use crate::constants::*;
 pub use crate::resources::*;

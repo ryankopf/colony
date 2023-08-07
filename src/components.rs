@@ -741,6 +741,11 @@ impl Default for Pathing {
 }
 
 #[derive(Component)]
+pub struct TemporaryVisualElement {
+    pub duration: f32
+}
+
+#[derive(Component)]
 pub struct MoveTowardsTarget;
 
 #[derive(Component)]

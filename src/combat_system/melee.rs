@@ -23,6 +23,7 @@ pub fn combat_system_melee(
                             })
                             .insert(target_position.clone())
                             .insert(target_position.to_transform_layer(1.1))
+                            .insert( TemporaryVisualElement { duration: 0.2 } )
                             ;
                         commands.entity(entity).insert(Attacked { attacker: e });
                         if pathing.is_some() { commands.entity(e).remove::<Pathing>(); }
@@ -112,6 +113,20 @@ pub fn attacked_entities_system(
             if entity == attacked_entity {
                 do_melee_damage(&mut commands, attacker_entity, attacked_entity, &attacker_physical_body, &mut physical_body);
             }
+        }
+    }
+}
+
+pub fn temporary_visual_elements_system(
+    mut commands: Commands,
+    time: Res<Time>,
+    mut query: Query<(Entity, &mut TemporaryVisualElement)>,
+) {
+    let delta_seconds = time.delta_seconds();
+    for (entity, mut tve) in query.iter_mut() {
+        tve.duration -= delta_seconds;
+        if tve.duration <= 0.0 {
+            commands.entity(entity).despawn();
         }
     }
 }

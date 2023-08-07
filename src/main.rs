@@ -113,7 +113,6 @@ fn main() {
         // .add_startup_system(generate_map)
         .add_plugin(StartupPlugin)
         // .add_startup_system(setup_camera)
-        .add_system(text_system)
         // .add_startup_system(text_test)
         // .add_startup_system(set_window_icon)
         // .add_startup_system(set_window_maximized)
@@ -153,14 +152,17 @@ fn main() {
         .add_plugin(TaskPlugin)
         .add_plugin(CombatPlugin)
         .add_plugin(SpoilagePlugin)
-        .add_system(remove_bad_positions)
-        .add_system(namegiving_system)
-        .add_system(names_system)
-        .add_system(text_update_system)
-        .add_system(movement_toward_attackable)
+        .add_systems(Update, (
+            text_system,
+            remove_bad_positions,
+            namegiving_system,
+            names_system,
+            text_update_system,
+            movement_toward_attackable,
+            keyboard_input,
+            scrollwheel_input
+        ))
         .add_event::<FoodNotifEvent>()
-        .add_system(keyboard_input)
-        .add_system(scrollwheel_input)
         .add_plugin(ClickPlugin)
         .add_system(bevy::window::close_on_esc)
         .add_systems(
