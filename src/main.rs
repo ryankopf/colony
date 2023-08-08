@@ -48,45 +48,28 @@ use unitgenerator_system::*;
 fn main() {
     //println!("Hello, world!");
     App::new()
-        //.insert_resource(FixedTime::new(Duration::from_millis(100)))
         .add_plugins(DefaultPlugins)
         .add_plugin(BiomePlugin)
         .add_systems(
             PreStartup, (load_sprites, load_font, load_sfx)
         )
-        // .add_startup_system_to_stage(StartupStage::PreStartup, load_sprites)
-        // .add_startup_system_to_stage(StartupStage::PreStartup, load_font)
-        // .add_fixed_timestep(Duration::from_millis(500), HALF_SECOND)
-        // .add_fixed_timestep(Duration::from_millis(2000), TWO_SECOND)
         .insert_resource(SelectedObjectInformation::default())
         .insert_resource(InfoPanelInformation::default())
         .insert_resource(MenuState {
             state: MenuStates::Home,
         })
         .add_systems(
-            Startup, (generate_map, setup_camera, text_test, set_window_icon, set_window_maximized)
+            Startup, (generate_map, setup_camera, text_test, set_window_title, set_window_icon, set_window_maximized)
         )
-        // .add_startup_system(generate_map)
         .add_plugin(StartupPlugin)
-        // .add_startup_system(setup_camera)
-        // .add_startup_system(text_test)
-        // .add_startup_system(set_window_icon)
-        // .add_startup_system(set_window_maximized)
         .add_plugin(MainMenusPlugin)
         .add_state::<GameState>()
-        //.add_state(GameState::InGame)
-        // .add_loopless_state(GameState::InGame)
         .add_plugin(ButtonPlugin)
         .add_system(
             movement_random
             .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.1)))
             .run_if(in_state(GameState::InGame))
         )
-        // .add_system_set(
-        //     SystemSet::new()
-        //         .with_run_criteria(FixedTimestep::step(0.1))
-        //         .with_system(movement_random),
-        // )
         .add_plugin(SelectionPlugin)
         .add_plugin(MonsterGeneratorPlugin)
         .add_plugin(MovementPlugin)
