@@ -41,7 +41,6 @@ pub fn monster_generator(
                 can_generate = false;
             }
         }
-
         if !can_generate {
             return;
         }

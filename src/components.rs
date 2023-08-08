@@ -81,14 +81,17 @@ pub enum ActorType { // Entity? Character? Creature? Actor? Avatar? Unit? Agent?
     ManCave,
     Pig,
     Rat,
-    Spider,
+    OrbSpider,
     Bear,
     Ant,
     Locust,
     Wasp,
     Dingo,
     Kangaroo,
-    IceFox
+    IceFox,
+    BrownRat,
+    Spider,
+    Crab
 }
 impl ActorType {
     pub fn sprite_row_and_col(&self) -> (usize, usize) {
@@ -104,7 +107,7 @@ impl ActorType {
             ActorType::ManCave => (60, 25),
             ActorType::Pig => (64, 0),
             ActorType::Rat => (64, 19),
-            ActorType::Spider => (64, 20),
+            ActorType::OrbSpider => (64, 20),
             ActorType::Bear => (64, 21),
             ActorType::Ant => (64, 22),
             ActorType::Locust => (64, 23),
@@ -112,6 +115,9 @@ impl ActorType {
             ActorType::Dingo => (64, 25),
             ActorType::Kangaroo => (64, 26),
             ActorType::IceFox => (64, 27),
+            ActorType::BrownRat => (64, 28),
+            ActorType::Spider => (64, 29),
+            ActorType::Crab => (63, 29),
         }
     }
     pub fn sprite_index(&self) -> usize {

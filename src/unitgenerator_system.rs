@@ -181,6 +181,25 @@ impl UnitTemplate {
             ],
         }
     }
+    pub fn crab() -> Self {
+        let actor_type = ActorType::Crab;
+        let random_afflictions = vec![];//Self::random_afflictions_animal();
+        Self {
+            actor_type,
+            food_need: None,
+            entertainment_need: None,
+            sleep_need: None,
+            personality: vec![PersonalityTrait::Creature],
+            afflictions: random_afflictions.to_vec(),
+            skillset: Skillset::default(),
+            attributes: Attributeset::default(),
+            component_builders: vec![
+                |commands: &mut Commands, entity: Entity| {
+                    commands.entity(entity).insert(HasName { name: ["Crab", "Carl", "Rusty"][rand::thread_rng().gen_range(0..3)].to_string() });
+                },
+            ],
+        }
+    }
     pub fn random_afflictions_humanoid() -> Vec<Affliction> {
         ////////////////////////////
         // Select some Afflictions

@@ -22,7 +22,7 @@ pub fn startup(
     biome: Res<Biome>,
 ) {
     // GENERATE UNITS
-    for i in 1..6 {
+    for i in 1..=5 {
         let position = Position { x: 3, y: 3*i, z: 0 };
         match i {
             1 => {
@@ -35,6 +35,11 @@ pub fn startup(
                 spawn_unit_from_template(&mut commands, position, &sprite_sheet, &UnitTemplate::human());
             }
         }
+    }
+    // SPAWN MANDATORY RUSTACEANS
+    for i in 1..=3 {
+        let position = Position { x: 20, y: 3*i, z: 0 };
+        spawn_unit_from_template(&mut commands, position, &sprite_sheet, &UnitTemplate::crab());
     }
 
     let position = Position { x: 10, y: 10, z: 0 };
