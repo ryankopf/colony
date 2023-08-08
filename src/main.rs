@@ -44,8 +44,6 @@ mod thinking_system;
 use thinking_system::*;
 mod unitgenerator_system;
 use unitgenerator_system::*;
-mod window_system;
-use window_system::*;
 
 fn main() {
     //println!("Hello, world!");

@@ -1,4 +1,4 @@
-use super::prelude::*;
+use crate::prelude::*;
 use bevy::window::PrimaryWindow;
 use bevy::winit::WinitWindows;
 
