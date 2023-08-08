@@ -399,8 +399,8 @@ pub struct PhysicalBody {
     pub skillset: Skillset,
     pub attributes: Attributeset,
 }
-impl InfoPanel for PhysicalBody {
-    fn info_panel(&self) -> Vec<String> {
+impl PhysicalBody {
+    pub fn info_panel_needs(&self) -> Vec<String> {
         let mut info_lines = Vec::new();
         if let Some(needs_food) = &self.needs_food {
             info_lines.push(format!("Food: {:.2}%", needs_food.current / needs_food.max * 100.0));
@@ -413,11 +413,41 @@ impl InfoPanel for PhysicalBody {
         }
         info_lines
     }
+    pub fn info_panel_attributes(&self) -> Vec<String> {
+        let mut info_lines = Vec::new();
+        info_lines.push(format!("Health: {}", self.attributes.health));
+        info_lines.push(format!("Strength: {}", self.attributes.strength));
+        info_lines.push(format!("Dexterity: {}", self.attributes.dexterity));
+        info_lines.push(format!("Constitution: {}", self.attributes.constitution));
+        info_lines.push(format!("Intelligence: {}", self.attributes.intelligence));
+        info_lines.push(format!("Wisdom: {}", self.attributes.wisdom));
+        info_lines.push(format!("Charisma: {}", self.attributes.charisma));
+        info_lines
+    }
+    pub fn info_panel_skills(&self) -> Vec<String> {
+        let mut info_lines = Vec::new();
+        info_lines.push(format!("Animal Raising: {} ({} xp)", self.skillset.animal_raising.level(), self.skillset.animal_raising.experience));
+        info_lines.push(format!("Brawling: {} ({} xp)", self.skillset.brawling.level(), self.skillset.brawling.experience));
+        info_lines.push(format!("Construction: {} ({} xp)", self.skillset.construction.level(), self.skillset.construction.experience));
+        info_lines.push(format!("Cooking: {} ({} xp)", self.skillset.cooking.level(), self.skillset.cooking.experience));
+        info_lines.push(format!("Crafting: {} ({} xp)", self.skillset.crafting.level(), self.skillset.crafting.experience));
+        info_lines.push(format!("Doctoring: {} ({} xp)", self.skillset.doctoring.level(), self.skillset.doctoring.experience));
+        info_lines.push(format!("Farming: {} ({} xp)", self.skillset.farming.level(), self.skillset.farming.experience));
+        info_lines.push(format!("Fishing: {} ({} xp)", self.skillset.fishing.level(), self.skillset.fishing.experience));
+        info_lines.push(format!("Foraging: {} ({} xp)", self.skillset.foraging.level(), self.skillset.foraging.experience));
+        info_lines.push(format!("Hunting: {} ({} xp)", self.skillset.hunting.level(), self.skillset.hunting.experience));
+        info_lines.push(format!("Mining: {} ({} xp)", self.skillset.mining.level(), self.skillset.mining.experience));
+        info_lines.push(format!("Social: {} ({} xp)", self.skillset.social.level(), self.skillset.social.experience));
+        info_lines.push(format!("Woodcutting: {} ({} xp)", self.skillset.woodcutting.level(), self.skillset.woodcutting.experience));
+        info_lines
+    }
 }
 #[derive(Component)]
 pub struct Attacked {
     pub attacker: Entity,
 }
+#[derive(Component)]
+pub struct Dying;
 
 #[derive(PartialEq)]
 pub enum Order {

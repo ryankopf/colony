@@ -1,4 +1,4 @@
-use crate::{prelude::*, initializations::load::SoundEffect};
+use crate::prelude::*;
 
 pub fn combat_system_melee(
     mut commands: Commands,
@@ -121,13 +121,13 @@ fn do_melee_damage(
     });
 
     // Play a sound effect.
-    commands.spawn((
-        AudioBundle {
-            source: asset_server.load("RPG Sound Pack/battle/swing.wav"),
-            settings: PlaybackSettings::ONCE.with_volume(bevy::audio::Volume::new_relative(0.1)),
-        },
-        SoundEffect,
-    ));
+    // commands.spawn((
+    //     AudioBundle {
+    //         source: asset_server.load("RPG Sound Pack/battle/swing.wav"),
+    //         settings: PlaybackSettings::ONCE.with_volume(bevy::audio::Volume::new_relative(0.1)),
+    //     },
+    //     SoundEffect,
+    // ));
 }
 pub fn attacked_entities_system(
     mut commands: Commands,

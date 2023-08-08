@@ -1,4 +1,5 @@
 use super::prelude::*;
+mod death;
 mod melee;
 mod ranged;
 
@@ -24,6 +25,10 @@ impl Plugin for CombatPlugin {
             melee::temporary_visual_elements_system
             .run_if(in_state(GameState::InGame)),
             )
+        )
+        .add_systems(
+            Update,
+            death::death_system
         )
         // .add_system(
         //     ranged::combat_system_ranged

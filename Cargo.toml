@@ -13,7 +13,6 @@ bevy = { version = "*", features = [ "wav" ] }
 rand = "*"
 winit = "0.28.6"
 image = "*"
-iyes_loopless = "*"
 
 [target.wasm32-unknown-unknown]
 runner = "wasm-server-runner"

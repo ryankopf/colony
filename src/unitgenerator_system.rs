@@ -24,7 +24,6 @@ pub fn spawn_unit_from_template(
         })
         .insert(position)
         .insert(position.to_transform_layer(1.0))
-        .insert(Attackable)
         .insert( GiveMeAName )
         .insert( PhysicalBody {
             needs_food: Some(template.food_need.into()),

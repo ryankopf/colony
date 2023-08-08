@@ -198,7 +198,6 @@ pub fn object_finder_system(
     mut commands: Commands,
     mut event: EventReader<ObjectFinderEvent>,
     mut people: Query<(Entity, &Position, &mut Brain, Option<&PhysicalBody>, Option<&ClickedOn>)>,
-    mut info_panel: ResMut<InfoPanelInformation>,
 ) {
     for event in event.iter() {
         for (entity, position, _brain, physical_body, clickedon) in people.iter_mut() {
@@ -209,9 +208,6 @@ pub fn object_finder_system(
             if position == &event.position {
                 if let Some(physical_body) = physical_body {
                     commands.entity(entity).insert(ClickedOn);
-                    info_panel.info = vec![];
-                    info_panel.info.push(format!("Position: {}, {}", position.x, position.y));
-                    info_panel.info.extend_from_slice(&physical_body.info_panel());
                 }
             }
         }
