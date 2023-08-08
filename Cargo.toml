@@ -11,7 +11,7 @@ opt-level = 3
 [dependencies]
 bevy = { version = "*", features = [ "wav" ] }
 rand = "*"
-winit = "0.27.5"
+winit = "0.28.6"
 image = "*"
 iyes_loopless = "*"
 

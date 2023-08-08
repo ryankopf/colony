@@ -2,13 +2,22 @@ use crate::prelude::*;
 use bevy::window::PrimaryWindow;
 use bevy::winit::WinitWindows;
 
-pub fn set_window_icon(
+pub fn set_window_title(
     // we have to use `NonSend` here
     // windows: NonSend<WinitWindows>,
     mut windows: Query<&mut Window, With<PrimaryWindow>>,
 ) {
     let mut primary = windows.single_mut();//.get_window(WindowId::primary()).unwrap();
-
+    primary.title = "Colony".to_string();
+}
+pub fn set_window_icon(
+    // we have to use `NonSend` here
+    windows: NonSend<WinitWindows>,
+    mut primary_windows: Query<(Entity, &mut Window), With<PrimaryWindow>>,
+) {
+    let window = primary_windows.single();
+    let mut primary = windows.get_window(window.0).unwrap();
+    
     // here we use the `image` crate to load our icon data from a png file
     // this is not a very bevy-native solution, but it will do
     let (icon_rgba, icon_width, icon_height) = {
@@ -21,9 +30,7 @@ pub fn set_window_icon(
     };
 
     let icon = winit::window::Icon::from_rgba(icon_rgba, icon_width, icon_height).unwrap();
-    primary.title = "Colony".to_string();
-    // primary.set_title("Colony");
-    // primary.set_window_icon(Some(icon));
+    primary.set_window_icon(Some(icon));
 }
 
 pub fn set_window_maximized(
