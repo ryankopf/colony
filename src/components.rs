@@ -81,6 +81,14 @@ pub enum ActorType { // Entity? Character? Creature? Actor? Avatar? Unit? Agent?
     ManCave,
     Pig,
     Rat,
+    Spider,
+    Bear,
+    Ant,
+    Locust,
+    Wasp,
+    Dingo,
+    Kangaroo,
+    IceFox
 }
 impl ActorType {
     pub fn sprite_row_and_col(&self) -> (usize, usize) {
@@ -96,6 +104,14 @@ impl ActorType {
             ActorType::ManCave => (60, 25),
             ActorType::Pig => (64, 0),
             ActorType::Rat => (64, 19),
+            ActorType::Spider => (64, 20),
+            ActorType::Bear => (64, 21),
+            ActorType::Ant => (64, 22),
+            ActorType::Locust => (64, 23),
+            ActorType::Wasp => (64, 24),
+            ActorType::Dingo => (64, 25),
+            ActorType::Kangaroo => (64, 26),
+            ActorType::IceFox => (64, 27),
         }
     }
     pub fn sprite_index(&self) -> usize {
@@ -242,12 +258,12 @@ impl Default for Attributeset {
     fn default() -> Self {
         Attributeset {
             health: 100,
-            strength: 10,
-            dexterity: 10,
-            constitution: 10,
-            intelligence: 10,
-            wisdom: 10,
-            charisma: 10,
+            strength: 1,
+            dexterity: 1,
+            constitution: 1,
+            intelligence: 1,
+            wisdom: 1,
+            charisma: 1,
         }
     }
 }
@@ -513,7 +529,7 @@ impl InfoPanel for Brain {
     }
 }
 
-#[derive(Component, PartialEq)]
+#[derive(Component, PartialEq, Copy, Clone)]
 pub enum PersonalityTrait {
     // Traits for People
     Adventurous, Ambitious, Analytical, Airheaded, Artistic, Brave, Calm, Charismatic, Confident, Cowardly,

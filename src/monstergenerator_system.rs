@@ -1,4 +1,4 @@
-use crate::{prelude::*, components::{Attributeset, PersonalityTrait}};
+use crate::{prelude::*, unitgenerator_system::spawn_unit_from_template, UnitTemplate};
 
 // Make plugin
 pub struct MonsterGeneratorPlugin;
@@ -45,38 +45,17 @@ pub fn monster_generator(
         if !can_generate {
             return;
         }
-        let sprite =  TextureAtlasSprite::new(ActorType::Rat.sprite_index());
-        commands
-            .spawn(SpriteSheetBundle {
-                sprite,
-                texture_atlas: sprite_sheet.0.clone(),
-                ..default()
-            })
-            .insert(new_position)
-            .insert(SizeXYZ::cube(1.1))
-            .insert(new_position.to_transform_layer(1.0))
-            .insert(GeneratedBy { entity })
-            // .insert(MoveTowardsNearestAttackable)
-            .insert( PhysicalBody {
-                needs_food: None,//Some(NeedsFood { current: 25.1, max: 100.0, rate: 0.1 }),
-                needs_entertainment: None,//Some(NeedsEntertainment { current: 100.0, max: 100.0, rate: 0.1 }),
-                needs_sleep: None,//Some(NeedsSleep { current: 15.2, max: 100.0, rate: 0.1 }),
-                index: 0,
-                crisis: None,
-                danger: None,
-                injured: false,
-                afflictions: Vec::new(),
-                skillset: Skillset::default(),
-                attributes: Attributeset::default(),
-            } )
-            .insert( Brain {
-                motivation: None,
-                task: None,
-                order: None,
-                personality: vec![PersonalityTrait::Creature, PersonalityTrait::Vicious],
-            } )
-            .insert( HasName { name: "Rat".to_string() } )
-            ;
+        match rand::thread_rng().gen_range(0..6) {
+            0 => {
+                let monster = spawn_unit_from_template(&mut commands, new_position, &sprite_sheet, &UnitTemplate::rat());
+                commands.entity(monster).insert(GeneratedBy { entity });
+            }
+            _ => {
+                let monster = spawn_unit_from_template(&mut commands, new_position, &sprite_sheet, &UnitTemplate::spider());
+                commands.entity(monster).insert(GeneratedBy { entity });
+            }
+        }
+        
         //*position = new_position;
     }
 

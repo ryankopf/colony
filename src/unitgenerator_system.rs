@@ -16,7 +16,7 @@ pub fn spawn_unit_from_template(
     template: &UnitTemplate,
 ) -> Entity {
     let sprite =  TextureAtlasSprite::new(template.actor_type.sprite_index());
-    commands
+    let entity = commands
         .spawn(SpriteSheetBundle {
             sprite,
             texture_atlas: sprite_sheet.0.clone(),
@@ -24,11 +24,10 @@ pub fn spawn_unit_from_template(
         })
         .insert(position)
         .insert(position.to_transform_layer(1.0))
-        .insert( GiveMeAName )
         .insert( PhysicalBody {
-            needs_food: Some(template.food_need.into()),
-            needs_entertainment: Some(template.entertainment_need.into()),
-            needs_sleep: Some(template.sleep_need.into()),
+            needs_food: template.food_need.map(Into::into),
+            needs_entertainment: template.entertainment_need.map(Into::into),
+            needs_sleep: template.sleep_need.map(Into::into),
             index: 0,
             crisis: None,
             danger: None,
@@ -37,18 +36,29 @@ pub fn spawn_unit_from_template(
             skillset: template.skillset.clone(),
             attributes: template.attributes.clone(),
         } )
-        .insert( Brain { ..default() } )
-        .id()
+        .insert( Brain {
+            personality: template.personality.clone(),
+            ..default()
+        } )
+        .id();
+    for builder in &template.component_builders {
+        builder(commands, entity);
+    };
+    entity
 }
+
+type ComponentBuilder = fn(&mut Commands, Entity);
 
 pub struct UnitTemplate {
     pub actor_type: ActorType,
-    pub food_need: NeedExample,
-    pub entertainment_need: NeedExample,
-    pub sleep_need: NeedExample,
-    pub afflictions: Vec<Affliction>,
+    pub food_need: Option<NeedExample>,
+    pub entertainment_need: Option<NeedExample>,
+    pub sleep_need: Option<NeedExample>,
+    pub personality: Vec<PersonalityTrait>,
     pub skillset: Skillset,
     pub attributes: Attributeset,
+    pub afflictions: Vec<Affliction>,
+    pub component_builders: Vec<ComponentBuilder>,
 }
 #[derive(Copy, Clone)]
 pub struct NeedExample {
@@ -91,12 +101,16 @@ impl UnitTemplate {
         let random_afflictions = Self::random_afflictions_humanoid();
         Self {
             actor_type,
-            food_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
-            entertainment_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
-            sleep_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
-            afflictions: random_afflictions.to_vec(),
+            food_need: Some(NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 }),
+            entertainment_need: Some(NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 }),
+            sleep_need: Some(NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 }),
+            personality: vec![],
             skillset: Self::random_skillset_humanoid(),
             attributes: Self::random_attributeset_humanoid(),
+            afflictions: random_afflictions.to_vec(),
+            component_builders: vec![
+                |commands: &mut Commands, entity: Entity| { commands.entity(entity).insert(GiveMeAName); },
+            ],
         }
     }
     pub fn elf() -> Self {
@@ -104,12 +118,16 @@ impl UnitTemplate {
         let random_afflictions = Self::random_afflictions_humanoid();
         Self {
             actor_type,
-            food_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
-            entertainment_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
-            sleep_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
-            afflictions: random_afflictions.to_vec(),
+            food_need: Some(NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 }),
+            entertainment_need: Some(NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 }),
+            sleep_need: Some(NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 }),
+            personality: vec![],
             skillset: Self::random_skillset_humanoid(),
             attributes: Self::random_attributeset_humanoid(),
+            afflictions: random_afflictions.to_vec(),
+            component_builders: vec![
+                |commands: &mut Commands, entity: Entity| { commands.entity(entity).insert(GiveMeAName); },
+            ],
         }
     }
     pub fn dwarf() -> Self {
@@ -117,12 +135,50 @@ impl UnitTemplate {
         let random_afflictions = Self::random_afflictions_humanoid();
         Self {
             actor_type,
-            food_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
-            entertainment_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
-            sleep_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
-            afflictions: random_afflictions.to_vec(),
+            food_need: Some(NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 }),
+            entertainment_need: Some(NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 }),
+            sleep_need: Some(NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 }),
+            personality: vec![],
             skillset: Self::random_skillset_humanoid(),
             attributes: Self::random_attributeset_humanoid(),
+            afflictions: random_afflictions.to_vec(),
+            component_builders: vec![
+                |commands: &mut Commands, entity: Entity| { commands.entity(entity).insert(GiveMeAName); },
+            ],
+        }
+    }
+    pub fn rat() -> Self {
+        let actor_type = ActorType::Rat;
+        let random_afflictions = vec![];//Self::random_afflictions_animal();
+        Self {
+            actor_type,
+            food_need: None,
+            entertainment_need: None,
+            sleep_need: None,
+            personality: vec![PersonalityTrait::Creature, PersonalityTrait::Vicious],
+            afflictions: random_afflictions.to_vec(),
+            skillset: Skillset::default(),
+            attributes: Attributeset::default(),
+            component_builders: vec![
+                |commands: &mut Commands, entity: Entity| { commands.entity(entity).insert(HasName { name: "Rat".to_string() }); },
+            ],
+        }
+    }
+    pub fn spider() -> Self {
+        let actor_type = ActorType::Spider;
+        let random_afflictions = vec![];//Self::random_afflictions_animal();
+        Self {
+            actor_type,
+            food_need: None,
+            entertainment_need: None,
+            sleep_need: None,
+            personality: vec![PersonalityTrait::Creature, PersonalityTrait::Vicious],
+            afflictions: random_afflictions.to_vec(),
+            skillset: Skillset::default(),
+            attributes: Attributeset::default(),
+            component_builders: vec![
+                |commands: &mut Commands, entity: Entity| { commands.entity(entity).insert(HasName { name: "Spider".to_string() }); },
+            ],
         }
     }
     pub fn random_afflictions_humanoid() -> Vec<Affliction> {
