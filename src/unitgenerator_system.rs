@@ -14,7 +14,7 @@ pub fn spawn_unit_from_template(
     position: Position,
     sprite_sheet: &Res<SpriteSheet>,
     template: &UnitTemplate,
-) {
+) -> Entity {
     let sprite =  TextureAtlasSprite::new(template.actor_type.sprite_index());
     commands
         .spawn(SpriteSheetBundle {
@@ -39,7 +39,7 @@ pub fn spawn_unit_from_template(
             attributes: template.attributes.clone(),
         } )
         .insert( Brain { ..default() } )
-        ;
+        .id()
 }
 
 pub struct UnitTemplate {

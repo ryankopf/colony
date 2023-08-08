@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{prelude::*, initializations::load::SoundEffect};
 
 pub fn combat_system_melee(
     mut commands: Commands,
@@ -104,12 +104,14 @@ fn do_melee_damage(
     attacked_entity: Entity,
     body1: &PhysicalBody,
     body2: &mut PhysicalBody,
+    asset_server: &Res<AssetServer>
 ) {
-    body2.attributes.health -=
+    let damage =
         1 +
         (body1.attributes.strength - body2.attributes.constitution).max(0).min(20) +
         (body1.skillset.brawling.level()).max(0).min(20)
         ;
+    body2.attributes.health -= damage;
     if body2.attributes.health <= 0 {
         commands.entity(attacked_entity).despawn_recursive();
     }
@@ -117,11 +119,21 @@ fn do_melee_damage(
         danger_type: DangerType::Attacked,
         danger_source: attacker_entity,
     });
+
+    // Play a sound effect.
+    commands.spawn((
+        AudioBundle {
+            source: asset_server.load("RPG Sound Pack/battle/swing.wav"),
+            settings: PlaybackSettings::ONCE.with_volume(bevy::audio::Volume::new_relative(0.1)),
+        },
+        SoundEffect,
+    ));
 }
 pub fn attacked_entities_system(
     mut commands: Commands,
     attacked_query: Query<(Entity, &Attacked), With<Attacked>>,
     mut physical_bodies: Query<(Entity, &mut PhysicalBody)>,
+    asset_server: Res<AssetServer>
 ) {
     for (attacked_entity, attack_info) in attacked_query.iter() {
         commands.entity(attacked_entity).remove::<Attacked>();
@@ -139,7 +151,7 @@ pub fn attacked_entities_system(
         // Now do the damage to the attacked body.
         for (entity, mut physical_body) in physical_bodies.iter_mut() {
             if entity == attacked_entity {
-                do_melee_damage(&mut commands, attacker_entity, attacked_entity, &attacker_physical_body, &mut physical_body);
+                do_melee_damage(&mut commands, attacker_entity, attacked_entity, &attacker_physical_body, &mut physical_body, &asset_server);
             }
         }
     }

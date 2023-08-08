@@ -1,36 +1,6 @@
-// use bevy::time::FixedTimestep;
 mod prelude;
 pub use crate::prelude::*;
 
-// #[mod_use(
-//     biome,
-//     button_system,
-//     combat_system,
-//     components,
-//     constants,
-//     interface,
-//     load,
-//     main_menu,
-//     map,
-//     monstergenerator_system,
-//     moverandom_system,
-//     movetoward_system,
-//     namegiving_system,
-//     names_system,
-//     needs,
-//     pause,
-//     resources,
-//     seasons,
-//     selection_systems,
-//     spoilage_system,
-//     startup,
-//     statusdisplay_system,
-//     task_system,
-//     text_system,
-//     thinking_system,
-//     unitgenerator_system,
-//     window_system
-// )]
 mod button_system;
 use button_system::*;
 mod combat_system;
@@ -84,10 +54,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(BiomePlugin)
         .add_systems(
-            PreStartup, (load_sprites, load_font)
-        )
-        .add_systems(
-            PreStartup, (load_sprites, load_font)
+            PreStartup, (load_sprites, load_font, load_sfx)
         )
         // .add_startup_system_to_stage(StartupStage::PreStartup, load_sprites)
         // .add_startup_system_to_stage(StartupStage::PreStartup, load_font)

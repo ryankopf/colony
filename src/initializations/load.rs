@@ -17,3 +17,18 @@ pub fn load_font(
 ) {
     *font_handle = MyFont(asset_server.load("fonts/Helvetica.ttf"));
 }
+pub fn load_sfx(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>
+) {
+    // commands.spawn((
+    //     AudioBundle {
+    //         source: asset_server.load("RPG Sound Pack/battle/swing.wav"),
+    //         settings: PlaybackSettings::ONCE.paused().with_volume(bevy::audio::Volume::new_relative(0.5)),
+    //     },
+    //     SoundEffect,
+    // ));
+}
+
+#[derive(Component)]
+pub struct SoundEffect;
