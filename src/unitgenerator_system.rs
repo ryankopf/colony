@@ -100,6 +100,32 @@ impl UnitTemplate {
             attributes: Self::random_attributeset_humanoid(),
         }
     }
+    pub fn elf() -> Self {
+        let actor_type = ActorType::Elf;
+        let random_afflictions = Self::random_afflictions_humanoid();
+        Self {
+            actor_type,
+            food_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
+            entertainment_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
+            sleep_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
+            afflictions: random_afflictions.to_vec(),
+            skillset: Self::random_skillset_humanoid(),
+            attributes: Self::random_attributeset_humanoid(),
+        }
+    }
+    pub fn dwarf() -> Self {
+        let actor_type = ActorType::Dwarf;
+        let random_afflictions = Self::random_afflictions_humanoid();
+        Self {
+            actor_type,
+            food_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
+            entertainment_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
+            sleep_need: NeedExample { current: 90.0, max: 100.0, rate: 0.1, low: 10.0, normal: 25.0, high: 80.0, variance: 5.0 },
+            afflictions: random_afflictions.to_vec(),
+            skillset: Self::random_skillset_humanoid(),
+            attributes: Self::random_attributeset_humanoid(),
+        }
+    }
     pub fn random_afflictions_humanoid() -> Vec<Affliction> {
         ////////////////////////////
         // Select some Afflictions
@@ -190,31 +216,38 @@ impl UnitTemplate {
         selected_afflictions.to_vec()
     }
     pub fn random_skillset_humanoid() -> Skillset {
+        let mut rng = rand::thread_rng();
+        let ranges = [5000..7000, 5000..7000, 3000..4000, 2000..3000, 1000..2000, 500..1000, 500..1000, 400..800, 300..600, 300..600, 200..500, 200..500, 100..300];
+        let mut values: Vec<i32> = ranges.iter().map(|range| rng.gen_range(range.clone())).collect();
+        let losses = [1000..2000, 1000..2000, 200..500, 200..500, 100..300, 100..300, 100..300, 100..300, 100..300, 100..300, 100..300, 100..300, 100..300];
+        let mut loss_values: Vec<i32> = losses.iter().map(|range| rng.gen_range(range.clone())).collect();
+        values.shuffle(&mut rng);
         Skillset {
-            animal_raising: Skill { experience: 100, exp_lost: 0 },
-            construction: Skill { experience: 50, exp_lost: 10 },
-            cooking: Skill { experience: 75, exp_lost: 5 },
-            crafting: Skill { experience: 60, exp_lost: 8 },
-            doctoring: Skill { experience: 90, exp_lost: 2 },
-            farming: Skill { experience: 70, exp_lost: 7 },
-            fishing: Skill { experience: 80, exp_lost: 6 },
-            foraging: Skill { experience: 40, exp_lost: 12 },
-            hunting: Skill { experience: 55, exp_lost: 9 },
-            mining: Skill { experience: 65, exp_lost: 5 },
-            social: Skill { experience: 30, exp_lost: 15 },
-            woodcutting: Skill { experience: 85, exp_lost: 4 },
+            animal_raising: Skill   { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            brawling: Skill         { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            construction: Skill     { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            cooking: Skill          { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            crafting: Skill         { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            doctoring: Skill        { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            farming: Skill          { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            fishing: Skill          { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            foraging: Skill         { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            hunting: Skill          { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            mining: Skill           { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            social: Skill           { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
+            woodcutting: Skill      { experience: values.pop().unwrap_or(100), exp_lost: loss_values.pop().unwrap_or(0) },
         }
     }
     
     pub fn random_attributeset_humanoid() -> Attributeset {
         Attributeset {
             health: 100,
-            strength: 3,
-            dexterity: 3,
-            constitution: 3,
-            intelligence: 3,
-            wisdom: 3,
-            charisma: 4,
+            strength: 3,    // Represents ability to do physical work.
+            dexterity: 3,   // Represents ability to do fine work, and affects speed.
+            constitution: 3,// Represents ability to resist disease, poison, and damage.
+            intelligence: 3,// Represents ability to learn and remember.
+            wisdom: 3,      // Represents ability to make good decisions.
+            charisma: 4,    // Represents ability to influence others.
         }
     }
 }

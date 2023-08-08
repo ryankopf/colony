@@ -6,3 +6,5 @@ mod click;
 pub use click::*;
 mod input;
 pub use input::*;
+mod pause;
+pub use pause::*;

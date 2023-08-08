@@ -216,6 +216,17 @@ pub struct Skill {
     pub experience: i32,
     pub exp_lost: i32, // Forgetting/atrophied skills. Easier to regain.
 }
+impl Skill {
+    pub fn level(&self) -> i32 {
+        if self.experience < 10000 {
+            //0, 100, 400, 900, 1600, 2500, 3600, 6400, 8100, 10000
+            (self.experience as f32 / 100.0).sqrt() as i32
+        } else {
+            // 12000, 14000, 18000, 26000, 42000, 74000, 138000, 266000, 513000, 10250000
+            10 + ((self.experience-10000) as f32 / 1000.0).log2() as i32
+        }
+    }
+}
 
 #[derive(Component, Clone, Copy)]
 pub struct Attributeset {
@@ -325,6 +336,7 @@ pub struct Affliction {
 #[derive(Component, Clone, Copy)]
 pub struct Skillset {
     pub animal_raising: Skill,
+    pub brawling: Skill,
     pub construction: Skill,
     pub cooking: Skill,
     pub crafting: Skill,
@@ -341,6 +353,7 @@ impl Default for Skillset {
     fn default() -> Self {
         Skillset {
             animal_raising: Skill { experience: 0, exp_lost: 0 },
+            brawling: Skill { experience: 0, exp_lost: 0 },
             construction: Skill { experience: 0, exp_lost: 0 },
             cooking: Skill { experience: 0, exp_lost: 0 },
             crafting: Skill { experience: 0, exp_lost: 0 },
@@ -356,7 +369,7 @@ impl Default for Skillset {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum DangerType {
     Attacked,
     Fire,

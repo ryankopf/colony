@@ -31,24 +31,18 @@ pub use crate::prelude::*;
 //     unitgenerator_system,
 //     window_system
 // )]
-mod biome;
-use biome::*;
 mod button_system;
 use button_system::*;
 mod combat_system;
 use combat_system::*;
 mod components;
-// use components::*;
 mod constants;
-// use constants::*;
+mod initializations;
+use initializations::*;
 mod interface;
 use interface::*;
-mod load;
-use load::*;
 mod main_menu;
 use main_menu::*;
-mod map;
-use map::*;
 mod monstergenerator_system;
 use monstergenerator_system::*;
 mod moverandom_system;
@@ -61,10 +55,7 @@ mod names_system;
 use names_system::*;
 mod needs;
 use needs::*;
-mod pause;
-use pause::*;
 mod resources;
-// use resources::*;
 mod seasons;
 use seasons::*;
 mod selection_systems;

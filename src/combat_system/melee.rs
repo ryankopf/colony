@@ -2,11 +2,11 @@ use crate::prelude::*;
 
 pub fn combat_system_melee(
     mut commands: Commands,
-    mut entities_that_might_fight: Query<(Entity, &mut Brain, &Position, Option<&mut Pathing>, Option<&Targeting>)>,
-    attackables: Query<(Entity, &Position), With<Attackable>>,
+    mut entities_that_might_fight: Query<(Entity, &mut Brain, &mut PhysicalBody, &Position, Option<&mut Pathing>, Option<&Targeting>)>,
+    attackables: Query<(Entity, &Position), With<Brain>>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
-    for (e, mut brain, position, pathing, targeting) in entities_that_might_fight.iter_mut() {
+    for (e, mut brain, mut physical_body, position, pathing, targeting) in entities_that_might_fight.iter_mut() {
         if brain.task != Some(Task::Fight) { continue; }
         if let Some(targeting) = targeting {
             let mut entity_found = false;
@@ -42,7 +42,6 @@ pub fn combat_system_melee(
                 }
             }
             if !entity_found {
-                println!("No entity found");
                 commands.entity(e).remove::<Targeting>();
                 brain.remotivate();
             }
@@ -51,18 +50,45 @@ pub fn combat_system_melee(
             // Humans might find a target based on if they're hunting or defending.
             // Animals might find a target based on if they're hungry or defending.
             // For now just find the nearest physical body and make that the target.
+            if let Some(danger) = &physical_body.danger {
+                if danger.danger_type == DangerType::Attacked {
+                    // If we're being attacked, we should attack back.
+                    // Error: What happens after you win the fight? Or if the attacker no longer exists?
+                    if let Some(danger_source) = danger.danger_source {
+                        // check if attackables contains danger_source
+                        let mut danger_source_found = false;
+                        for (entity, _target_position) in attackables.iter() {
+                            if entity == danger_source {
+                                danger_source_found = true;
+                                break;
+                            }
+                        }
+                        if !danger_source_found {
+                            // The danger source no longer exists. We should stop attacking.
+                            brain.remotivate();
+                            physical_body.danger = None;
+                            continue;
+                        }
+                        commands.entity(e).insert(Targeting { target: danger_source });
+                        continue;
+                    }
+                }
+            }
             let mut closest_distance = 9999;
             let mut closest_target = None;
+            let mut closest_position = None;
             for (attackable, attackable_position) in attackables.iter() {
+                if attackable == e { continue; }
                 let distance = position.distance(attackable_position);
                 if distance < closest_distance {
                     closest_distance = distance;
                     closest_target = Some(attackable);
+                    closest_position = Some(attackable_position);
                 }
             }
             if let Some(closest_target) = closest_target {
                 commands.entity(e).insert(Targeting { target: closest_target });
-                let target_position = attackables.get(closest_target).unwrap().1;
+                let target_position = closest_position.unwrap();
                 commands.entity(e).insert( Pathing { path: vec![], destination: *target_position, ..default() });
             } else {
                 // Nothing to attack. Now what?
@@ -79,8 +105,11 @@ fn do_melee_damage(
     body1: &PhysicalBody,
     body2: &mut PhysicalBody,
 ) {
-    body2.attributes.health -= 1 + body1.attributes.strength;
-    println!("Health: {}", body2.attributes.health);
+    body2.attributes.health -=
+        1 +
+        (body1.attributes.strength - body2.attributes.constitution).max(0).min(20) +
+        (body1.skillset.brawling.level()).max(0).min(20)
+        ;
     if body2.attributes.health <= 0 {
         commands.entity(attacked_entity).despawn_recursive();
     }
@@ -95,7 +124,6 @@ pub fn attacked_entities_system(
     mut physical_bodies: Query<(Entity, &mut PhysicalBody)>,
 ) {
     for (attacked_entity, attack_info) in attacked_query.iter() {
-        println!("Attacked");
         commands.entity(attacked_entity).remove::<Attacked>();
         let mut attacker_physical_body: Option<PhysicalBody> = None;
         let mut attacker_entity = None;

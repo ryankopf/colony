@@ -24,14 +24,17 @@ pub fn startup(
     // GENERATE UNITS
     for i in 1..6 {
         let position = Position { x: 3, y: 3*i, z: 0 };
-        // let actor_type = match i {
-        //     1 => ActorType::Man2,
-        //     2 => ActorType::Dwarf,
-        //     _ => ActorType::Man
-        // };
-        // let sprite = TextureAtlasSprite::new(actor_type.sprite_index());
-        // spawn_unit(&mut commands, position, &sprite_sheet, actor_type, 21.0, 21.0, 21.0);
-        spawn_unit_from_template(&mut commands, position, &sprite_sheet, &UnitTemplate::human());
+        match i {
+            1 => {
+                spawn_unit_from_template(&mut commands, position, &sprite_sheet, &UnitTemplate::elf());
+            },
+            2 => {
+                spawn_unit_from_template(&mut commands, position, &sprite_sheet, &UnitTemplate::dwarf());
+            },
+            _ => {
+                spawn_unit_from_template(&mut commands, position, &sprite_sheet, &UnitTemplate::human());
+            }
+        }
     }
 
     let position = Position { x: 10, y: 10, z: 0 };

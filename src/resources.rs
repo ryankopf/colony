@@ -11,6 +11,7 @@ pub struct SpriteSheet(pub Handle<TextureAtlas>);
 
 #[derive(Resource)]
 pub struct Biome {
+    pub name: String,
     pub plants: Vec<PlantType>,
     pub tiles: Vec<TileType>,
 }
