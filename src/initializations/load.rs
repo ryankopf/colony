@@ -18,8 +18,8 @@ pub fn load_font(
     *font_handle = MyFont(asset_server.load("fonts/Helvetica.ttf"));
 }
 pub fn load_sfx(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>
+    // mut commands: Commands,
+    // asset_server: Res<AssetServer>
 ) {
     // commands.spawn((
     //     AudioBundle {

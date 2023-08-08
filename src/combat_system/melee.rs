@@ -104,7 +104,7 @@ fn do_melee_damage(
     attacked_entity: Entity,
     body1: &PhysicalBody,
     body2: &mut PhysicalBody,
-    asset_server: &Res<AssetServer>
+    _asset_server: &Res<AssetServer>
 ) {
     let damage =
         1 +

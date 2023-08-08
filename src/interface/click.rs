@@ -206,7 +206,7 @@ pub fn object_finder_system(
                 continue;
             }
             if position == &event.position {
-                if let Some(physical_body) = physical_body {
+                if physical_body.is_some() {
                     commands.entity(entity).insert(ClickedOn);
                 }
             }

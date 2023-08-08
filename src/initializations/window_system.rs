@@ -12,11 +12,11 @@ pub fn set_window_title(
 }
 pub fn set_window_icon(
     // we have to use `NonSend` here
-    windows: NonSend<WinitWindows>,
-    mut primary_windows: Query<(Entity, &mut Window), With<PrimaryWindow>>,
+    winit_windows: NonSend<WinitWindows>,
+    primary_windows: Query<(Entity, &mut Window), With<PrimaryWindow>>,
 ) {
     let window = primary_windows.single();
-    let mut primary = windows.get_window(window.0).unwrap();
+    let primary = winit_windows.get_window(window.0).unwrap();
     
     // here we use the `image` crate to load our icon data from a png file
     // this is not a very bevy-native solution, but it will do

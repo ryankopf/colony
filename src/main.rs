@@ -48,8 +48,7 @@ use unitgenerator_system::*;
 fn main() {
     //println!("Hello, world!");
     App::new()
-        .add_plugins(DefaultPlugins)
-        .add_plugin(BiomePlugin)
+        .add_plugins((DefaultPlugins, BiomePlugin, StartupPlugin))
         .add_systems(
             PreStartup, (load_sprites, load_font, load_sfx)
         )
@@ -61,36 +60,23 @@ fn main() {
         .add_systems(
             Startup, (generate_map, setup_camera, text_test, set_window_title, set_window_icon, set_window_maximized)
         )
-        .add_plugin(StartupPlugin)
-        .add_plugin(MainMenusPlugin)
         .add_state::<GameState>()
-        .add_plugin(ButtonPlugin)
-        .add_system(
+        .add_plugins((MainMenusPlugin, ButtonPlugin))
+        .add_systems(
+            Update,
             movement_random
             .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.1)))
             .run_if(in_state(GameState::InGame))
         )
-        .add_plugin(SelectionPlugin)
-        .add_plugin(MonsterGeneratorPlugin)
-        .add_plugin(MovementPlugin)
-        .add_plugin(SeasonsPlugin)
-        .add_plugin(NeedsPlugin)
-        .add_system(
+        .add_plugins(
+            (SelectionPlugin, MonsterGeneratorPlugin, MovementPlugin, SeasonsPlugin, NeedsPlugin, GameUiPlugin,
+                InfoPanelPlugin, ThinkingPlugin, TaskPlugin, CombatPlugin, SpoilagePlugin, ClickPlugin))
+        .add_systems(
+            Update,
             status_display_system
             .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.5)))
             .run_if(in_state(GameState::InGame))
         )
-        // .add_system_set(
-        //     SystemSet::new()
-        //         .with_run_criteria(FixedTimestep::step(0.5))
-        //         .with_system(status_display_system),
-        // )
-        .add_plugin(GameUiPlugin)
-        .add_plugin(InfoPanelPlugin)
-        .add_plugin(ThinkingPlugin)
-        .add_plugin(TaskPlugin)
-        .add_plugin(CombatPlugin)
-        .add_plugin(SpoilagePlugin)
         .add_systems(Update, (
             text_system,
             remove_bad_positions,
@@ -102,8 +88,10 @@ fn main() {
             scrollwheel_input
         ))
         .add_event::<FoodNotifEvent>()
-        .add_plugin(ClickPlugin)
-        .add_system(bevy::window::close_on_esc)
+        .add_systems(
+            Update,
+            bevy::window::close_on_esc
+        )
         .add_systems(
             OnEnter(GameState::Paused), 
             on_pause
@@ -112,8 +100,6 @@ fn main() {
             OnExit(GameState::Paused), 
             on_unpause
         )
-        // .add_system_set(SystemSet::on_enter(GameState::Paused).with_system(on_pause))
-        // .add_system_set(SystemSet::on_enter(GameState::InGame).with_system(on_unpause))
         .run();
 }
 
