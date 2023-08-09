@@ -513,6 +513,7 @@ pub struct Brain {
     pub task: Option<Task>,
     pub order: Option<Order>,
     pub personality: Vec<PersonalityTrait>,
+    pub last_considered_personality_trait: Option<PersonalityTrait>,
 }
 impl Brain {
     pub fn remotivate(&mut self) {
@@ -522,6 +523,29 @@ impl Brain {
     }
     pub fn add_personality_trait(&mut self, trait_: PersonalityTrait) {
         self.personality.push(trait_);
+    }
+    pub fn get_next_personality_trait(&mut self) -> Option<PersonalityTrait> {
+        if self.last_considered_personality_trait.is_none() {
+            // return the first personality
+            if self.personality.len() > 0 {
+                self.last_considered_personality_trait = Some(self.personality[0]);
+                return Some(self.personality[0]);
+            } else {
+                return None;
+            }
+        }
+        for (i, personality_trait) in self.personality.iter().enumerate() {
+            if self.last_considered_personality_trait.unwrap() == *personality_trait {
+                if i == self.personality.len() - 1 {
+                    self.last_considered_personality_trait = None;
+                    return None;
+                } else {
+                    self.last_considered_personality_trait = Some(self.personality[i+1]);
+                    return Some(self.personality[i+1]);
+                }
+            }
+        }
+        return None;
     }
 }
 impl InfoPanel for Brain {

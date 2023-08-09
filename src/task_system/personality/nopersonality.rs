@@ -1,13 +1,15 @@
 use crate::prelude::*;
 
-pub fn personality_nopersonality(
-    mut entities: Query<(Entity, &mut Brain, &mut PhysicalBody, &Position)>
+pub fn nopersonality(
+    entity: Entity,
+    mut brain: Mut<Brain>,
+    mut physical_body: Mut<PhysicalBody>,
+    position: &Position,
+    _: Option<&Nest>
 ) {
-    for (entity, mut brain, mut physical_body, position) in entities.iter_mut() {
-        if brain.task != Some(Task::Personality) { continue; }
-        if !brain.personality.is_empty() { continue; } 
-        
-        brain.motivation = Some(Motivation::Meander);
-        brain.task = None;
-    }
+    if brain.task != Some(Task::Personality) { return; }
+    if !brain.personality.is_empty() { return; } 
+    
+    brain.motivation = Some(Motivation::Meander);
+    brain.task = None;
 }
