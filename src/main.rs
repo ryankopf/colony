@@ -25,6 +25,8 @@ mod names_system;
 use names_system::*;
 mod needs;
 use needs::*;
+mod nest;
+use nest::*;
 mod resources;
 mod seasons;
 use seasons::*;
@@ -83,7 +85,8 @@ fn main() {
             text_update_system,
             movement_toward_attackable,
             keyboard_input,
-            scrollwheel_input
+            scrollwheel_input,
+            nest_system,
         ))
         .add_event::<FoodNotifEvent>()
         .add_systems(

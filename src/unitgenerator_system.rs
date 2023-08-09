@@ -161,6 +161,7 @@ impl UnitTemplate {
             attributes: Attributeset::default(),
             component_builders: vec![
                 |commands: &mut Commands, entity: Entity| { commands.entity(entity).insert(HasName { name: "Rat".to_string() }); },
+                |commands: &mut Commands, entity: Entity| { commands.entity(entity).insert(SetNest); }
             ],
         }
     }
@@ -178,6 +179,7 @@ impl UnitTemplate {
             attributes: Attributeset::default(),
             component_builders: vec![
                 |commands: &mut Commands, entity: Entity| { commands.entity(entity).insert(HasName { name: "Spider".to_string() }); },
+                |commands: &mut Commands, entity: Entity| { commands.entity(entity).insert(SetNest); }
             ],
         }
     }

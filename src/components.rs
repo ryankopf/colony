@@ -585,6 +585,9 @@ pub struct Foragable;
 pub struct Choppable;
 
 #[derive(Component)]
+pub struct SetNest;
+
+#[derive(Component)]
 pub struct GiveMeAName;
 
 #[derive(Component)]

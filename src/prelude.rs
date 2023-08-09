@@ -5,7 +5,7 @@ pub use super::components::{
     Logs, MainMenuOverlay, MapTile, MenuStates, MonsterGenerator, Motivation, MoveRandom,
     MoveTowardsNearestAttackable, MoveTowardsTarget, NearestEntity, Need, Nest,
     Order, Pathing, PauseOverlay, PersonalityTrait, PhysicalBody, Plant, PlantType, Position,
-    SelectableType, Skillset, Skill, SizeXYZ, StrikeType,
+    SelectableType, SetNest, Skillset, Skill, SizeXYZ, StrikeType,
     Targeting, Task, TemporaryVisualElement, TextName, TileType, WorkMarker, WorkTarget, Zone, ZoneMarker, ZoneType,
 };
 pub use crate::constants::*;
