@@ -42,7 +42,7 @@ pub fn startup(
         spawn_unit_from_template(&mut commands, position, &sprite_sheet, &UnitTemplate::crab());
     }
 
-    let position = Position { x: 10, y: 6, z: 0 };
+    let position = Position { x: 30, y: 6, z: 0 };
     let sprite =  TextureAtlasSprite::new(TileType::Cave.sprite_index());
     commands
             .spawn(SpriteSheetBundle {
