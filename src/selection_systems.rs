@@ -108,7 +108,6 @@ pub fn select_zoning(
                 ..default()
             }, ZoneMarker))
             .id();
-            println!("Zonemarker");
             commands.entity(entity).push_children(&[zonemarker]);
         }
     }

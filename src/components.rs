@@ -129,6 +129,7 @@ impl ActorType {
 #[derive(Component, PartialEq, Clone, Debug)]
 pub enum TileType {
     Grass,
+    Cave,
     Dirt,
     Gravel,
     Sand,
@@ -145,6 +146,7 @@ impl TileType {
     pub fn sprite_row_and_col(&self) -> (usize, usize) {
         match self {
             TileType::Grass => (9, 11),
+            TileType::Cave => (13, 7),
             TileType::Dirt => (4, 1),
             TileType::Gravel => (7, 42),
             TileType::Sand => (7, 42),
@@ -548,6 +550,11 @@ pub enum PersonalityTrait {
 }
 
 #[derive(Component)]
+pub struct Nest {
+    pub position: Position,
+}
+
+#[derive(Component)]
 pub struct Foragable;
 
 #[derive(Component)]
@@ -605,12 +612,12 @@ pub enum ZoneType {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Task { // Sorted in order of prioritization.
-    Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Meander, Idle,
+    Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Personality, Meander, Idle,
     Doctor, Forage, Plant, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Haul // Forms of work
 }
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Motivation { // Sorted in order of prioritization.
-    Crisis, Rage, Order, Danger, Hunger, Thirst, Tired, Injured, Sick, Bored, Happy, Sad, Angry, Lonely, Love, Fear, Hate, Work, Meander, Idle
+    Crisis, Rage, Order, Danger, Hunger, Thirst, Tired, Injured, Sick, Bored, Happy, Sad, Angry, Lonely, Love, Fear, Hate, Work, Personality, Meander, Idle
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]

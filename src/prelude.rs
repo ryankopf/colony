@@ -3,7 +3,7 @@ pub use super::components::{
     Bed, Brain, Choppable, ClickedOn, Danger, DangerType, Dying, Food, Foragable, ForageType, GameState, GeneratedBy,
     GiveMeAName, HasName, HasNameShown, HighlightBox, Highlighted, HoverNote, InfoPanel, InGameButton, IsName, ItemType,
     Logs, MainMenuOverlay, MapTile, MenuStates, MonsterGenerator, Motivation, MoveRandom,
-    MoveTowardsNearestAttackable, MoveTowardsTarget, NearestEntity, Need,
+    MoveTowardsNearestAttackable, MoveTowardsTarget, NearestEntity, Need, Nest,
     Order, Pathing, PauseOverlay, PersonalityTrait, PhysicalBody, Plant, PlantType, Position,
     SelectableType, Skillset, Skill, SizeXYZ, StrikeType,
     Targeting, Task, TemporaryVisualElement, TextName, TileType, WorkMarker, WorkTarget, Zone, ZoneMarker, ZoneType,

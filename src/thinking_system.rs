@@ -147,7 +147,18 @@ pub fn thinking_system(
                 if brain.personality.contains(&PersonalityTrait::Vicious) {
                     brain.motivation = Some(Motivation::Rage);
                 }
-                if !brain.personality.contains(&PersonalityTrait::Creature) {
+                if brain.personality.contains(&PersonalityTrait::Territorial) {
+                    // brain.motivation = Some(Motivation::DefendTerritory);
+                }
+                if brain.personality.contains(&PersonalityTrait::Creature) {
+                    brain.motivation = Some(Motivation::Personality);
+                } else {
+                    // Work (75% chance) or Personality (25% chance)
+                    if random::<i32>() % 4 == 0 {
+                        brain.motivation = Some(Motivation::Work);
+                    } else {
+                        brain.motivation = Some(Motivation::Personality);
+                    } 
                     brain.motivation = Some(Motivation::Work);
                 }
             }
@@ -196,6 +207,8 @@ pub fn thinking_system(
                 brain.task = Some(Task::Play);
             } else if m == Motivation::Work {
                 brain.task = Some(Task::Work);
+            } else if m == Motivation::Personality {
+                brain.task = Some(Task::Personality);
             } else if m == Motivation::Meander {
                 brain.task = Some(Task::Meander);
             }

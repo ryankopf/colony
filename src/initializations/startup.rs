@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-use super::components::{Position, SizeXYZ};
-use super::prelude::*;
+use crate::components::{Position, SizeXYZ};
+use crate::prelude::*;
 use crate::spawn_unit_from_template;
 use crate::UnitTemplate;
 
@@ -42,19 +42,17 @@ pub fn startup(
         spawn_unit_from_template(&mut commands, position, &sprite_sheet, &UnitTemplate::crab());
     }
 
-    let position = Position { x: 10, y: 10, z: 0 };
+    let position = Position { x: 10, y: 6, z: 0 };
+    let sprite =  TextureAtlasSprite::new(TileType::Cave.sprite_index());
     commands
-            .spawn(SpriteBundle {
-                sprite: Sprite {
-                    color: Color::BLACK,
-                    custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                    ..default()
-                },
+            .spawn(SpriteSheetBundle {
+                sprite,
+                texture_atlas: sprite_sheet.0.clone(),
                 ..default()
             })
             .insert(position)
             .insert(SizeXYZ::cube(1.1))
-            .insert(super::components::MonsterGenerator)
+            .insert(MonsterGenerator)
             .insert(position.to_transform_layer(1.0))
             ;
 

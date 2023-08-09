@@ -32,8 +32,6 @@ mod selection_systems;
 use selection_systems::*;
 mod spoilage_system;
 use spoilage_system::*;
-mod startup;
-use startup::*;
 mod statusdisplay_system;
 use statusdisplay_system::*;
 mod task_system;

@@ -3,6 +3,8 @@ mod chop;
 mod eat;
 mod forage;
 mod meander;
+mod personality;
+use personality::PersonalityPlugin;
 mod plant;
 mod play;
 mod sleep;
@@ -14,6 +16,7 @@ pub struct TaskPlugin;
 impl Plugin for TaskPlugin {
     fn build(&self, app: &mut App) {
         app
+        .add_plugins(PersonalityPlugin)
         .add_systems(
             Update,
             (
