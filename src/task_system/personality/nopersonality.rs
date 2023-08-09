@@ -8,8 +8,6 @@ pub fn nopersonality(
     _: Option<&Nest>
 ) {
     if brain.task != Some(Task::Personality) { return; }
-    if !brain.personality.is_empty() { return; } 
-    
     brain.motivation = Some(Motivation::Meander);
     brain.task = None;
 }
