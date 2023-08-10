@@ -65,7 +65,7 @@ fn spawn_logs(
             texture_atlas: sprite_sheet.0.clone(),
             ..Default::default()
         })
-        .insert(Logs  )
+        .insert(Logs )
         .insert(p)
         .insert(p.to_transform_layer(2.0))
         .insert( pt )

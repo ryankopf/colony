@@ -68,12 +68,6 @@ pub fn startup(
         if taken_positions.contains_key(&position) { continue; }
         taken_positions.insert(position, 1);
         let plant_type = biome.plants[rng.gen_range(0..biome.plants.len())];
-        // let plant_color = match plant_type {
-        //     PlantType::BerryBush => Color::PURPLE,
-        //     PlantType::OakTree => Color::rgb(0.5, 0.3, 0.0),
-        //     PlantType::PineTree => Color::rgb(0.4, 0.4, 0.1),
-        //     _ => Color::DARK_GREEN,
-        // };
         let sprite =  TextureAtlasSprite::new(plant_type.sprite_index());
         
         let plant = commands
@@ -99,5 +93,31 @@ pub fn startup(
             commands.entity(plant).insert(Choppable);
         }
     }
-
+    // Spawn Objects (Items)
+    for _ in 0..(MAP_WIDTH*MAP_LENGTH / biome.objects_overall_scarcity) {
+        let mut rng = rand::thread_rng();
+        let x = rng.gen_range(1..MAP_WIDTH-1);
+        let y = rng.gen_range(1..MAP_LENGTH-1);
+        let position = Position { x, y, z: 0 };
+        if taken_positions.contains_key(&position) { continue; }
+        taken_positions.insert(position, 1);
+        let object_type = biome.objects[rng.gen_range(0..biome.objects.len())];
+        let sprite =  TextureAtlasSprite::new(object_type.sprite_index());
+        
+        let object = commands
+            .spawn(SpriteSheetBundle {
+                sprite,
+                texture_atlas: sprite_sheet.0.clone(),
+                transform: Transform::from_xyz(
+                    position.x as f32 * TILE_SIZE,
+                    position.y as f32 * TILE_SIZE,
+                    position.z as f32 * TILE_SIZE,
+                ),
+                ..Default::default()
+            })
+            .insert(position)
+            .insert(position.to_transform_layer(0.5))
+            .id()
+            ;
+    }
 }

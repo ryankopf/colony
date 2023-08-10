@@ -16,7 +16,12 @@ pub fn starting_biome() -> Biome {
         name: "Forest".to_string(),
         plants: vec![PlantType::Cabbage, PlantType::Carrot, PlantType::PineTree, PlantType::PineTree, PlantType::PineTree, PlantType::PineTree, PlantType::PineTree,
         PlantType::CedarTree, PlantType::ThornBush, PlantType::Weed, PlantType::CactusRound],
+        plant_scarcity: vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        plant_overall_scarcity: 10,
         tiles: vec![TileType::Grass, TileType::Grass, TileType::Grass, TileType::Grass, TileType::Grass, TileType::Grass, TileType::Grass,
         TileType::Grass, TileType::Grass, TileType::Grass, TileType::Grass, TileType::Dirt, TileType::Gravel],
+        objects: vec![ItemType::StatuePillar3,ItemType::StatueCat,ItemType::StatueDragon, ItemType::Moss1, ItemType::Moss2, ItemType::LeafyDebris1],
+        objects_scarcity: vec![1, 1, 1],
+        objects_overall_scarcity: 200,
     }
 }

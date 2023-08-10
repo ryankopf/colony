@@ -4,7 +4,7 @@ pub fn territorial(
     entity: Entity,
     mut brain: Mut<Brain>,
     mut physical_body: Mut<PhysicalBody>,
-    position: &Position,
+    _position: &Position,
     nest: Option<&Nest>,
     potential_targets: &Vec<(Entity, Position)>
 ) {

@@ -13,7 +13,12 @@ pub struct SpriteSheet(pub Handle<TextureAtlas>);
 pub struct Biome {
     pub name: String,
     pub plants: Vec<PlantType>,
+    pub plant_scarcity: Vec<u8>,
+    pub plant_overall_scarcity: i32,
     pub tiles: Vec<TileType>,
+    pub objects: Vec<ItemType>,
+    pub objects_scarcity: Vec<u8>,
+    pub objects_overall_scarcity: i32,
 }
 
 #[derive(Resource)]
