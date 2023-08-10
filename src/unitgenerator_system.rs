@@ -202,6 +202,25 @@ impl UnitTemplate {
             ],
         }
     }
+    pub fn cyclops() -> Self {
+        let actor_type = ActorType::Cyclops;
+        let random_afflictions = vec![];//Self::random_afflictions_animal();
+        Self {
+            actor_type,
+            food_need: None,
+            entertainment_need: None,
+            sleep_need: None,
+            personality: vec![PersonalityTrait::Creature, PersonalityTrait::Vicious],
+            afflictions: random_afflictions.to_vec(),
+            skillset: Skillset::default(),
+            attributes: Attributeset::default(),
+            component_builders: vec![
+                |commands: &mut Commands, entity: Entity| {
+                    commands.entity(entity).insert(HasName { name: "Cyclops".to_string() });
+                },
+            ],
+        }
+    }
     pub fn random_afflictions_humanoid() -> Vec<Affliction> {
         ////////////////////////////
         // Select some Afflictions

@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+use crate::unitgenerator_system::UnitTemplate;
+
 use super::prelude::*;
 
 #[derive(Component, Copy, Clone, Debug, PartialEq, Hash, Eq)]
@@ -91,7 +93,8 @@ pub enum ActorType { // Entity? Character? Creature? Actor? Avatar? Unit? Agent?
     IceFox,
     BrownRat,
     Spider,
-    Crab
+    Crab,
+    Cyclops,
 }
 impl ActorType {
     pub fn sprite_row_and_col(&self) -> (usize, usize) {
@@ -118,6 +121,7 @@ impl ActorType {
             ActorType::BrownRat => (64, 28),
             ActorType::Spider => (64, 29),
             ActorType::Crab => (63, 29),
+            ActorType::Cyclops => (59, 8),
         }
     }
     pub fn sprite_index(&self) -> usize {
@@ -917,7 +921,26 @@ pub struct MapTile;
 pub struct MoveRandom;
 
 #[derive(Component)]
-pub struct MonsterGenerator;
+pub struct MonsterGenerator {
+    pub monsters: Vec<(UnitTemplate, u8)>,
+}
+impl MonsterGenerator {
+    pub fn pick(&self) -> &UnitTemplate {
+        let mut rng = rand::thread_rng();
+        let mut total = 0;
+        for (_, chance) in self.monsters.iter() {
+            total += chance;
+        }
+        let mut roll = rng.gen_range(0..total);
+        for (monster, chance) in self.monsters.iter() {
+            if roll < *chance {
+                return monster;
+            }
+            roll -= chance;
+        }
+        panic!("MonsterGenerator::pick failed");
+    }
+}
 
 #[derive(Component)]
 pub struct GeneratedBy {

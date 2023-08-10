@@ -13,12 +13,12 @@ impl Plugin for MonsterGeneratorPlugin {
 
 pub fn monster_generator(
     mut commands: Commands,
-    entities: Query<(Entity, &Position), With<MonsterGenerator>>,
+    entities: Query<(Entity, &Position, &MonsterGenerator)>,
     tile_types: Query<(&Position, &TileType)>,
     generated_monsters: Query<(Entity, &GeneratedBy)>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
-    for (entity, position) in entities.iter() {
+    for (entity, position, monster_generator) in entities.iter() {
         let mut new_position = *position;
         let dir = random::<i32>() % 4;
         match dir {
@@ -44,16 +44,8 @@ pub fn monster_generator(
         if !can_generate {
             return;
         }
-        match rand::thread_rng().gen_range(0..6) {
-            0 => {
-                let monster = spawn_unit_from_template(&mut commands, new_position, &sprite_sheet, &UnitTemplate::rat());
-                commands.entity(monster).insert(GeneratedBy { entity });
-            }
-            _ => {
-                let monster = spawn_unit_from_template(&mut commands, new_position, &sprite_sheet, &UnitTemplate::spider());
-                commands.entity(monster).insert(GeneratedBy { entity });
-            }
-        }
+        let monster = spawn_unit_from_template(&mut commands, new_position, &sprite_sheet, monster_generator.pick());
+        commands.entity(monster).insert(GeneratedBy { entity });
         
         //*position = new_position;
     }

@@ -52,7 +52,7 @@ pub fn startup(
             })
             .insert(position)
             .insert(SizeXYZ::cube(1.1))
-            .insert(MonsterGenerator)
+            .insert(MonsterGenerator { monsters: vec![(UnitTemplate::rat(),1),(UnitTemplate::spider(),5),(UnitTemplate::cyclops(),1)] })
             .insert(position.to_transform_layer(1.0))
             ;
 

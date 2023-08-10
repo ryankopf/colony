@@ -144,12 +144,6 @@ pub fn thinking_system(
             }
             // Now decide what the unit should be doing based on its personality.
             if brain.motivation.is_none() {
-                if brain.personality.contains(&PersonalityTrait::Vicious) {
-                    brain.motivation = Some(Motivation::Rage);
-                }
-                if brain.personality.contains(&PersonalityTrait::Territorial) {
-                    // brain.motivation = Some(Motivation::DefendTerritory);
-                }
                 if brain.personality.contains(&PersonalityTrait::Creature) {
                     brain.motivation = Some(Motivation::Personality);
                 } else {

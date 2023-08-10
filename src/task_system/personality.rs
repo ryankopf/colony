@@ -1,6 +1,7 @@
 use crate::prelude::*;
 pub mod territorial;
 pub mod nopersonality;
+pub mod vicious;
 
 pub struct PersonalityPlugin;
 
@@ -26,6 +27,9 @@ pub fn personalities(
         if brain.task != Some(Task::Personality) { continue; }
         let next_trait = brain.get_next_personality_trait();
         match next_trait {
+            Some(PersonalityTrait::Vicious) => {
+                vicious::vicious(entity, brain, physical_body, position, nest, &potential_targets);
+            }
             Some(PersonalityTrait::Territorial) => {
                 territorial::territorial(entity, brain, physical_body, position, nest, &potential_targets);
             },
