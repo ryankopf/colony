@@ -15,14 +15,17 @@ What are the various systems?
 
 ![Screenshot](./assets/screenshot.png)
 
-## Next Steps
+## Things Needed For Alpha Release
 
-1. Complete upgrading to Bevy 0.11 by clearing all deprecation notices
-2. Finish basic combat, giving your characters a way to fight back against monsters
-3. Improve the UI box when you click one of your units, displaying their personality, attributes, and health
-4. Implementing more variety in foods, trees, etc, would be a good place to start
-5. (Harder) Implement building things like walls, beds, etc.
-
+1. Improve the UI box when you click one of your units, displaying their personality, attributes, and health
+2. (Easy) Implementing more variety in already-implemented systems: foods, trees, and plants.
+3. Biomes should exist in patches across a larger map. Biomes could also represent areas, like a graveyard type area could be a "Biome".
+4. Implement construction skills.
+5. Add more kinds of objects
+6. Better organize tileset file.
+7. Implement weapons/equipment/inventory.
+8. Giving orders to units.
+9. Implement the effects of more personality traits.
 
 ## Getting Started
 
