@@ -15,6 +15,7 @@ pub fn task_system_plant(
         let mut nearest_entity: Option<NearestEntity> = None;
         'targets: for (targetable_entity, targetable_position, zone) in targetables.iter() {
             if zone.zone_type != ZoneType::Farm { continue; }
+            if zone.plant_type.is_none() { continue; }
             for (e, obstacle) in obstacles.iter() {
                 if (obstacle == targetable_position) && (entity != e) { continue 'targets; }
             } // Don't plant on top of obstacles.
@@ -50,7 +51,7 @@ fn spawn_plant(
     zone: &Zone,
 ) {
     // commands.entity(foragable_entity).remove::<Foragable>();
-    let sprite =  TextureAtlasSprite::new(zone.plant_type.sprite_index());
+    let sprite =  TextureAtlasSprite::new(zone.plant_type.unwrap().sprite_index());
     commands.spawn(SpriteSheetBundle {
         sprite,
         texture_atlas: sprite_sheet.0.clone(),
@@ -63,6 +64,6 @@ fn spawn_plant(
     })
     .insert(*position)
     .insert(position.to_transform_layer(0.5))
-    .insert(Plant { growth: 0.4, plant_type: zone.plant_type })
+    .insert(Plant { growth: 0.4, plant_type: zone.plant_type.unwrap() })
     ;
 }

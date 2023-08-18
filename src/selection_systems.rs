@@ -97,7 +97,7 @@ pub fn select_zoning(
     'outer: for (entity, selection_reason) in query.iter() {
         for zoned in zoned.iter() { if zoned == entity { continue 'outer; } } // Don't zone tiles that already have a zone.
         if selection_reason.is_some() {
-            commands.entity(entity).insert(Zone { zone_type: dragging.zone_type, plant_type: dragging.plant_type, ..default() } );
+            commands.entity(entity).insert(Zone { zone_type: dragging.zone_type, plant_type: Some(dragging.plant_type), ..default() } );
             let zonemarker = commands.spawn( (SpriteBundle {
                 sprite: Sprite {
                         color: Color::rgba(0.8, 0.8, 1.0, 0.1),

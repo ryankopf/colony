@@ -11,6 +11,7 @@ mod initializations;
 use initializations::*;
 mod interface;
 use interface::*;
+mod objects;
 mod main_menu;
 use main_menu::*;
 mod monstergenerator_system;
