@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::prelude::*;
 
 #[derive(Component)]
 pub struct Object {
@@ -20,8 +21,6 @@ enum ItemGroup {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ItemType {
-    Cabbage,
-    Carrot,
     CedarLog,
     PineLog,
     OakLog,
@@ -80,13 +79,25 @@ pub enum ItemType {
     LeafyDebris3,
     LeafyDebris4,
     WallWood,
+    Aloe,
+    Azalea,
+    Bush,
+    Cabbage,
+    CactusRound,
+    CactusUp,
+    Carrot,
+    CedarTree,
+    FlowerBush,
+    PineTree,
+    OakTree,
+    ThornBush,
+    Vine,
+    Weed,
 }
 
 impl ItemType {
     pub fn sprite_row_and_col(&self) -> (usize, usize) {
         match self {
-            ItemType::Cabbage => (94, 33),
-            ItemType::Carrot => (94, 24),
             ItemType::CedarLog => (94, 30),
             ItemType::PineLog => (94, 30),
             ItemType::OakLog => (94, 30),
@@ -145,11 +156,46 @@ impl ItemType {
             ItemType::LeafyDebris3 => (50, 17),
             ItemType::LeafyDebris4 => (50, 18),
             ItemType::WallWood => (16, 3),
+            ItemType::Aloe => (67, 57),
+            ItemType::Azalea => (67, 57),
+            ItemType::Bush => (67, 57),
+            ItemType::Cabbage => (94, 32),
+            ItemType::CactusRound => (67, 57),
+            ItemType::CactusUp => (67, 57),
+            ItemType::Carrot => (94, 31),
+            ItemType::CedarTree => (13, 15),
+            ItemType::PineTree => (13, 13),
+            ItemType::OakTree => (13, 14),
+            ItemType::ThornBush => (67, 57),
+            ItemType::FlowerBush => (67, 57),
+            ItemType::Vine => (67, 57),
+            ItemType::Weed => (67, 57),
         }
     }
     pub fn sprite_index(&self) -> usize {
         let (row, col) = self.sprite_row_and_col();
         row * 64 + col
+    }
+    pub fn growth_speed(&self) -> f32 {
+        match self {
+            ItemType::Cabbage => 0.001,
+            _ => 0.01
+        }
+    }
+    pub fn is_forageable(&self) -> (Option<ItemType>, i32, ForageType) {
+        match self {
+            ItemType::Cabbage => (Some(ItemType::Cabbage), 1, ForageType::Once),
+            ItemType::Carrot => (Some(ItemType::Carrot), 1, ForageType::Once),
+            _ => (None, 0, ForageType::Once),
+        }
+    }
+    pub fn is_choppable(&self) -> (Option<ItemType>, i32) {
+        match self {
+            ItemType::PineTree => (Some(ItemType::PineLog), 1),
+            ItemType::OakTree => (Some(ItemType::OakLog), 1),
+            ItemType::CedarTree => (Some(ItemType::CedarLog), 1),
+            _ => (None, 0),
+        }
     }
     pub fn nutrition(&self) -> f32 {
         match self {
@@ -158,13 +204,6 @@ impl ItemType {
             _ => 0.0,
         }
     }
-    // pub fn spoilage(&self) -> f32 {
-    //     match self {
-    //         ItemType::Cabbage => 1.0,
-    //         ItemType::Carrot => 1.0,
-    //         _ => 0.0,
-    //     }
-    // }
     pub fn spoilage_rate(&self) -> f32 {
         match self {
             ItemType::Cabbage => 0.1,

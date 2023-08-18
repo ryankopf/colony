@@ -89,7 +89,7 @@ pub fn startup(
         if plant_type.is_forageable().0.is_some() && growth > 0.5 {
             commands.entity(plant).insert(Foragable);
         }
-        if [PlantType::OakTree,PlantType::PineTree].contains(&plant_type) && growth > 0.5 {
+        if plant_type.is_choppable().0.is_some() && growth > 0.5 {
             commands.entity(plant).insert(Choppable);
         }
     }

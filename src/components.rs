@@ -570,7 +570,7 @@ pub enum PersonalityTrait {
     // Traits for People
     Adventurous, Ambitious, Analytical, Airheaded, Artistic, Brave, Calm, Charismatic, Confident, Cowardly,
     Creative, Curious, Charitable, Cynical, Dumb, Eccentric, Energetic, Empath, Empathetic, Enthusiastic,
-    Fearless, Friendly, Greedy, Impulsive, Jinxed, Loyal, Logical, Lucky, Mean, Mischievous,
+    Fearless, Friendly, Greedy, Human, Impulsive, Jinxed, Loyal, Logical, Lucky, Mean, Mischievous,
     Nice, Optimistic, Patient, Pessimistic, Rebellious, Reliable, Sensitive, Shy, Smart, Stupid,
     Technophile, Timid, Tolerant, Trusting, Violent, Weak, Workaholic, Witty, Outgoing,
     // Traits for Creatures
@@ -597,7 +597,7 @@ pub struct GiveMeAName;
 #[derive(Component)]
 pub struct Plant {
     pub growth: f32,
-    pub plant_type: PlantType,
+    pub plant_type: ItemType,
 }
 impl HoverNote for Plant {
     fn hover_note(&self) -> String {
@@ -615,16 +615,14 @@ pub struct ZoneMarker;
 #[derive(Component)]
 pub struct Zone {
     pub zone_type: ZoneType,
-    pub plant_type: Option<PlantType>,
-    pub item_type: Option<ItemType>,
+    pub item_type: ItemType,
 }
 
 impl Default for Zone {
     fn default() -> Self {
         Zone {
             zone_type: ZoneType::Farm,
-            plant_type: Some(PlantType::Cabbage),
-            item_type: None,
+            item_type: ItemType::Cabbage
         }
     }
 }
@@ -637,7 +635,7 @@ pub struct NearestEntity {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ZoneType {
-    Farm, Pasture, Storage, Fishing, Hospital, Party, Meeting
+    Farm, Pasture, Storage, Fishing, Hospital, Party, Meeting, Construction
 }
 
 
@@ -651,72 +649,72 @@ pub enum Motivation { // Sorted in order of prioritization.
     Crisis, Rage, Order, Danger, Hunger, Thirst, Tired, Injured, Sick, Bored, Happy, Sad, Angry, Lonely, Love, Fear, Hate, Work, Personality, Meander, Idle
 }
 
-#[derive(Component, PartialEq, Copy, Clone, Debug)]
-pub enum PlantType {
-    Aloe,
-    Azalea,
-    Bush,
-    Cabbage,
-    CactusRound,
-    CactusUp,
-    Carrot,
-    CedarTree,
-    FlowerBush,
-    PineTree,
-    OakTree,
-    ThornBush,
-    Vine,
-    Weed,
-}
+// #[derive(Component, PartialEq, Copy, Clone, Debug)]
+// pub enum PlantType {
+//     Aloe,
+//     Azalea,
+//     Bush,
+//     Cabbage,
+//     CactusRound,
+//     CactusUp,
+//     Carrot,
+//     CedarTree,
+//     FlowerBush,
+//     PineTree,
+//     OakTree,
+//     ThornBush,
+//     Vine,
+//     Weed,
+// }
 
-impl PlantType {
-    pub fn is_edible(&self) -> bool {
-        matches!(self, PlantType::Cabbage)
-    }
-    pub fn sprite_row_and_col(&self) -> (usize, usize) {
-        match self {
-            PlantType::Aloe => (67, 57),
-            PlantType::Azalea => (67, 57),
-            PlantType::Bush => (67, 57),
-            PlantType::Cabbage => (94, 32),
-            PlantType::CactusRound => (67, 57),
-            PlantType::CactusUp => (67, 57),
-            PlantType::Carrot => (94, 31),
-            PlantType::CedarTree => (13, 15),
-            PlantType::PineTree => (13, 13),
-            PlantType::OakTree => (13, 14),
-            PlantType::ThornBush => (67, 57),
-            PlantType::FlowerBush => (67, 57),
-            PlantType::Vine => (67, 57),
-            PlantType::Weed => (67, 57),
-        }
-    }
-    pub fn sprite_index(&self) -> usize {
-        let (row, col) = self.sprite_row_and_col();
-        row * 64 + col
-    }
-    pub fn growth_speed(&self) -> f32 {
-        match self {
-            PlantType::Cabbage => 0.001,
-            _ => 0.01
-        }
-    }
-    pub fn is_forageable(&self) -> (Option<ItemType>, i32, ForageType) {
-        match self {
-            PlantType::Cabbage => (Some(ItemType::Cabbage), 1, ForageType::Once),
-            PlantType::Carrot => (Some(ItemType::Carrot), 1, ForageType::Once),
-            _ => (None, 0, ForageType::Once),
-        }
-    }
-    pub fn is_choppable(&self) -> (Option<ItemType>, i32) {
-        match self {
-            PlantType::PineTree => (Some(ItemType::PineLog), 1),
-            PlantType::OakTree => (Some(ItemType::OakLog), 1),
-            PlantType::CedarTree => (Some(ItemType::CedarLog), 1),
-            _ => (None, 0),
-        }
-    }
-}
+// impl PlantType {
+//     pub fn is_edible(&self) -> bool {
+//         matches!(self, PlantType::Cabbage)
+//     }
+//     pub fn sprite_row_and_col(&self) -> (usize, usize) {
+//         match self {
+//             PlantType::Aloe => (67, 57),
+//             PlantType::Azalea => (67, 57),
+//             PlantType::Bush => (67, 57),
+//             PlantType::Cabbage => (94, 32),
+//             PlantType::CactusRound => (67, 57),
+//             PlantType::CactusUp => (67, 57),
+//             PlantType::Carrot => (94, 31),
+//             PlantType::CedarTree => (13, 15),
+//             PlantType::PineTree => (13, 13),
+//             PlantType::OakTree => (13, 14),
+//             PlantType::ThornBush => (67, 57),
+//             PlantType::FlowerBush => (67, 57),
+//             PlantType::Vine => (67, 57),
+//             PlantType::Weed => (67, 57),
+//         }
+//     }
+//     pub fn sprite_index(&self) -> usize {
+//         let (row, col) = self.sprite_row_and_col();
+//         row * 64 + col
+//     }
+//     pub fn growth_speed(&self) -> f32 {
+//         match self {
+//             PlantType::Cabbage => 0.001,
+//             _ => 0.01
+//         }
+//     }
+//     pub fn is_forageable(&self) -> (Option<ItemType>, i32, ForageType) {
+//         match self {
+//             PlantType::Cabbage => (Some(ItemType::Cabbage), 1, ForageType::Once),
+//             PlantType::Carrot => (Some(ItemType::Carrot), 1, ForageType::Once),
+//             _ => (None, 0, ForageType::Once),
+//         }
+//     }
+//     pub fn is_choppable(&self) -> (Option<ItemType>, i32) {
+//         match self {
+//             PlantType::PineTree => (Some(ItemType::PineLog), 1),
+//             PlantType::OakTree => (Some(ItemType::OakLog), 1),
+//             PlantType::CedarTree => (Some(ItemType::CedarLog), 1),
+//             _ => (None, 0),
+//         }
+//     }
+// }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ForageType {

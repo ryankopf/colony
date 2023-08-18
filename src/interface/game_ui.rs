@@ -213,31 +213,49 @@ pub fn game_ui_click(
                             2 => {
                                 dragging.looking_for = SelectableType::Zoning;
                                 dragging.zone_type = ZoneType::Farm;
-                                dragging.plant_type = PlantType::Cabbage;
+                                dragging.item_type = ItemType::Cabbage;
                             },
                             3 => {
                                 dragging.looking_for = SelectableType::Zoning;
                                 dragging.zone_type = ZoneType::Farm;
-                                dragging.plant_type = PlantType::PineTree;
+                                dragging.item_type = ItemType::PineTree;
                             },
                             4 => {
                                 dragging.looking_for = SelectableType::Zoning;
                                 dragging.zone_type = ZoneType::Farm;
-                                dragging.plant_type = PlantType::OakTree;
+                                dragging.item_type = ItemType::OakTree;
                             },
                             5 => {
                                 dragging.looking_for = SelectableType::Zoning;
                                 dragging.zone_type = ZoneType::Farm;
-                                dragging.plant_type = PlantType::CedarTree;
+                                dragging.item_type = ItemType::CedarTree;
                             },
                             _ => { },
                         }
                     }
                     MenuStates::Zone => {
-                        menu_state.state = MenuStates::Home;
+                        match button_index {
+                            _ => {
+                                dragging.looking_for = SelectableType::Nothing;
+                                menu_state.state = MenuStates::Home;
+                            },
+                        }
                     }
                     MenuStates::Build => {
-                        menu_state.state = MenuStates::Home;
+                        match button_index {
+                            1 => {
+                                dragging.looking_for = SelectableType::Unzoning;
+                            },
+                            2 => {
+                                dragging.looking_for = SelectableType::Zoning;
+                                dragging.zone_type = ZoneType::Construction;
+                                dragging.item_type = ItemType::WallWood;
+                            },
+                            _ => {
+                                dragging.looking_for = SelectableType::Nothing;
+                                menu_state.state = MenuStates::Home;
+                            },
+                        }
                     }
                     MenuStates::Craft => {
                         menu_state.state = MenuStates::Home;

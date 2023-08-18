@@ -4,7 +4,7 @@ pub use super::components::{
     GiveMeAName, HasName, HasNameShown, HighlightBox, Highlighted, HoverNote, InfoPanel, InGameButton, IsName,
     Logs, MainMenuOverlay, MapTile, MenuStates, MonsterGenerator, Motivation, MoveRandom,
     MoveTowardsNearestAttackable, MoveTowardsTarget, NearestEntity, Need, Nest,
-    Order, Pathing, PauseOverlay, PersonalityTrait, PhysicalBody, Plant, PlantType, Position,
+    Order, Pathing, PauseOverlay, PersonalityTrait, PhysicalBody, Plant, Position,
     SelectableType, SetNest, Skillset, Skill, SizeXYZ, StrikeType,
     Targeting, Task, TemporaryVisualElement, TextName, TileType, WorkMarker, WorkTarget, Zone, ZoneMarker, ZoneType,
 };

@@ -12,7 +12,7 @@ pub struct SpriteSheet(pub Handle<TextureAtlas>);
 #[derive(Resource)]
 pub struct Biome {
     pub name: String,
-    pub plants: Vec<PlantType>,
+    pub plants: Vec<ItemType>,
     pub plant_scarcity: Vec<u8>,
     pub plant_overall_scarcity: i32,
     pub tiles: Vec<TileType>,
@@ -27,7 +27,7 @@ pub struct Dragging {
     pub start_position: Option<Position>,
     pub looking_for: SelectableType,
     pub zone_type: ZoneType,
-    pub plant_type: PlantType,
+    pub item_type: ItemType,
 }
 
 impl Default for Dragging {
@@ -37,7 +37,7 @@ impl Default for Dragging {
             start_position: None,
             looking_for: SelectableType::Foragable,
             zone_type: ZoneType::Farm,
-            plant_type: PlantType::Cabbage,
+            item_type: ItemType::WallWood,
         }
     }
 }
