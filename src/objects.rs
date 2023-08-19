@@ -7,6 +7,15 @@ pub struct Object {
     pub remaining_resources: Vec<(ItemType, u8)>,
     pub under_construction: bool,
 }
+impl Default for Object {
+    fn default() -> Self {
+        Object {
+            itemtype: ItemType::WallWood,
+            remaining_resources: vec![],
+            under_construction: false,
+        }
+    }
+}
 
 #[derive(Component)]
 pub struct ItemReplacements {
@@ -155,7 +164,7 @@ impl ItemType {
             ItemType::LeafyDebris2 => (50, 16),
             ItemType::LeafyDebris3 => (50, 17),
             ItemType::LeafyDebris4 => (50, 18),
-            ItemType::WallWood => (16, 3),
+            ItemType::WallWood => (7, 32),
             ItemType::Aloe => (67, 57),
             ItemType::Azalea => (67, 57),
             ItemType::Bush => (67, 57),

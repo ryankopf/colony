@@ -20,7 +20,7 @@ impl Plugin for PersonalityPlugin {
 
 pub fn personalities(
     mut entities: Query<(Entity, &mut Brain, &mut PhysicalBody, &Position, Option<&Nest>, Option<&Targeting>)>,
-    mut objects: Query<(Entity, &Object, &Position)>,
+    mut objects: Query<(Entity, Option<&Object>, Option<&Zone>, Option<&WorkTarget>, &Position)>,
 ) {
     let potential_targets = entities.iter()
         .map(|(entity, _, _, position, _, _)| (entity, *position)) // Clone the Position data

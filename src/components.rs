@@ -644,6 +644,12 @@ pub enum Task { // Sorted in order of prioritization.
     Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Personality, Meander, Idle,
     Doctor, Forage, Plant, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Haul // Forms of work
 }
+impl Task {
+    pub fn is_zone_task(&self) -> bool {
+        matches!(self, Task::Plant | Task::Construct)
+    }
+}
+
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Motivation { // Sorted in order of prioritization.
     Crisis, Rage, Order, Danger, Hunger, Thirst, Tired, Injured, Sick, Bored, Happy, Sad, Angry, Lonely, Love, Fear, Hate, Work, Personality, Meander, Idle

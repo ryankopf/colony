@@ -148,12 +148,12 @@ pub fn thinking_system(
                     brain.motivation = Some(Motivation::Personality);
                 } else {
                     // Work (75% chance) or Personality (25% chance)
-                    if random::<i32>() % 4 == 0 {
-                        brain.motivation = Some(Motivation::Work);
-                    } else {
-                        brain.motivation = Some(Motivation::Personality);
-                    } 
-                    brain.motivation = Some(Motivation::Work);
+                    // if random::<i32>() % 4 == 0 {
+                    //     brain.motivation = Some(Motivation::Work);
+                    // } else {
+                    //     brain.motivation = Some(Motivation::Personality);
+                    // }
+                    brain.motivation = Some(Motivation::Personality);
                 }
             }
         }

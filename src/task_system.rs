@@ -52,7 +52,7 @@ impl Plugin for TaskPlugin {
                 .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.5)))
                 .run_if(in_state(GameState::InGame))
             ,
-                plant::task_system_plant
+                plant::task_system_zone
                 .run_if(bevy::time::common_conditions::on_timer(bevy::utils::Duration::from_secs_f32(0.5)))
                 .run_if(in_state(GameState::InGame))
             )

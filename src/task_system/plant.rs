@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-pub fn task_system_plant(
+pub fn task_system_zone(
     mut commands: Commands,
     mut entities_that_might_plant: Query<(Entity, &mut Brain, &Position, Option<&Pathing>, Option<&Targeting>)>,
     targetables: Query<(Entity, &Position, &Zone)>,
@@ -11,18 +11,25 @@ pub fn task_system_plant(
     let mut already_targeted = crate::set_already_targetted(&entities_that_might_plant);
     'brains: for (entity, mut brain, position, pathing, targeting) in entities_that_might_plant.iter_mut() {
         if pathing.is_some() { continue; }
-        if brain.task != Some(Task::Plant) { continue; }
+        if brain.task.is_none() { continue; }
+        if ! brain.task.unwrap().is_zone_task() { continue; }
         let mut nearest_entity: Option<NearestEntity> = None;
         'targets: for (targetable_entity, targetable_position, zone) in targetables.iter() {
-            if zone.zone_type != ZoneType::Farm { continue; }
+            if zone.zone_type == ZoneType::Farm && brain.task != Some(Task::Plant) { continue; }
+            if zone.zone_type == ZoneType::Construction && brain.task != Some(Task::Construct) { continue; }
             for (e, obstacle) in obstacles.iter() {
                 if (obstacle == targetable_position) && (entity != e) { continue 'targets; }
-            } // Don't plant on top of obstacles.
+            } // Don't plant or build on top of obstacles.
             // If you are already next to it, plant it, if you are targetting it.
             let distance = position.distance(targetable_position);
             if distance <= 1 && targeting.is_some() && targeting.unwrap().target == targetable_entity {
                 commands.entity(entity).remove::<Targeting>();
-                spawn_plant(&mut commands, targetable_position, &sprite_sheet, zone); // Did plant! Now, go ahead and try planting again....
+                if zone.zone_type == ZoneType::Farm {
+                    spawn_plant(&mut commands, targetable_position, &sprite_sheet, zone); // Did plant! Now, go ahead and try planting again....
+                } else {
+                    spawn_building(&mut commands, targetable_position, &sprite_sheet, zone);
+                    commands.entity(targetable_entity).despawn_recursive();
+                }
                 continue 'brains;
             }
             // Unless it is already targetted by someone other than you.
@@ -64,5 +71,29 @@ fn spawn_plant(
     .insert(*position)
     .insert(position.to_transform_layer(0.5))
     .insert(Plant { growth: 0.4, plant_type: zone.item_type })
+    ;
+}
+
+fn spawn_building(
+    commands: &mut Commands,
+    position: &Position,
+    sprite_sheet: &Res<SpriteSheet>,
+    zone: &Zone,
+) {
+    // commands.entity(foragable_entity).remove::<Foragable>();
+    let sprite =  TextureAtlasSprite::new(zone.item_type.sprite_index());
+    commands.spawn(SpriteSheetBundle {
+        sprite,
+        texture_atlas: sprite_sheet.0.clone(),
+        transform: Transform::from_xyz(
+            position.x as f32 * TILE_SIZE,
+            position.y as f32 * TILE_SIZE,
+            position.z as f32 * TILE_SIZE,
+        ),
+        ..default()
+    })
+    .insert(*position)
+    .insert(position.to_transform_layer(0.5))
+    .insert(Object { itemtype: zone.item_type, under_construction: false, ..default() })
     ;
 }
