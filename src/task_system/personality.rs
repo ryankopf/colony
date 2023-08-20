@@ -46,7 +46,7 @@ pub fn personalities(
                 territorial::territorial(entity, brain, physical_body, position, nest, &potential_targets);
             },
             Some(PersonalityTrait::Human) => {
-                human::human(entity, brain, physical_body, position, nest, &objects, &already_targeted, &obstacles, &tiletypes);
+                human::human(entity, brain, physical_body, position, &objects, &already_targeted, &obstacles, &tiletypes);
             },
             _ => {
                 nopersonality::nopersonality(entity, brain, physical_body, position, nest);

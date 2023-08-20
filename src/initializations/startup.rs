@@ -84,6 +84,7 @@ pub fn startup(
             .insert(position)
             .insert(position.to_transform_layer(0.5))
             .insert(Plant { growth, plant_type })
+            .insert( Object { itemtype: plant_type, ..default() } )
             .id()
             ;
         if plant_type.is_forageable().0.is_some() && growth > 0.5 {
