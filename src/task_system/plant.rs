@@ -17,6 +17,7 @@ pub fn task_system_zone(
         'targets: for (targetable_entity, targetable_position, zone) in targetables.iter() {
             if zone.zone_type == ZoneType::Farm && brain.task != Some(Task::Plant) { continue; }
             if zone.zone_type == ZoneType::Construction && brain.task != Some(Task::Construct) { continue; }
+            if zone.zone_type == ZoneType::Storage && brain.task != Some(Task::Carrying) { continue; }
             for (e, obstacle) in obstacles.iter() {
                 if (obstacle == targetable_position) && (entity != e) { continue 'targets; }
             } // Don't plant or build on top of obstacles.
@@ -24,11 +25,15 @@ pub fn task_system_zone(
             let distance = position.distance(targetable_position);
             if distance <= 1 && targeting.is_some() && targeting.unwrap().target == targetable_entity {
                 commands.entity(entity).remove::<Targeting>();
-                if zone.zone_type == ZoneType::Farm {
-                    spawn_plant(&mut commands, targetable_position, &sprite_sheet, zone); // Did plant! Now, go ahead and try planting again....
-                } else {
-                    spawn_building(&mut commands, targetable_position, &sprite_sheet, zone);
-                    commands.entity(targetable_entity).despawn_recursive();
+                match zone.zone_type {
+                    ZoneType::Farm => {
+                        spawn_plant(&mut commands, targetable_position, &sprite_sheet, zone);
+                    }
+                    ZoneType::Construction => {
+                        spawn_building(&mut commands, targetable_position, &sprite_sheet, zone);
+                        commands.entity(targetable_entity).despawn_recursive();
+                    }
+                    _ => {}
                 }
                 continue 'brains;
             }

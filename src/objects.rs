@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, ecs::component};
 use crate::prelude::*;
 
 #[derive(Component)]
@@ -283,6 +283,12 @@ impl ItemType {
             _ => 0.01,
         }
     }
+    pub fn carryable(&self) -> bool {
+        match self.group() {
+            ItemGroup::Statues => true,
+            _ => false,
+        }
+    }
     pub fn passable(&self) -> bool {
         match self.group() {
             ItemGroup::Statues => false,
@@ -303,6 +309,14 @@ impl ItemType {
     }
     pub fn potential_replacements(&self) -> Vec<ItemType> {
         self.group().items()
+    }
+    pub fn add_components(&self,
+        commands: &mut Commands,
+        entity: Entity
+    ) {
+        if self.carryable() {
+            commands.entity(entity).insert( Carryable );
+        }
     }
 
     fn group(&self) -> ItemGroup {

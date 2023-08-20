@@ -118,7 +118,9 @@ pub fn startup(
             })
             .insert(position)
             .insert(position.to_transform_layer(0.5))
+            .insert( Object { itemtype: object_type, ..default() } )
             .id()
             ;
+        object_type.add_components(&mut commands, object);
     }
 }

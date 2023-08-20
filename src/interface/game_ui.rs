@@ -91,7 +91,7 @@ pub fn start_game_ui(
         "CLEAR",
         "CHOP",
         "FORAGE",
-        "COLLECT",
+        "CARRY",
         "HUNT",
         "MINE",
     ],vec![ // farm
@@ -105,7 +105,7 @@ pub fn start_game_ui(
         "BACK",
         "NOTHING",
         "FISHING",
-        "HOSPITAL",
+        "STORAGE",
         "MEETING",
         "AVOID",
     ],vec![ // build
@@ -176,7 +176,7 @@ pub fn game_ui_click(
                             _ => { },
                         }
                     }
-                    MenuStates::Tasks => { // chop, forage, gather, hunt, mine
+                    MenuStates::Tasks => { // chop, forage, carry, hunt, mine
                         match button_index {
                             0 => {
                                 dragging.looking_for = SelectableType::Nothing;
@@ -190,11 +190,15 @@ pub fn game_ui_click(
                             },
                             3 => {
                                 dragging.looking_for = SelectableType::Foragable;
-                                dragging.zone_type = ZoneType::Farm;
                             },
                             4 => {
-                                dragging.looking_for = SelectableType::Gatherable;
-                                dragging.zone_type = ZoneType::Farm;
+                                dragging.looking_for = SelectableType::Carryable;
+                            },
+                            5 => {
+                                dragging.looking_for = SelectableType::Huntable;
+                            },
+                            6 => {
+                                dragging.looking_for = SelectableType::Mineable;
                             },
                             _ => { },
                         }
@@ -249,6 +253,10 @@ pub fn game_ui_click(
                     }
                     MenuStates::Zone => {
                         match button_index {
+                            3 => {
+                                dragging.looking_for = SelectableType::Zoning;
+                                dragging.zone_type = ZoneType::Storage;
+                            }
                             5 => {
                                 dragging.looking_for = SelectableType::Zoning;
                                 dragging.zone_type = ZoneType::Avoid;

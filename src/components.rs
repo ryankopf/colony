@@ -581,9 +581,11 @@ pub struct Nest {
     pub position: Position,
 }
 
+// MARKED TASKS
+#[derive(Component)]
+pub struct Carryable;
 #[derive(Component)]
 pub struct Foragable;
-
 #[derive(Component)]
 pub struct Choppable;
 #[derive(Component)]
@@ -645,7 +647,7 @@ pub enum ZoneType {
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum Task { // Sorted in order of prioritization.
     Crisis, Flee, Fight, Eat, Hospital, Sleep, Sleeping, Play, Order, Work, Personality, Meander, Idle,
-    Doctor, Forage, Plant, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Haul // Forms of work
+    Doctor, Forage, Plant, Harvest, Mine, Chop, Construct, Hunt, Milk, Cook, Fish, Craft, Clean, Pickup, Carrying // Forms of work
 }
 impl Task {
     pub fn is_zone_task(&self) -> bool {
@@ -732,10 +734,10 @@ pub enum ForageType {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum SelectableType {
+    Carryable,
     Choppable,
     Constructable,
     Foragable,
-    Gatherable,
     Harvestable,
     Huntable,
     Mineable,

@@ -29,6 +29,11 @@ impl Plugin for SelectionPlugin {
                 .run_if(in_state(GameState::InGame))
             )
         )
+        .add_systems(
+            Update,
+            (select_huntables, select_mineables, select_carryables)
+            .run_if(in_state(GameState::InGame))
+        )
         ;
     }
 }
@@ -79,16 +84,7 @@ pub fn select_choppables(
     for (entity, selection_reason) in query.iter_mut() {
         if selection_reason.is_some() {
             commands.entity(entity).insert(WorkTarget);
-            let child = commands.spawn((
-                Text2dBundle {
-                    text: Text::from_section("X", TextStyle { font: font.0.clone(), ..default() })
-                        .with_alignment(TextAlignment::Center),
-                    ..default()
-                },
-                WorkMarker
-            ))
-            .insert(Transform::from_xyz(10.0, 20.0, 100.0)).id();
-            commands.entity(entity).push_children(&[child]);
+            create_marker(&mut commands, &entity, font.0.clone());
         }
     }
     unhighlight(commands, highlighteds, highlightboxes);
@@ -108,16 +104,47 @@ pub fn select_huntables(
     for (entity, selection_reason) in query.iter_mut() {
         if selection_reason.is_some() {
             commands.entity(entity).insert(WorkTarget);
-            let child = commands.spawn((
-                Text2dBundle {
-                    text: Text::from_section("X", TextStyle { font: font.0.clone(), ..default() })
-                        .with_alignment(TextAlignment::Center),
-                    ..default()
-                },
-                WorkMarker
-            ))
-            .insert(Transform::from_xyz(10.0, 20.0, 100.0)).id();
-            commands.entity(entity).push_children(&[child]);
+            create_marker(&mut commands, &entity, font.0.clone());
+        }
+    }
+    unhighlight(commands, highlighteds, highlightboxes);
+}
+
+pub fn select_mineables(
+    mut commands: Commands,
+    mut query: Query<(Entity, Option<&Mineable>), With<Highlighted>>,
+    highlighteds: Query<Entity, With<Highlighted>>,
+    highlightboxes: Query<Entity, With<HighlightBox>>,
+    event: EventReader<SelectionEvent>,
+    dragging: Res<Dragging>,
+    font: Res<MyFont>,
+) {
+    if event.is_empty() { return; }
+    if dragging.looking_for != SelectableType::Mineable { return; }
+    for (entity, selection_reason) in query.iter_mut() {
+        if selection_reason.is_some() {
+            commands.entity(entity).insert(WorkTarget);
+            create_marker(&mut commands, &entity, font.0.clone());
+        }
+    }
+    unhighlight(commands, highlighteds, highlightboxes);
+}
+pub fn select_carryables(
+    mut commands: Commands,
+    mut query: Query<(Entity, Option<&Object>), With<Highlighted>>,
+    highlighteds: Query<Entity, With<Highlighted>>,
+    highlightboxes: Query<Entity, With<HighlightBox>>,
+    event: EventReader<SelectionEvent>,
+    dragging: Res<Dragging>,
+    font: Res<MyFont>,
+) {
+    if event.is_empty() { return; }
+    if dragging.looking_for != SelectableType::Carryable { return; }
+    for (entity, selection_reason) in query.iter_mut() {
+        if selection_reason.is_some() {
+            if ! selection_reason.unwrap().itemtype.carryable() { continue; }
+            commands.entity(entity).insert(WorkTarget);
+            create_marker(&mut commands, &entity, font.0.clone());
         }
     }
     unhighlight(commands, highlighteds, highlightboxes);
@@ -222,4 +249,20 @@ fn select_unzoning(
         }
     }
     unhighlight(commands, highlighteds, highlightboxes);
+}
+pub fn create_marker(
+    commands: &mut Commands,
+    entity: &Entity,
+    font: Handle<Font>,
+) {
+    let child = commands.spawn((
+        Text2dBundle {
+            text: Text::from_section("X", TextStyle { font: font, ..default() })
+                .with_alignment(TextAlignment::Center),
+            ..default()
+        },
+        WorkMarker
+    ))
+    .insert(Transform::from_xyz(10.0, 20.0, 100.0)).id();
+    commands.entity(*entity).push_children(&[child]);
 }
