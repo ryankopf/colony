@@ -7,9 +7,10 @@ What are the various systems?
 * "Movetoward" is an A* algorithm that lets objects move in the most direct path, avoiding obstacles along the way.
 * Spacebar will pause the game
 * Escape will close the game
-* Some of the menus don't work yet, but you can farm berries and trees, and a unit will go plant these
-* Zones, walls, building, and crafting are not yet implemented
-* The red box in the current version is meant to be a monster simulator, in the future there can be monsters like wild dogs that attack
+* Some of the menus don't work yet, but you can farm cabbages and trees, and a unit will go plant these
+* Now you can build walls
+* Crafting is not yet implemented
+* There is a monster spawner
 * You can give Orders > Chop to chop down trees
 * Units automatically sleep when they're tired.
 
