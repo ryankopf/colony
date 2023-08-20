@@ -18,6 +18,7 @@ pub fn task_system_forage(
             if distance <= 1 && targeting.is_some() && targeting.unwrap().target == foragable_entity {
                 commands.entity(entity).remove::<Targeting>();
                 spawn_food(&mut commands, foragable_entity, foragable_position, &sprite_sheet, &mut plant);
+                commands.entity(entity).remove::<WorkTarget>();
                 did_foraging = true;
                 nearest_entity = None;
                 break;

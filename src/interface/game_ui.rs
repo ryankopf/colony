@@ -84,15 +84,14 @@ pub fn start_game_ui(
     let buttons = [vec![
         "TASKS",
         "FARM",
-        "ZONE",
         "BUILD",
-        "CRAFT",
+        "ZONE",
     ],vec![ // tasks
         "BACK",
         "CLEAR",
         "CHOP",
         "FORAGE",
-        "GATHER",
+        "COLLECT",
         "HUNT",
         "MINE",
     ],vec![ // farm
@@ -172,9 +171,8 @@ pub fn game_ui_click(
                         match button_index {
                             0 => { menu_state.state = MenuStates::Tasks },
                             1 => { menu_state.state = MenuStates::Farm },
-                            2 => { menu_state.state = MenuStates::Zone },
-                            3 => { menu_state.state = MenuStates::Build },
-                            4 => { menu_state.state = MenuStates::Craft },
+                            2 => { menu_state.state = MenuStates::Build },
+                            3 => { menu_state.state = MenuStates::Zone },
                             _ => { },
                         }
                     }
@@ -233,18 +231,6 @@ pub fn game_ui_click(
                             _ => { },
                         }
                     }
-                    MenuStates::Zone => {
-                        match button_index {
-                            5 => {
-                                dragging.looking_for = SelectableType::Zoning;
-                                dragging.zone_type = ZoneType::Avoid;
-                            },
-                            _ => {
-                                dragging.looking_for = SelectableType::Nothing;
-                                menu_state.state = MenuStates::Home;
-                            },
-                        }
-                    }
                     MenuStates::Build => {
                         match button_index {
                             1 => {
@@ -261,8 +247,17 @@ pub fn game_ui_click(
                             },
                         }
                     }
-                    MenuStates::Craft => {
-                        menu_state.state = MenuStates::Home;
+                    MenuStates::Zone => {
+                        match button_index {
+                            5 => {
+                                dragging.looking_for = SelectableType::Zoning;
+                                dragging.zone_type = ZoneType::Avoid;
+                            },
+                            _ => {
+                                dragging.looking_for = SelectableType::Nothing;
+                                menu_state.state = MenuStates::Home;
+                            },
+                        }
                     }
                 }
                 start_game_ui(commands, font, menu_state, game_buttons);

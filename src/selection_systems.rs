@@ -43,12 +43,23 @@ pub fn select_foragables(
     highlightboxes: Query<Entity, With<HighlightBox>>,
     event: EventReader<SelectionEvent>,
     dragging: Res<Dragging>,
+    font: Res<MyFont>,
 ) {
     if event.is_empty() { return; }
     if dragging.looking_for != SelectableType::Foragable { return; }
     for (entity, foragable) in query.iter_mut() {
         if foragable.is_some() {
             commands.entity(entity).insert(WorkTarget);
+            let child = commands.spawn((
+                Text2dBundle {
+                    text: Text::from_section("X", TextStyle { font: font.0.clone(), ..default() })
+                        .with_alignment(TextAlignment::Center),
+                    ..default()
+                },
+                WorkMarker
+            ))
+            .insert(Transform::from_xyz(10.0, 20.0, 100.0)).id();
+            commands.entity(entity).push_children(&[child]);
         }
     }
     unhighlight(commands, highlighteds, highlightboxes);
@@ -65,6 +76,35 @@ pub fn select_choppables(
 ) {
     if event.is_empty() { return; }
     if dragging.looking_for != SelectableType::Choppable { return; }
+    for (entity, selection_reason) in query.iter_mut() {
+        if selection_reason.is_some() {
+            commands.entity(entity).insert(WorkTarget);
+            let child = commands.spawn((
+                Text2dBundle {
+                    text: Text::from_section("X", TextStyle { font: font.0.clone(), ..default() })
+                        .with_alignment(TextAlignment::Center),
+                    ..default()
+                },
+                WorkMarker
+            ))
+            .insert(Transform::from_xyz(10.0, 20.0, 100.0)).id();
+            commands.entity(entity).push_children(&[child]);
+        }
+    }
+    unhighlight(commands, highlighteds, highlightboxes);
+}
+
+pub fn select_huntables(
+    mut commands: Commands,
+    mut query: Query<(Entity, Option<&Huntable>), With<Highlighted>>,
+    highlighteds: Query<Entity, With<Highlighted>>,
+    highlightboxes: Query<Entity, With<HighlightBox>>,
+    event: EventReader<SelectionEvent>,
+    dragging: Res<Dragging>,
+    font: Res<MyFont>,
+) {
+    if event.is_empty() { return; }
+    if dragging.looking_for != SelectableType::Huntable { return; }
     for (entity, selection_reason) in query.iter_mut() {
         if selection_reason.is_some() {
             commands.entity(entity).insert(WorkTarget);

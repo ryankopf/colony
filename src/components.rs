@@ -39,7 +39,7 @@ pub enum GameState {
 
 #[derive(PartialEq)]
 pub enum MenuStates { // Sorted in order of display.
-    Home, Tasks, Farm, Zone, Build, Craft
+    Home, Tasks, Farm, Build, Zone
 }
 
 impl MenuStates {
@@ -50,7 +50,6 @@ impl MenuStates {
             MenuStates::Farm => 2,
             MenuStates::Zone => 3,
             MenuStates::Build => 4,
-            MenuStates::Craft => 5,
         }
     }
 }
@@ -587,6 +586,10 @@ pub struct Foragable;
 
 #[derive(Component)]
 pub struct Choppable;
+#[derive(Component)]
+pub struct Huntable;
+#[derive(Component)]
+pub struct Mineable;
 
 #[derive(Component)]
 pub struct SetNest;
@@ -734,6 +737,7 @@ pub enum SelectableType {
     Foragable,
     Gatherable,
     Harvestable,
+    Huntable,
     Mineable,
     Nothing,
     Unselecting,

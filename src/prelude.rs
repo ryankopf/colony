@@ -1,7 +1,7 @@
 pub use super::components::{
     ActorType, Affliction, AfflictionType, AfflictionLocation, Attackable, Attacked, Attributeset,
     Bed, Brain, Choppable, ClickedOn, Danger, DangerType, Dying, Food, Foragable, ForageType, GameState, GeneratedBy,
-    GiveMeAName, HasName, HasNameShown, HighlightBox, Highlighted, HoverNote, InfoPanel, InGameButton, IsName,
+    GiveMeAName, HasName, HasNameShown, HighlightBox, Highlighted, HoverNote, Huntable, InfoPanel, InGameButton, IsName,
     Logs, MainMenuOverlay, MapTile, MenuStates, MonsterGenerator, Motivation, MoveRandom,
     MoveTowardsNearestAttackable, MoveTowardsTarget, NearestEntity, Need, Nest,
     Order, Pathing, PauseOverlay, PersonalityTrait, PhysicalBody, Plant, Position,
