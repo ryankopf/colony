@@ -635,7 +635,7 @@ pub struct NearestEntity {
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ZoneType {
-    Farm, Pasture, Storage, Fishing, Hospital, Party, Meeting, Construction
+    Farm, Pasture, Storage, Fishing, Hospital, Party, Meeting, Construction, Avoid
 }
 
 

@@ -54,13 +54,32 @@ struct Node {
 pub fn movement_path_generating(
     mut entities: Query<(&Position, &mut Pathing)>,
     tilehash: Res<TileHash>,
+    objects: Query<(&Object, &Position)>,
+    zones: Query<(&Zone, &Position)>,
 ) {
     let tiletypes: &std::collections::HashMap<Position, TileType> = &tilehash.hash;
+    // Find all objects that you can not pass through, as well as any zones of places to avoid.
+    let mut obstacles: std::collections::HashSet<Position> = objects
+        .iter()
+        .filter_map(|(object, position)| {
+            if object.itemtype.passable() == false {
+                Some(*position)
+            } else {
+                None
+            }
+        })
+        .collect();
+    for (zone, position) in zones.iter() {
+        if zone.zone_type == ZoneType::Avoid { // TO DO: Only apply this to humans.
+            obstacles.insert(*position);
+        }
+    }
+    
     for (start_position, mut pathing) in entities.iter_mut() {
         // println!("Pathing: {:?} to destination: {:?} - Unreachable? {:?}", pathing.path, pathing.destination, pathing.unreachable);
         let destination = pathing.destination;
         if !pathing.path.is_empty() { continue; }
-        pathing.path = generate_path(start_position, &destination, tiletypes);
+        pathing.path = generate_path(start_position, &destination, tiletypes, &obstacles);
         
         // F = G + H
         // G = distance from start
@@ -138,6 +157,7 @@ fn generate_path(
     start_position: &Position,
     destination: &Position,
     tiletypes: &std::collections::HashMap<Position, TileType>,
+    obstacles: &std::collections::HashSet<Position>,
 ) -> Vec<Position> {
     // F = G + H
     // G = distance from start
@@ -189,6 +209,9 @@ fn generate_path(
             if tiletypes.get(&neighbor).unwrap().is_wall() {
                 continue;
             }
+            if obstacles.contains(&neighbor) {
+                continue;
+            }
             let h = neighbor.distance(&destination);
             let g = current_node.g + 1;
             let f = g + h;
@@ -223,14 +246,17 @@ pub fn update_paths_for_moving_targets(
     mut entities: Query<(&Position, &Targeting, &mut Pathing)>,
     targets: Query<(Entity, &Position)>,
     tilehash: Res<TileHash>,
+    objects: Query<(&Object, &Position)>,
+    zones: Query<(&Zone, &Position)>,
 ) {
     let tiletypes: &std::collections::HashMap<Position, TileType> = &tilehash.hash;
+    let obstacles = collect_obstacles(objects, zones, tiletypes);
     for (start_position, target, mut pathing) in entities.iter_mut() {
         if !pathing.moving_target { continue; }
         pathing.moving_target = false;
         for (target_entity, target_position) in targets.iter() {
             if target_entity == target.target {
-                pathing.path = generate_path(start_position, &target_position, tiletypes);
+                pathing.path = generate_path(start_position, &target_position, tiletypes, &obstacles);
                 // println!("Path: {:?}", pathing.path)
             }
         }
@@ -252,4 +278,40 @@ pub fn movement_along_path(
             commands.entity(entity).remove::<Pathing>();
         }
     }
+}
+pub fn collect_obstacles(
+    objects: Query<(&Object, &Position)>,
+    zones: Query<(&Zone, &Position)>,
+    tiletypes: &std::collections::HashMap<Position, TileType>,
+) -> std::collections::HashSet<Position> {
+    let mut obstacles: std::collections::HashSet<Position> = objects
+        .iter()
+        .filter_map(|(object, position)| {
+            if object.itemtype.passable() == false {
+                Some(*position)
+            } else {
+                None
+            }
+        })
+        .collect();
+    for (zone, position) in zones.iter() {
+        if zone.zone_type == ZoneType::Avoid { // TO DO: Only apply this to humans.
+            obstacles.insert(*position);
+        }
+    }
+    for (position, tiletype) in tiletypes.iter() {
+        if tiletype.is_wall() {
+            obstacles.insert(*position);
+        }
+    }
+    obstacles
+}
+pub fn is_position_reachable(
+    start_position: &Position,
+    end_position: &Position,
+    obstacles: &std::collections::HashSet<Position>,
+    tiletypes: &std::collections::HashMap<Position, TileType>,
+) -> bool {
+    let path = generate_path(start_position, end_position, tiletypes, obstacles);
+    !path.is_empty()
 }

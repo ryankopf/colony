@@ -71,6 +71,7 @@ fn spawn_plant(
     .insert(*position)
     .insert(position.to_transform_layer(0.5))
     .insert(Plant { growth: 0.4, plant_type: zone.item_type })
+    .insert( Object { itemtype: zone.item_type, ..default() } )
     ;
 }
 

@@ -22,10 +22,73 @@ pub struct ItemReplacements {
     pub replacements: Vec<ItemType>,
 }
 
+#[derive(Clone, Copy)]
 enum ItemGroup {
     Logs,
+    Statues,
     Stones,
     Other,
+    Walls,
+}
+impl ItemGroup {
+    pub fn items(&self) -> Vec<ItemType> {
+        match self {
+            ItemGroup::Logs => vec![ItemType::CedarLog, ItemType::PineLog, ItemType::OakLog],
+            ItemGroup::Stones => vec![ItemType::Goo1],
+            ItemGroup::Walls => vec![ItemType::WallWood],
+            ItemGroup::Statues => vec![ItemType::StatuePillar1,
+                ItemType::StatuePillar2,
+                ItemType::StatuePillar3,
+                ItemType::StatuePillar4,
+                ItemType::StatuePillar5,
+                ItemType::StatuePillar6,
+                ItemType::StatuePillar7,
+                ItemType::StatueElephant,
+                ItemType::StatueHead,
+                ItemType::StatueIDK1,
+                ItemType::StatueIDK2,
+                ItemType::StatueGold,
+                ItemType::StatueMan,
+                ItemType::StatuePlatform,
+                ItemType::StatueAnd,
+                ItemType::StatueAt,
+                ItemType::StatueAngel,
+                ItemType::StatueArcher,
+                ItemType::StatueHover,
+                ItemType::StatueCat,
+                ItemType::StatueCentaur,
+                ItemType::StatueKing,
+                ItemType::StatueKnight,
+                ItemType::StatueDragon,
+                ItemType::StatueDwarf,
+                ItemType::StatueMastodon,
+                ItemType::StatueHydra,
+                ItemType::StatueSpearman,
+                ItemType::StatueBall,
+                ItemType::StatueBigfoot,
+                ItemType::StatuePrincess,
+                ItemType::StatueDeath,
+                ItemType::StatueSnail,
+                ItemType::StatueSword,
+                ItemType::StatueDragon2,
+                ItemType::StatueTriangle,
+                ItemType::StatueWizard,
+                ItemType::StatueGhost,],
+            ItemGroup::Other => vec![],
+        }
+    }
+
+    pub fn in_group(&self, item: &ItemType) -> bool {
+        self.items().contains(item)
+    }
+    pub fn all() -> &'static [ItemGroup] {
+        &[
+            ItemGroup::Logs,
+            ItemGroup::Stones,
+            ItemGroup::Statues,
+            ItemGroup::Walls,
+        ]
+    }
 }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
@@ -221,7 +284,9 @@ impl ItemType {
         }
     }
     pub fn passable(&self) -> bool {
-        match self {
+        match self.group() {
+            ItemGroup::Statues => false,
+            ItemGroup::Walls => false,
             _ => {
                 true
             }
@@ -237,20 +302,16 @@ impl ItemType {
         }
     }
     pub fn potential_replacements(&self) -> Vec<ItemType> {
-        match self.group() {
-            ItemGroup::Logs => vec![ItemType::CedarLog, ItemType::PineLog, ItemType::OakLog],
-            ItemGroup::Stones => vec![ItemType::Goo1],
-            ItemGroup::Other => vec![],
-        }
+        self.group().items()
     }
 
     fn group(&self) -> ItemGroup {
-        match self {
-            ItemType::CedarLog | ItemType::PineLog | ItemType::OakLog => ItemGroup::Logs,
-            ItemType::Goo1 => ItemGroup::Stones,
-            _ => ItemGroup::Other,
-            // other cases
+        for group in ItemGroup::all() {
+            if group.in_group(self) {
+                return *group;
+            }
         }
+        ItemGroup::Other
     }
 }
 

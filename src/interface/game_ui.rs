@@ -107,8 +107,8 @@ pub fn start_game_ui(
         "NOTHING",
         "FISHING",
         "HOSPITAL",
-        "PARTY",
         "MEETING",
+        "AVOID",
     ],vec![ // build
         "BACK",
         "NOTHING",
@@ -235,6 +235,10 @@ pub fn game_ui_click(
                     }
                     MenuStates::Zone => {
                         match button_index {
+                            5 => {
+                                dragging.looking_for = SelectableType::Zoning;
+                                dragging.zone_type = ZoneType::Avoid;
+                            },
                             _ => {
                                 dragging.looking_for = SelectableType::Nothing;
                                 menu_state.state = MenuStates::Home;

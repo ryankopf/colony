@@ -21,7 +21,12 @@ impl Plugin for PersonalityPlugin {
 pub fn personalities(
     mut entities: Query<(Entity, &mut Brain, &mut PhysicalBody, &Position, Option<&Nest>, Option<&Targeting>)>,
     mut objects: Query<(Entity, Option<&Object>, Option<&Zone>, Option<&WorkTarget>, &Position)>,
+    tilehash: Res<TileHash>,
+    objects2: Query<(&Object, &Position)>,
+    zones: Query<(&Zone, &Position)>,
 ) {
+    let tiletypes: &std::collections::HashMap<Position, TileType> = &tilehash.hash;
+    let obstacles = crate::collect_obstacles(objects2, zones, tiletypes);
     let potential_targets = entities.iter()
         .map(|(entity, _, _, position, _, _)| (entity, *position)) // Clone the Position data
         .collect::<Vec<(Entity, Position)>>();
@@ -41,7 +46,7 @@ pub fn personalities(
                 territorial::territorial(entity, brain, physical_body, position, nest, &potential_targets);
             },
             Some(PersonalityTrait::Human) => {
-                human::human(entity, brain, physical_body, position, nest, &objects, &already_targeted);
+                human::human(entity, brain, physical_body, position, nest, &objects, &already_targeted, &obstacles, &tiletypes);
             },
             _ => {
                 nopersonality::nopersonality(entity, brain, physical_body, position, nest);
@@ -49,3 +54,4 @@ pub fn personalities(
         }
     }
 }
+

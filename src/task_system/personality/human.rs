@@ -8,16 +8,25 @@ pub fn human(
     nest: Option<&Nest>,
     potential_targets: &Query<(Entity, Option<&Object>, Option<&Zone>, Option<&WorkTarget>, &Position)>,
     already_targeted: &Vec<Entity>,
+    obstacles: &std::collections::HashSet<Position>,
+    tiletypes: &std::collections::HashMap<Position, TileType>,
 ) {
     if brain.task != Some(Task::Personality) { return; }
     if !brain.personality.contains(&PersonalityTrait::Human) { return; }
     let targets_to_choose_from: Vec<(Entity, u128)> = Vec::new();
+    let object_positions: Vec<Position> = potential_targets.iter()
+        .filter(|(_, object, _, _, _)| object.is_some())
+        .map(|(_, _, _, _, position)| *position)
+        .collect();
     // Anything to DO?
     for (target_entity, target_object, target_zone, target_worktarget, target_position) in potential_targets.iter() {
         if already_targeted.contains(&target_entity) { continue; }
         if target_entity == entity { continue; }
         let distance = position.distance(&target_position);
         if distance > 100 { continue; }
+        if target_object.is_none() && target_zone.is_none() { continue; }
+        if ! crate::is_position_reachable(position, target_position, obstacles, tiletypes) { continue; }
+
         // TARGET OBJECTS
         if target_object.is_some() {
             let target_object = target_object.unwrap();
@@ -42,8 +51,11 @@ pub fn human(
         if target_zone.is_some() {
             let target_zone = target_zone.unwrap();
             if target_zone.zone_type == ZoneType::Farm {
-                brain.task = Some(Task::Plant);
-                return;
+                if ! object_positions.contains(&target_position) { // Ensure nothing is already planted there.
+                    println!("Planting!");
+                    brain.task = Some(Task::Plant);
+                    return;
+                }
             }
             if target_zone.zone_type == ZoneType::Construction {
                 brain.task = Some(Task::Construct);
