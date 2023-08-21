@@ -1,4 +1,4 @@
-use crate::{prelude::*, unitgenerator_system::spawn_unit_from_template, UnitTemplate};
+use crate::{prelude::*, unitgenerator_system::spawn_unit_from_template};
 
 // Make plugin
 pub struct MonsterGeneratorPlugin;
