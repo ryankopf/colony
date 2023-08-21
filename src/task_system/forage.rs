@@ -3,7 +3,7 @@ use crate::prelude::*;
 pub fn task_system_forage(
     mut commands: Commands,
     mut entities_that_might_forage: Query<(Entity, &mut Brain, &Position, Option<&Pathing>, Option<&Targeting>)>,
-    mut foragables: Query<(Entity, &Position, &Foragable, &mut Plant)>,
+    mut foragables: Query<(Entity, &Position, &Foragable, &mut Plant, Option<&WorkTarget>)>,
     sprite_sheet: Res<SpriteSheet>,
 ) {
     let mut already_targeted = crate::set_already_targetted(&entities_that_might_forage);
@@ -12,7 +12,8 @@ pub fn task_system_forage(
         if brain.task != Some(Task::Forage) { continue; }
         let mut did_foraging = false;
         let mut nearest_entity: Option<NearestEntity> = None;
-        for (foragable_entity, foragable_position, _, mut plant) in foragables.iter_mut() {
+        for (foragable_entity, foragable_position, _, mut plant, worktarget) in foragables.iter_mut() {
+            if brain.motivation != Some(Motivation::Hunger) && worktarget.is_none() { continue; }
             // If you are already next to it, forage it, if you are targetting it.
             let distance = position.distance(foragable_position);
             if distance <= 1 && targeting.is_some() && targeting.unwrap().target == foragable_entity {

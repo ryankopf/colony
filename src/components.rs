@@ -148,18 +148,18 @@ pub enum TileType {
 impl TileType {
     pub fn sprite_row_and_col(&self) -> (usize, usize) {
         match self {
-            TileType::Grass => (9, 11),
+            TileType::Grass => (0, 0),
             TileType::Cave => (13, 7),
-            TileType::Dirt => (4, 1),
-            TileType::Gravel => (7, 42),
-            TileType::Sand => (7, 42),
+            TileType::Dirt => (1, 0),
+            TileType::Gravel => (3, 1),
+            TileType::Sand => (6, 42),
             TileType::Stone => (3, 61),
             TileType::Water => (5, 12),
-            TileType::WallGame => (7, 20),
-            TileType::WallStone => (7, 21),
-            TileType::WallWood => (7, 22),
-            TileType::WallBrick => (4, 10),
-            TileType::WallMetal => (7, 24),
+            TileType::WallGame => (2, 10),
+            TileType::WallStone => (3, 10),
+            TileType::WallWood => (6, 32),
+            TileType::WallBrick => (8, 0),
+            TileType::WallMetal => (1, 61),
         }
     }
     pub fn sprite_index(&self) -> usize {
@@ -659,73 +659,6 @@ impl Task {
 pub enum Motivation { // Sorted in order of prioritization.
     Crisis, Rage, Order, Danger, Hunger, Thirst, Tired, Injured, Sick, Bored, Happy, Sad, Angry, Lonely, Love, Fear, Hate, Work, Personality, Meander, Idle
 }
-
-// #[derive(Component, PartialEq, Copy, Clone, Debug)]
-// pub enum PlantType {
-//     Aloe,
-//     Azalea,
-//     Bush,
-//     Cabbage,
-//     CactusRound,
-//     CactusUp,
-//     Carrot,
-//     CedarTree,
-//     FlowerBush,
-//     PineTree,
-//     OakTree,
-//     ThornBush,
-//     Vine,
-//     Weed,
-// }
-
-// impl PlantType {
-//     pub fn is_edible(&self) -> bool {
-//         matches!(self, PlantType::Cabbage)
-//     }
-//     pub fn sprite_row_and_col(&self) -> (usize, usize) {
-//         match self {
-//             PlantType::Aloe => (67, 57),
-//             PlantType::Azalea => (67, 57),
-//             PlantType::Bush => (67, 57),
-//             PlantType::Cabbage => (94, 32),
-//             PlantType::CactusRound => (67, 57),
-//             PlantType::CactusUp => (67, 57),
-//             PlantType::Carrot => (94, 31),
-//             PlantType::CedarTree => (13, 15),
-//             PlantType::PineTree => (13, 13),
-//             PlantType::OakTree => (13, 14),
-//             PlantType::ThornBush => (67, 57),
-//             PlantType::FlowerBush => (67, 57),
-//             PlantType::Vine => (67, 57),
-//             PlantType::Weed => (67, 57),
-//         }
-//     }
-//     pub fn sprite_index(&self) -> usize {
-//         let (row, col) = self.sprite_row_and_col();
-//         row * 64 + col
-//     }
-//     pub fn growth_speed(&self) -> f32 {
-//         match self {
-//             PlantType::Cabbage => 0.001,
-//             _ => 0.01
-//         }
-//     }
-//     pub fn is_forageable(&self) -> (Option<ItemType>, i32, ForageType) {
-//         match self {
-//             PlantType::Cabbage => (Some(ItemType::Cabbage), 1, ForageType::Once),
-//             PlantType::Carrot => (Some(ItemType::Carrot), 1, ForageType::Once),
-//             _ => (None, 0, ForageType::Once),
-//         }
-//     }
-//     pub fn is_choppable(&self) -> (Option<ItemType>, i32) {
-//         match self {
-//             PlantType::PineTree => (Some(ItemType::PineLog), 1),
-//             PlantType::OakTree => (Some(ItemType::OakLog), 1),
-//             PlantType::CedarTree => (Some(ItemType::CedarLog), 1),
-//             _ => (None, 0),
-//         }
-//     }
-// }
 
 #[derive(Component, PartialEq, Copy, Clone, Debug)]
 pub enum ForageType {

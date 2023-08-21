@@ -12,8 +12,6 @@ use initializations::*;
 mod interface;
 use interface::*;
 mod objects;
-mod main_menu;
-use main_menu::*;
 mod monstergenerator_system;
 use monstergenerator_system::*;
 mod moverandom_system;
@@ -49,6 +47,7 @@ use unitgenerator_system::*;
 fn main() {
     //println!("Hello, world!");
     App::new()
+        .insert_resource(Msaa::Off)
         .add_plugins((DefaultPlugins, BiomePlugin, StartupPlugin))
         .add_systems(
             PreStartup, (load_sprites, load_font, load_sfx)
